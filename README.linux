@@ -1,0 +1,45 @@
+This is the RTCW v1.31 source code configured to compile on linux 
+(tested on gcc 2.95.3). There have been made some minor changes on the 
+original source release. Without those the source would not compile. Those 
+changes are:
+
+* fix a case insensitivity problem with the main folder
+* my gcc was complaining about some of  the '\' characters that showed up 
+  in a few .c files. I removed them (after all, in C you don't actually 
+  need \ to change line) and everything compiled smoothly.
+* in MP game folder, I moved g_funcs.h and g_func_decs.h to 
+  win32_g_funcs.h and win32_g_func_decs.h, then I created links to 
+  linux_g_funcs.h and linux_g_func_decs.h
+
+Apart from that, everything is exactly the same. The makefiles are based 
+on the various makefiles posted in PlanetWolfenstein forums.
+
+Compilation:
+There are makefiles for both SP and MP branch. Each of the folders 
+cgame, game and ui holds a makefile. Just cd to SP/SP_Source/src/cgame, 
+game and ui and run 'make' (or 'make all') for each one.
+(The same goes for the MP).
+
+Installation:
+Copy (or move) the following files to a directory inside your rtcw 
+installation folder (i.e. /usr/local/games/wolfenstein/mymod/):
+
+* qagamei386.so, cgamei386.so and uii386.so are needeed for a SP mod
+* qagame.mp.i386.so, cgame.mp.i386.so and ui.mp.i386.so are needeed for a 
+  MP mod
+
+Then, you can run 'wolfmp +set fs_game mymod' or 'wolfsp +set fs_game 
+mymod' in order to load your mod. If you want your mod to show up in the 
+mods list (the in-game menu) you will need to put in the mymod folder at 
+least one empty .pk3 file.
+
+That's all! Happy modding ;)
+
+
+This package is not supported by id Software or Activision or Grey 
+Matter or Nerve in any way or form. Do NOT hassle them about it.
+
+
+Thanos Kyritsis (aka DJ Art) - djart@linux.gr -
+http://members.hellug.gr/djart/wolfsource
+
