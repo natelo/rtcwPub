@@ -1,32 +1,50 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "cgame", "cgame\cgame.vcxproj", "{A6963C7F-7099-1B37-E800-7849AB462064}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "game", "game\game.vcxproj", "{75679567-2347-2877-DD0E-5D10DBB2B49A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ui", "ui\ui.vcxproj", "{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{D7F6B66A-9D61-41B9-898D-499B3DCA38EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Client", "Client", "{F68B2527-976F-4687-965C-697056553384}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
 		Release|Win32 = Release|Win32
+		Template|Win32 = Template|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{A6963C7F-7099-1B37-E800-7849AB462064}.Debug|Win32.ActiveCfg = Debug|Win32
 		{A6963C7F-7099-1B37-E800-7849AB462064}.Debug|Win32.Build.0 = Debug|Win32
 		{A6963C7F-7099-1B37-E800-7849AB462064}.Release|Win32.ActiveCfg = Release|Win32
 		{A6963C7F-7099-1B37-E800-7849AB462064}.Release|Win32.Build.0 = Release|Win32
+		{A6963C7F-7099-1B37-E800-7849AB462064}.Template|Win32.ActiveCfg = Template|Win32
+		{A6963C7F-7099-1B37-E800-7849AB462064}.Template|Win32.Build.0 = Template|Win32
 		{75679567-2347-2877-DD0E-5D10DBB2B49A}.Debug|Win32.ActiveCfg = Debug|Win32
 		{75679567-2347-2877-DD0E-5D10DBB2B49A}.Debug|Win32.Build.0 = Debug|Win32
 		{75679567-2347-2877-DD0E-5D10DBB2B49A}.Release|Win32.ActiveCfg = Release|Win32
 		{75679567-2347-2877-DD0E-5D10DBB2B49A}.Release|Win32.Build.0 = Release|Win32
+		{75679567-2347-2877-DD0E-5D10DBB2B49A}.Template|Win32.ActiveCfg = Release|Win32
+		{75679567-2347-2877-DD0E-5D10DBB2B49A}.Template|Win32.Build.0 = Release|Win32
 		{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02}.Debug|Win32.ActiveCfg = Debug|Win32
 		{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02}.Debug|Win32.Build.0 = Debug|Win32
 		{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02}.Release|Win32.ActiveCfg = Release|Win32
 		{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02}.Release|Win32.Build.0 = Release|Win32
+		{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02}.Template|Win32.ActiveCfg = Template|Win32
+		{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02}.Template|Win32.Build.0 = Template|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{75679567-2347-2877-DD0E-5D10DBB2B49A} = {D7F6B66A-9D61-41B9-898D-499B3DCA38EE}
+		{A6963C7F-7099-1B37-E800-7849AB462064} = {F68B2527-976F-4687-965C-697056553384}
+		{0BFACFF1-37BB-B444-8CBE-CF11AF2BFC02} = {F68B2527-976F-4687-965C-697056553384}
 	EndGlobalSection
 EndGlobal
