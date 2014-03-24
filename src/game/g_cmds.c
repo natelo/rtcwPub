@@ -1,4 +1,4 @@
-#include "g_local.h"
+#include "g_admin.h"
 
 /*
 ==================
@@ -942,12 +942,53 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	char		text[MAX_SAY_TEXT];
 	char		location[64];
 	qboolean	localize = qfalse;
+	// L0  
+	char *tag = "";
+	char arg[MAX_SAY_TEXT]; // ! & ? 
+	char cmd1[128];
+	char cmd2[128];
+	char cmd3[128];
 
-	//L0 - Nuke
+	// Admin commands
+	Q_strncpyz(text, chatText, sizeof(text));
+	if (!ent->client->sess.admin == ADM_NONE) {
+		// Command
+		if ((text[0] == '?') || (text[0] == '!')) {
+			ParseAdmStr(text, cmd1, arg);
+			ParseAdmStr(arg, cmd2, cmd3);
+
+			Q_strncpyz(ent->client->pers.cmd1, cmd1, sizeof(ent->client->pers.cmd1));
+			Q_strncpyz(ent->client->pers.cmd2, cmd2, sizeof(ent->client->pers.cmd2));
+			Q_strncpyz(ent->client->pers.cmd3, cmd3, sizeof(ent->client->pers.cmd3));
+
+			cmds_admin((char *)text[0], ent);
+			return;
+		}
+	}
+
+	// Admin tags..
+	if (!ent->client->sess.incognito) {
+		if (ent->client->sess.admin == ADM_1) {
+			tag = va("^7(%s^7)", a1_tag.string);
+		}
+		else if (ent->client->sess.admin == ADM_2) {
+			tag = va("^7(%s^7)", a2_tag.string);
+		}
+		else if (ent->client->sess.admin == ADM_3) {
+			tag = va("^7(%s^7)", a3_tag.string);
+		}
+		else if (ent->client->sess.admin == ADM_4) {
+			tag = va("^7(%s^7)", a4_tag.string);
+		}
+		else if (ent->client->sess.admin == ADM_5) {
+			tag = va("^7(%s^7)", a5_tag.string);
+		}
+	}
+
+	// Nuke
 	if (strlen(chatText) >= 700) {
-		trap_SendServerCommand(-1, va("chat \"console: %s ^7kicked: ^3Nuking^7.\n\"", ent->client->pers.netname));
-		G_LogPrintf("NUKING: %s\n", ent->client->pers.netname);
-		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking 1");
+		logEntry(SYSLOG, va("Nuking (G_Say :: strlen >= 700): %s (IP: %s", ent->client->pers.netname, clientIP(ent, qtrue)));
+		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}
 
@@ -959,7 +1000,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	default:
 	case SAY_ALL:
 		G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
-		Com_sprintf (name, sizeof(name), "%s%c%c: ", ent->client->pers.netname, Q_COLOR_ESCAPE, COLOR_WHITE );
+		Com_sprintf(name, sizeof(name), "%s%s%c%c: ", ent->client->pers.netname, tag, Q_COLOR_ESCAPE, COLOR_WHITE);
 		color = COLOR_GREEN;
 		break;
 	case SAY_TEAM:
@@ -1088,9 +1129,8 @@ static void G_VoiceTo( gentity_t *ent, gentity_t *other, int mode, const char *i
 
 	//L0 - Nuke
 	if (strlen(id) >= 700) {
-		trap_SendServerCommand(-1, va("chat \"console: %s ^7kicked: ^3Nuking^7.\n\"", ent->client->pers.netname));
-		G_LogPrintf("NUKING: %s\n", ent->client->pers.netname);
-		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking 1");
+		logEntry(SYSLOG, va("Nuking (G_VoiceTo :: strlen >= 700): %s (IP: %s", ent->client->pers.netname, clientIP(ent, qtrue)));
+		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}
 
@@ -1154,7 +1194,7 @@ void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qbool
 		|| !Q_stricmp(id, "Axiswin") 
 		|| !Q_stricmp(id, "Alliedwin"))) 
 	{	
-		CPx(ent, va("cp \"^7You got slapped for your Vsay exploit attempt!\n\"2"));
+		CP(va("cp \"^7You got slapped for your Vsay exploit attempt!\n\"2"));
 		G_Damage(ent, NULL, NULL, NULL, NULL, 20, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
 		return;
 	}

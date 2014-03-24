@@ -35,7 +35,7 @@ char *sortTag(gentity_t *ent) {
 	DecolorString(tag, n1);
 	SanitizeString(n1, tag);
 	Q_CleanStr(tag);
-	tag[20] = 0;	 // 20 should be enough..
+	tag[20] = 0;
 
 	return tag;
 }
@@ -63,7 +63,7 @@ void cmd_do_login(gentity_t *ent, qboolean silent) {
 	if ((!Q_stricmp(str, "\0"))
 		|| (!Q_stricmp(str, ""))
 		|| (!Q_stricmp(str, "\""))
-		|| (!Q_stricmp(str, "none"))) 
+		|| (!Q_stricmp(str, "none")))
 	{
 		CP("print \"Incorrect password^1!\n\"");
 		// No log here to avoid login by error..
@@ -75,25 +75,25 @@ void cmd_do_login(gentity_t *ent, qboolean silent) {
 		|| (Q_stricmp(str, a2_pass.string) == 0)
 		|| (Q_stricmp(str, a3_pass.string) == 0)
 		|| (Q_stricmp(str, a4_pass.string) == 0)
-		|| (Q_stricmp(str, a5_pass.string) == 0)) 
+		|| (Q_stricmp(str, a5_pass.string) == 0))
 	{
 		// Always start with lower level as if owner screws it up 
 		// and sets the same passes for more levels, the lowest is the safest bet.
 		if (Q_stricmp(str, a1_pass.string) == 0) {
 			ent->client->sess.admin = ADM_1;
-		} 
+		}
 		else if (Q_stricmp(str, a2_pass.string) == 0) {
 			ent->client->sess.admin = ADM_2;
-		} 
+		}
 		else if (Q_stricmp(str, a3_pass.string) == 0) {
 			ent->client->sess.admin = ADM_3;
-		} 
+		}
 		else if (Q_stricmp(str, a4_pass.string) == 0) {
 			ent->client->sess.admin = ADM_4;
-		} 
+		}
 		else if (Q_stricmp(str, a5_pass.string) == 0) {
 			ent->client->sess.admin = ADM_5;
-		} 
+		}
 		else {
 			error = qtrue;
 		}
@@ -111,35 +111,31 @@ void cmd_do_login(gentity_t *ent, qboolean silent) {
 			ent->client->sess.incognito = 1; // Hide them
 
 			// Log it
-			log = va("Player %s (IP:%i.%i.%i.%i) has silently logged in as %s.",
-				ent->client->pers.netname, 
-				ent->client->sess.ip[0], 
-				ent->client->sess.ip[1], 
-				ent->client->sess.ip[2],
-				ent->client->sess.ip[3], 
+			log = va("Player %s (IP: %s) has silently logged in as %s.",
+				ent->client->pers.netname,
+				clientIP(ent, qtrue),
 				sortTag(ent));
 
 			logEntry(ADMLOG, log);
-		} 
+		}
 		else {
 			AP(va("chat \"^7console: %s ^7has logged in as %s^7!\n\"", ent->client->pers.netname, sortTag(ent)));
 
 			// Log it
-			log = va("Player %s (IP:%i.%i.%i.%i) has logged in as %s.",
-				ent->client->pers.netname, ent->client->sess.ip[0], ent->client->sess.ip[1], ent->client->sess.ip[2],
-				ent->client->sess.ip[3], sortTag(ent));
+			log = va("Player %s (IP: %s) has logged in as %s.",
+				ent->client->pers.netname, clientIP(ent, qtrue), sortTag(ent));
 			logEntry(ADMLOG, log);
-		}		
+		}
 		return;
 	}
-	else 
+	else
 	{
 		CP("print \"Incorrect password^1!\n\"");
 
 		// Log it
 		log = va("Player %s (IP: %s) has tried to login using password: %s",
-			ent->client->pers.netname, clientIP(ent->client), str
-		);
+			ent->client->pers.netname, clientIP(ent, qtrue), str
+			);
 
 		logEntry(PASSLOG, log);
 		return;
@@ -161,7 +157,7 @@ void cmd_do_logout(gentity_t *ent) {
 		if (ent->client->sess.incognito)
 			CP("print \"You have successfully logged out^3!\n\"");
 		else
-			AP(va("chat \"^7console: %s ^7has logged out^3!\n\"", ent->client->pers.netname));
+			AP(va("chat \"console: %s ^7has logged out^3!\n\"", ent->client->pers.netname));
 
 		// Log them out now
 		ent->client->sess.admin = ADM_NONE;
@@ -171,34 +167,6 @@ void cmd_do_logout(gentity_t *ent) {
 
 		return;
 	}
-}
-
-
-/*
-===========
-Log Admin related stuff
-===========
-*/
-void logEntry(char *filename, char *info)
-{
-	fileHandle_t	f;
-	char *varLine;
-	qtime_t		ct;
-	trap_RealTime(&ct);
-
-	if (!g_extendedLog.integer)
-		return;
-
-	strcat(info, "\r");
-	trap_FS_FOpenFile(filename, &f, FS_APPEND);
-
-	varLine = va("Time: %02d:%02d:%02d/%02d %s %d : %s \n",
-		ct.tm_hour, ct.tm_min, ct.tm_sec, ct.tm_mday,
-		aMonths[ct.tm_mon], 1900 + ct.tm_year, info);
-
-	trap_FS_Write(varLine, strlen(varLine), f);
-	trap_FS_FCloseFile(f);
-	return;
 }
 
 /*
@@ -329,21 +297,20 @@ void cmdCustom(gentity_t *ent, char *cmd) {
 	tag = sortTag(ent);
 
 	if (!strcmp(ent->client->pers.cmd2, "")) {
-		CP(va("print \"Command ^1%s ^7must have a value^z!\n\"", cmd));
+		CP(va("print \"Command ^1%s ^7must have a value^1!\n\"", cmd));
 		return;
 	}
 	else {
 		// Rconpasswords or sensitve commands can be changed without public print..
 		if (!strcmp(ent->client->pers.cmd3, "@"))
-			CP(va("print \"Info: ^2%s ^7was silently changed to ^2%s^z!\n\"", cmd, ent->client->pers.cmd2));
+			CP(va("print \"Info: ^2%s ^7was silently changed to ^2%s^7!\n\"", cmd, ent->client->pers.cmd2));
 		else
-			AP(va("chat \"^zconsole:^7 %s ^7changed ^z%s ^7to ^z%s %s\n\"", tag, cmd, ent->client->pers.cmd2, ent->client->pers.cmd3));
+			AP(va("chat \"console: %s ^7changed ^3%s ^7to ^3%s %s\n\"", tag, cmd, ent->client->pers.cmd2, ent->client->pers.cmd3));
 		// Change the stuff
 		trap_SendConsoleCommand(EXEC_APPEND, va("%s %s %s", cmd, ent->client->pers.cmd2, ent->client->pers.cmd3));
 		// Log it
-		log = va("Player %s (IP:%i.%i.%i.%i) has changed %s to %s %s.",
-			ent->client->pers.netname, ent->client->sess.ip[0], ent->client->sess.ip[1], ent->client->sess.ip[2],
-			ent->client->sess.ip[3], cmd, ent->client->pers.cmd2, ent->client->pers.cmd3);
+		log = va("Player %s (IP: %s) has changed %s to %s %s.",
+			ent->client->pers.netname, clientIP(ent, qtrue), cmd, ent->client->pers.cmd2, ent->client->pers.cmd3);
 		logEntry(ADMACT, log);
 		return;
 	}
@@ -360,7 +327,7 @@ void cantUse(gentity_t *ent) {
 
 	admCmds(ent->client->pers.cmd1, alt, cmd, qfalse);
 
-	CP(va("print \"Command ^1%s ^7is not allowed for your level^z!\n\"", cmd));
+	CP(va("print \"Command ^1%s ^7is not allowed for your level^1!\n\"", cmd));
 	return;
 }
 
@@ -376,26 +343,26 @@ qboolean canUse(gentity_t *ent, qboolean isCmd) {
 	char cmd[128];
 
 	switch (ent->client->sess.admin) {
-		case ADM_NONE:
-			return qfalse;
+	case ADM_NONE:
+		return qfalse;
 		break;
-		case ADM_1:
-			permission = a1_cmds.string;
+	case ADM_1:
+		permission = a1_cmds.string;
 		break;
-		case ADM_2:
-			permission = a2_cmds.string;
+	case ADM_2:
+		permission = a2_cmds.string;
 		break;
-		case ADM_3:
-			permission = a3_cmds.string;
+	case ADM_3:
+		permission = a3_cmds.string;
 		break;
-		case ADM_4:
-			permission = a4_cmds.string;
+	case ADM_4:
+		permission = a4_cmds.string;
 		break;
-		case ADM_5:
-			if (a5_allowAll.integer && isCmd) // Return true if allowAll is enabled and is command.
-				return qtrue;
-			else
-				permission = a5_cmds.string;  // Otherwise just loop thru string and see if there's a match.
+	case ADM_5:
+		if (a5_allowAll.integer && isCmd) // Return true if allowAll is enabled and is command.
+			return qtrue;
+		else
+			permission = a5_cmds.string;  // Otherwise just loop thru string and see if there's a match.
 		break;
 	}
 
@@ -437,17 +404,17 @@ void cmd_listCmds(gentity_t *ent) {
 		"speclock specunlock readyall undreadyall rememberme forgetme cookies destroycookie viewcookie";
 
 	if (ent->client->sess.admin == ADM_1)
-		CP(va("print \"^dAvailable commands are:^7\n%s\n^dUse ? for help with command. E.g. ?incognito.\n\"", a1_cmds.string));
+		CP(va("print \"^3Available commands are:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", a1_cmds.string));
 	else if (ent->client->sess.admin == ADM_2)
-		CP(va("print \"^dAvailable commands are:^7\n%s\n^dUse ? for help with command. E.g. ?incognito.\n\"", a2_cmds.string));
+		CP(va("print \"^3Available commands are:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", a2_cmds.string));
 	else if (ent->client->sess.admin == ADM_3)
-		CP(va("print \"^dAvailable commands are:^7\n%s\n^dUse ? for help with command. E.g. ?incognito.\n\"", a3_cmds.string));
+		CP(va("print \"^3Available commands are:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", a3_cmds.string));
 	else if (ent->client->sess.admin == ADM_4)
-		CP(va("print \"^dAvailable commands are:^7\n%s\n^2Use ? for help with command. E.g. ?incognito.\n\"", a4_cmds.string));
+		CP(va("print \"^3Available commands are:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", a4_cmds.string));
 	else if (ent->client->sess.admin == 5 && !a5_allowAll.integer)
-		CP(va("print \"^dAvailable commands are:^7\n%s\n^2Use ? for help with command. E.g. ?incognito.\n\"", a5_cmds.string));
+		CP(va("print \"^3Available commands are:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", a5_cmds.string));
 	else if (ent->client->sess.admin == 5 && a5_allowAll.integer)
-		CP(va("print \"^dAvailable commands are:^7\n%s\n^dAdditinal server commands:^7\n%s\n^dUse ? for help with command. E.g. ?incognito.\n\"", cmds, a5_cmds.string));
+		CP(va("print \"^3Available commands are:^7\n%s\n^5Additional server commands:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", cmds, a5_cmds.string));
 
 	return;
 }
@@ -465,7 +432,7 @@ qboolean do_cmds(gentity_t *ent) {
 
 	if (!strcmp(cmd, "incognito"))			{ if (canUse(ent, qtrue)) cmd_incognito(ent); else cantUse(ent);	return qtrue; }
 	else if (!strcmp(cmd, "list_cmds"))		{ cmd_listCmds(ent);	return qtrue; }
-	else if (!strcmp(cmd, "ignore"))			{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
+	/*	else if (!strcmp(cmd, "ignore"))			{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unignore"))		{ if (canUse(ent, qtrue)) cmd_unignore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientignore"))	{ if (canUse(ent, qtrue)) cmd_clientIgnore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientunignore"))	{ if (canUse(ent, qtrue)) cmd_clientUnignore(ent); else cantUse(ent); return qtrue; }
@@ -509,12 +476,12 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "specunlock"))		{ if (canUse(ent, qtrue)) cmd_specHandle(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "readyall"))		{ if (canUse(ent, qtrue)) cmd_readyHandle(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unreadyall"))		{ if (canUse(ent, qtrue)) cmd_readyHandle(ent, qtrue); else cantUse(ent); return qtrue; }
-
+	*/
 	// Any other command
 	else if (canUse(ent, qfalse))			{ cmdCustom(ent, cmd); return qtrue; }
 
 	// It failed on all checks..
-	else { CP(va("print \"Command ^j%s ^7was not found^1!\n\"", cmd)); return qfalse; }
+	else { CP(va("print \"Command ^1%s ^7was not found^1!\n\"", cmd)); return qfalse; }
 
 }
 

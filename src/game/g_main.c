@@ -144,6 +144,9 @@ vmCvar_t a5_allowAll;	// Allows level 5 to execute all admin commands + any othe
 						// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
 vmCvar_t adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
 
+// System
+vmCvar_t g_extendedLog;	// Logs various Admin and other related actions
+
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
 vmCvar_t	r_znear;				// Fix wall glitching
@@ -291,6 +294,9 @@ cvarTable_t		gameCvarTable[] = {
 	{ &a5_cmds, "a5_cmds", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &a5_allowAll, "a5_allowAll", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &adm_help, "adm_help", "1", CVAR_ARCHIVE, 0, qfalse },
+
+	// System
+	{ &g_extendedLog, "g_extendedLog", "1", CVAR_ARCHIVE, 0, qfalse },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },

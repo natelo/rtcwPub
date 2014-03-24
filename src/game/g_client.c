@@ -1284,6 +1284,22 @@ void SaveIP_f(gclient_t * client, char * sip)
 
 /*
 ===========
+L0 - Print client's IP
+============
+*/
+char *clientIP(gentity_t *ent, qboolean full)
+{
+	if (full) {
+		return va("%d.%d.%d.%d",
+			ent->client->sess.ip[0], ent->client->sess.ip[1], ent->client->sess.ip[2], ent->client->sess.ip[3]);
+	}
+	else {
+		return va("%d.%d.*.*", ent->client->sess.ip[0], ent->client->sess.ip[1]);
+	}
+}
+
+/*
+===========
 ClientUserInfoChanged
 
 Called from ClientConnect when the player first connects and
@@ -1490,8 +1506,8 @@ void ClientUserinfoChanged( int clientNum ) {
 			((client->sess.sessionTeam == TEAM_BLUE) ? "Allied" : "Spectator");
 
 		// Print essentials and skip garbage
-		s = va("name\\%s\\team\\%s\\\\IP\\%s",
-			client->pers.netname, team, client->sess.ip[0], clientIP(client)
+		s = va("name\\%s\\team\\%s\\IP\\%d.%d.%d.%d",
+			client->pers.netname, team, client->sess.ip[0], client->sess.ip[1], client->sess.ip[2], client->sess.ip[3]
 		);
 	}
 

@@ -1,4 +1,5 @@
-
+#ifndef __SHARED_H
+#define __SHARED_H
 
 // g_local.h -- local definitions for game module
 
@@ -454,6 +455,7 @@ typedef struct {
 	// L0 - New stuff
 	admLvls_t		admin;			// Admins
 	unsigned char	ip[4];			// IPs
+	unsigned int	incognito;		// Incognito
 } clientSession_t;
 
 //
@@ -493,6 +495,13 @@ typedef struct {
 	int			lastReinforceTime;		// DHM - Nerve :: last reinforcement
 
 	qboolean	teamInfo;			// send team overlay updates?
+
+// L0 
+	// Admins
+	char cmd1[128];			// !command
+	char cmd2[128];			// !command attribute
+	char cmd3[128];			// !command attribute extra	
+
 } clientPersistant_t;
 
 #define LT_SPECIAL_PICKUP_MOD	3		// JPW NERVE # of times (minus one for modulo) LT must drop ammo before scoring a point
@@ -751,6 +760,7 @@ void StopFollowing( gentity_t *ent );
 void SetTeam(gentity_t *ent, char *s, qboolean forced);
 void SetWolfData( gentity_t *ent, char *ptype, char *weap, char *grenade, char *skinnum );	// DHM - Nerve
 void Cmd_FollowCycle_f( gentity_t *ent, int dir );
+void SanitizeString(char *in, char *out);
 
 //
 // g_items.c
@@ -928,6 +938,7 @@ void player_die (gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 void AddScore( gentity_t *ent, int score );
 void CalculateRanks( void );
 qboolean SpotWouldTelefrag( gentity_t *spot );
+char *clientIP(gentity_t *ent, qboolean full);
 
 //
 // g_svcmds.c
@@ -1187,6 +1198,9 @@ extern vmCvar_t	a5_cmds;
 extern vmCvar_t	a5_allowAll;
 extern vmCvar_t	adm_help;
 
+// System
+extern vmCvar_t g_extendedLog;
+
 // L0 - New Cvars end
 
 void	trap_Printf( const char *fmt );
@@ -1420,12 +1434,18 @@ typedef enum
 #define CP(x)		trap_SendServerCommand(ent-g_entities, x)	// Print to an ent
 #define CPx(x, y)	trap_SendServerCommand(x, y)				// Print to id = x
 #define TP(x,y,z)	G_SayToTeam(x, y, z)						// Prints to selected team
-// Saves the headache..
-#define clientIP(x)	va("%d.%d.%d.%d", x->sess.ip[0], x->sess.ip[1], x->sess.ip[2], x->sess.ip[3]);
 
-// Time
-extern int trap_RealTime(qtime_t * qtime);
-const char *aMonths[12] = {
-	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-};
+#define ARRAY_LEN(x)	(sizeof(x) / sizeof(*(x)))				// Saves some time..
+
+//
+// g_shared.c
+//
+void DecolorString(char *in, char *out);
+
+//
+// g_files.c
+//
+void logEntry(char *filename, char *info);
+
+
+#endif // __SHARED_H
