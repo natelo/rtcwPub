@@ -1190,11 +1190,10 @@ extern vmCvar_t	adm_help;
 // Server stuff
 extern vmCvar_t g_gamelocked;
 extern vmCvar_t	sv_hostname;
-extern vmCvar_t svx_serverStreaming;
 extern vmCvar_t g_extendedLog;
 extern vmCvar_t g_bannedMSG;
 extern vmCvar_t g_privateServer;
-extern vmCvar_t TXThandle;
+extern vmCvar_t g_banFile;
 extern vmCvar_t g_serverMessage;
 extern vmCvar_t g_maxVotes;
 extern vmCvar_t g_showFlags;
@@ -1536,3 +1535,6 @@ const char *aMonths[12] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
+
+int checkBanned(char *data, char * password, qboolean guid);
+extern char *TempBannedMessage;

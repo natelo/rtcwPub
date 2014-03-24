@@ -1530,8 +1530,23 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
 
-	// check to see if they are on the banned IP list
-	value = Info_ValueForKey (userinfo, "ip");
+	// L0 
+	if (firstTime) {
+		value = Info_ValueForKey(userinfo, "ip");
+
+		// IP spoof (low level spoof)
+		if (!Q_stricmp(value, "") || strlen(value) > 21)
+			return "^1Socket/IP Spoof- ^7Entrance refused^1!";
+
+		// If txt files are enabled check this as well..
+		if (g_banFile.integer) {
+			// Note that this approach is flawed because IP's can be spoofed easily.				
+			if (checkBanned(Info_ValueForKey(userinfo, "ip"), Info_ValueForKey(userinfo, "password"), qfalse) == 1)
+				return g_bannedMSG.string;
+			else if (checkBanned(Info_ValueForKey(userinfo, "ip"), Info_ValueForKey(userinfo, "password"), qfalse) == 2)
+				return TempBannedMessage;
+		}
+	} // End
 	
 	// we don't check password for bots and local client
 	// NOTE: local client <-> "ip" "localhost"

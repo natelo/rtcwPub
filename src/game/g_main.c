@@ -146,11 +146,10 @@ vmCvar_t adm_help;		// If enabled users can use !list_cmds to get list of comman
 //-------Server Stuff-------
 vmCvar_t g_gamelocked;	// Controls if Admin locked the game so players can't join
 vmCvar_t sv_hostname;	// So it's more accesible
-vmCvar_t svx_serverStreaming; // So it's more accessible
 vmCvar_t g_extendedLog;	// Logs various admin actions in a seperate logs
 vmCvar_t g_bannedMSG;	// Message that's printed to banned users
 vmCvar_t g_privateServer; // If disabled it doesn't check for password but instead re-uses it for ban bypass based on NO-SQL solution.
-vmCvar_t TXThandle;		// Optional so text (file) based checks (ip/guid tempban-ban) can be disabled..
+vmCvar_t g_banFile;		// Optional so text (file) based checks (ip/guid tempban-ban) can be disabled..
 vmCvar_t g_maxVotes;	// Max votes per user
 vmCvar_t g_showFlags;	// mcwf GeoIP
 vmCvar_t g_serverMessage;	// Shows a center print each time when player switches teams.
@@ -421,11 +420,10 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_showFlags, "g_showFlags", "1", 0 },
 	{ &g_gamelocked, "g_gamelocked", "0", CVAR_ROM, 0, qfalse },
 	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
-	{ &svx_serverStreaming, "svx_serverStreaming", "", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_extendedLog, "g_extendedLog", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_bannedMSG, "g_bannedMSG", "You are ^3Banned ^7from this server!", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_privateServer, "g_privateServer", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &TXThandle, "TXThandle", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_banFile, "g_banFile", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_serverMessage, "g_serverMessage", "", CVAR_ARCHIVE, 0, qfalse },
 
 	// MOTDs
