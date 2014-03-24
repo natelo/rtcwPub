@@ -3308,15 +3308,15 @@ qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps 
 // L0 - unlockWeapons
 #if defined( GAMEDLL )
 	extern vmCvar_t g_unlockWeapons;
-	int unlockWeapons = g_unlockWeapons.integer;
-	int gametype = g_gametype.integer;
+	int unlockWeapons = g_unlockWeapons.integer;	
+/*
+// Uncomment this if at any time, it becomes a client-server mod.
 #elif defined ( CGAMEDLL )
 	extern vmCvar_t cg_unlockWeapons;
-	int unlockWeapons = cg_unlockWeapons.integer;
-	int gametype = cg_gameType.integer;
+	int unlockWeapons = cg_unlockWeapons.integer;	
+/*/
 #else
-	int unlockWeapons = 0;
-	int gametype = 5;
+	int unlockWeapons = 0;	
 #endif
 // End
 
@@ -3331,20 +3331,35 @@ qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps 
 // JPW NERVE -- medics & engineers can only pick up same weapon type
 		if (item->giTag == WP_AMMO) // magic ammo for any two-handed weapon
 			return qtrue;
+
+// L0 - Allow picking up of weapons
 		if ((ps->stats[STAT_PLAYER_CLASS] == PC_MEDIC) || (ps->stats[STAT_PLAYER_CLASS] == PC_ENGINEER)) {
-			if (!COM_BitCheck( ps->weapons, item->giTag)) {
-				return qfalse;
+			if (!COM_BitCheck(ps->weapons, item->giTag)) {
+
+				if (!unlockWeapons)
+					return qfalse;
+
+				// Allow only SMG's (meds & engs) if it's 1
+				else if ((unlockWeapons == 1)
+					&& ((item->giTag != WP_MP40)
+					&& (item->giTag != WP_THOMPSON) 
+					&& (item->giTag != WP_STEN)))
+					return qfalse;
 			}
 			else {
+				// g_unlockWeapons 2 = will allow picking up all weapons
 				return qtrue;
 			}
 		}
 
-		if ( ps->stats[STAT_PLAYER_CLASS] == PC_LT ) {
-			if ( (item->giTag != WP_MP40) && (item->giTag != WP_THOMPSON) && (item->giTag != WP_STEN) ) {
-				return qfalse;
+		if (ps->stats[STAT_PLAYER_CLASS] == PC_LT) {
+			if ((item->giTag != WP_MP40) && (item->giTag != WP_THOMPSON) && (item->giTag != WP_STEN)) {
+				// g_unlockWeapons 2 = will allow picking up all weapons
+				if (unlockWeapons < 2)
+					return qfalse;
 			}
 		}
+// End
 
 // JPW NERVE wolf multiplayer: other classes can only pick up weapon if weapon's bank is empty
 #ifdef GAMEDLL
