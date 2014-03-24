@@ -33,7 +33,7 @@ int ClientNumberFromNameMatch(char *name, int *matches);
 // g_admin_cmds.c
 //
 void cmd_incognito(gentity_t *ent);
-void cmdCustom(gentity_t *ent, char *cmd);
+void cmd_custom(gentity_t *ent, char *cmd);
 void cmd_ignore(gentity_t *ent);
 void cmd_unignore(gentity_t *ent);
 void cmd_clientIgnore(gentity_t *ent);
@@ -42,5 +42,12 @@ void cmd_kick(gentity_t *ent);
 void cmd_clientkick(gentity_t *ent);
 void cmd_slap(gentity_t *ent);
 void cmd_kill(gentity_t *ent);
+void cmd_specs(gentity_t *ent);
+void cmd_axis(gentity_t *ent);
+void cmd_allied(gentity_t *ent);
+void cmd_exec(gentity_t *ent);
+void cmd_nextmap(gentity_t *ent);
+void cmd_map(gentity_t *ent);
+void cmd_vstr(gentity_t *ent);
 
 #endif // __ADMIN_H

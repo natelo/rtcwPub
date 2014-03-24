@@ -402,23 +402,25 @@ qboolean do_cmds(gentity_t *ent) {
 
 	if (!strcmp(cmd, "incognito"))			{ if (canUse(ent, qtrue)) cmd_incognito(ent); else cantUse(ent);	return qtrue; }
 	else if (!strcmp(cmd, "list_cmds"))		{ cmd_listCmds(ent);	return qtrue; }
-	else if (!strcmp(cmd, "ignore"))			{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "ignore"))		{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unignore"))		{ if (canUse(ent, qtrue)) cmd_unignore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientignore"))	{ if (canUse(ent, qtrue)) cmd_clientIgnore(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "clientunignore"))	{ if (canUse(ent, qtrue)) cmd_clientUnignore(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "clientunignore")){ if (canUse(ent, qtrue)) cmd_clientUnignore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "kick"))			{ if (canUse(ent, qtrue)) cmd_kick(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "clientkick"))		{ if (canUse(ent, qtrue)) cmd_clientkick(ent);	else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "clientkick"))	{ if (canUse(ent, qtrue)) cmd_clientkick(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "slap"))			{ if (canUse(ent, qtrue)) cmd_slap(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "kill"))			{ if (canUse(ent, qtrue)) cmd_kill(ent); else cantUse(ent); return qtrue; }
-	/*else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "unlock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "specs"))			{ if (canUse(ent, qtrue)) cmd_specs(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "axis"))			{ if (canUse(ent, qtrue)) cmd_axis(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "allies"))			{ if (canUse(ent, qtrue)) cmd_allied(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "allies"))		{ if (canUse(ent, qtrue)) cmd_allied(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "exec"))			{ if (canUse(ent, qtrue)) cmd_exec(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "nextmap"))		{ if (canUse(ent, qtrue)) cmd_nextmap(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "map"))			{ if (canUse(ent, qtrue)) cmd_map(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "cpa"))			{ if (canUse(ent, qtrue)) cmd_cpa(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "vstr"))			{ if (canUse(ent, qtrue)) cmd_vstr(ent); else cantUse(ent); return qtrue; }
+
+	/*else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "unlock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qtrue); else cantUse(ent); return qtrue; }	
+	/*else if (!strcmp(cmd, "cpa"))			{ if (canUse(ent, qtrue)) cmd_cpa(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "cp"))			    { if (canUse(ent, qtrue)) cmd_cp(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "chat"))			{ if (canUse(ent, qtrue)) cmd_chat(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "warn"))			{ if (canUse(ent, qtrue)) cmd_warn(ent); else cantUse(ent); return qtrue; }
@@ -439,7 +441,7 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "tempbanip"))		{ if (canUse(ent, qtrue)) cmd_tempBanIp(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "addip"))			{ if (canUse(ent, qtrue)) cmd_addIp(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "rename"))			{ if (canUse(ent, qtrue)) cmd_rename(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "vstr"))			{ if (canUse(ent, qtrue)) cmd_vstr(ent); else cantUse(ent); return qtrue; }
+	
 	else if (!strcmp(cmd, "renameon"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "renameoff"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "speclock"))		{ if (canUse(ent, qtrue)) cmd_specHandle(ent, qtrue); else cantUse(ent); return qtrue; }
@@ -448,7 +450,7 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "unreadyall"))		{ if (canUse(ent, qtrue)) cmd_readyHandle(ent, qtrue); else cantUse(ent); return qtrue; }
 	*/
 	// Any other command
-	else if (canUse(ent, qfalse))			{ cmdCustom(ent, cmd); return qtrue; }
+	else if (canUse(ent, qfalse))			{ cmd_custom(ent, cmd); return qtrue; }
 
 	// It failed on all checks..
 	else { CP(va("print \"Command ^1%s ^7was not found^1!\n\"", cmd)); return qfalse; }

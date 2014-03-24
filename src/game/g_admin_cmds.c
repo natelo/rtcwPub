@@ -35,7 +35,7 @@ void cmd_incognito(gentity_t *ent) {
 Deals with customm commands
 ===========
 */
-void cmdCustom(gentity_t *ent, char *cmd) {
+void cmd_custom(gentity_t *ent, char *cmd) {
 	char *tag, *log;
 
 	tag = sortTag(ent);
@@ -304,8 +304,7 @@ void cmd_slap(gentity_t *ent) {
 		return;
 	}
 
-	if ((!g_entities[clientid].client) || (level.clients[clientid].pers.connected != CON_CONNECTED))
-	{
+	if ((!g_entities[clientid].client) || (level.clients[clientid].pers.connected != CON_CONNECTED)) {
 		CP("print \"Invalid client number^1!\n\"");
 		return;
 	}
@@ -361,14 +360,12 @@ void cmd_kill(gentity_t *ent) {
 	damagetodo = 250; // Kill the player on spot
 
 
-	if ((clientid < 0) || (clientid >= MAX_CLIENTS))
-	{
+	if ((clientid < 0) || (clientid >= MAX_CLIENTS)) {
 		CP("print \"Invalid client number^1!\n\"");
 		return;
 	}
 
-	if ((!g_entities[clientid].client) || (level.clients[clientid].pers.connected != CON_CONNECTED))
-	{
+	if ((!g_entities[clientid].client) || (level.clients[clientid].pers.connected != CON_CONNECTED)) {
 		CP("print \"Invalid client number^1!\n\"");
 		return;
 	}
@@ -392,5 +389,216 @@ void cmd_kill(gentity_t *ent) {
 	log2 = va("%s user %s.", log, ent->client->pers.netname);
 	if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
 		logEntry(ADMACT, log2);
+	return;
+}
+
+/*
+===========
+Force user to spectators
+===========
+*/
+void cmd_specs(gentity_t *ent) {
+	int count = 0;
+	int i;
+	int nums[MAX_CLIENTS];
+	char *tag, *log;
+
+	tag = sortTag(ent);
+
+	count = ClientNumberFromNameMatch(ent->client->pers.cmd2, nums);
+	if (count == 0) {
+		CP("print \"Client not on server^1!\n\"");
+		return;
+	}
+	else if (count > 1) {
+		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		return;
+	}
+
+	for (i = 0; i < count; i++) {
+		if (g_entities[nums[i]].client->sess.sessionTeam == TEAM_SPECTATOR) {
+			CP(va("print \"Player %s ^7is already a spectator^1!\n\"", g_entities[nums[i]].client->pers.netname));
+			return;
+		}
+		else
+			SetTeam(&g_entities[nums[i]], "spectator", qtrue);
+		AP(va("chat \"console: %s has forced player %s ^7to ^3spectators^7!\n\"", tag, g_entities[nums[i]].client->pers.netname));
+
+		// Log it
+		log = va("Player %s (IP: %s) has forced user %s to spectators.",
+			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
+		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
+			logEntry(ADMACT, log);
+	}
+	return;
+}
+
+/*
+===========
+Force user to Axis
+===========
+*/
+void cmd_axis(gentity_t *ent) {
+	int count = 0;
+	int i;
+	int nums[MAX_CLIENTS];
+	char *tag, *log;
+
+	tag = sortTag(ent);
+
+	count = ClientNumberFromNameMatch(ent->client->pers.cmd2, nums);
+	if (count == 0) {
+		CP("print \"Client not on server^1!\n\"");
+		return;
+	}
+	else if (count > 1) {
+		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		return;
+	}
+
+	for (i = 0; i < count; i++) {
+		if (g_entities[nums[i]].client->sess.sessionTeam == TEAM_RED) {
+			CP(va("print \"Player %s ^7is already in ^1Axis ^7team!\n\"", g_entities[nums[i]].client->pers.netname));
+			return;
+		}
+		else
+			SetTeam(&g_entities[nums[i]], "red", qtrue);
+		AP(va("chat \"console: %s has forced player %s ^7to ^1Axis ^7team!\n\"", tag, g_entities[nums[i]].client->pers.netname));
+
+		// Log it
+		log = va("Player %s (IP: %s) has forced user %s into Axis team.",
+			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
+		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
+			logEntry(ADMACT, log);
+	}
+	return;
+}
+
+/*
+===========
+Force user to Allied
+===========
+*/
+void cmd_allied(gentity_t *ent) {
+	int count = 0;
+	int i;
+	int nums[MAX_CLIENTS];
+	char *tag, *log;
+
+	tag = sortTag(ent);
+
+	count = ClientNumberFromNameMatch(ent->client->pers.cmd2, nums);
+	if (count == 0) {
+		CP("print \"Client not on server^1!\n\"");
+		return;
+	}
+	else if (count > 1) {
+		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		return;
+	}
+
+	for (i = 0; i < count; i++) {
+		if (g_entities[nums[i]].client->sess.sessionTeam == TEAM_BLUE) {
+			CP(va("print \"Player %s ^7is already in ^4Allied ^7team!\n\"", g_entities[nums[i]].client->pers.netname));
+			return;
+		}
+		else
+			SetTeam(&g_entities[nums[i]], "blue", qtrue);
+		AP(va("chat \"console: %s has forced player %s ^7into ^4Allied ^7team!\n\"", tag, g_entities[nums[i]].client->pers.netname));
+
+		// Log it
+		log = va("Player %s (IP: %s) has forced user %s into Axis team.",
+			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
+		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
+			logEntry(ADMACT, log);
+	}
+	return;
+}
+
+/*
+===========
+Execute command
+===========
+*/
+void cmd_exec(gentity_t *ent) {
+	char *tag, *log;
+
+	tag = sortTag(ent);
+
+	if (!strcmp(ent->client->pers.cmd3, "@"))
+		CP(va("print \"^3Info: ^7%s has been executed^3!\n\"", ent->client->pers.cmd2));
+	else
+		AP(va("print \"console: %s has executed ^3%s ^7config^3!\n\"", tag, ent->client->pers.cmd2));
+
+	trap_SendConsoleCommand(EXEC_INSERT, va("exec \"%s\"", ent->client->pers.cmd2));
+
+	// Log it
+	log = va("Player %s (IP: %s) has executed %s config.",
+		ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
+	logEntry(ADMACT, log);
+
+	return;
+}
+
+/*
+===========
+Nextmap
+===========
+*/
+void cmd_nextmap(gentity_t *ent) {
+	char *tag, *log;
+
+	tag = sortTag(ent);
+	AP(va("chat \"console: %s has set ^3nextmap ^7in rotation^3!\n\"", tag));
+	trap_SendConsoleCommand(EXEC_APPEND, va("vstr nextmap"));
+
+	// Log it
+	log = va("Player %s (IP: %s) has set nextmap.",
+		ent->client->pers.netname, clientIP(ent, qtrue));
+	if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
+		logEntry(ADMACT, log);
+
+	return;
+}
+
+/*
+===========
+Load map
+===========
+*/
+void cmd_map(gentity_t *ent) {
+	char *tag, *log;
+
+	tag = sortTag(ent);
+	AP(va("chat \"console: %s has loaded ^3%s ^7map^3! \n\"", tag, ent->client->pers.cmd2));
+	trap_SendConsoleCommand(EXEC_APPEND, va("map %s", ent->client->pers.cmd2));
+
+	// Log it
+	log = va("Player %s (IP: %s) has loaded %s map.",
+		ent->client->pers.netname, clientIP(ent, qtrue), g_entities->client->pers.cmd2);
+	logEntry(ADMACT, log);
+
+	return;
+}
+
+/*
+===========
+Vstr
+
+Loads next map in rotation (if any)
+===========
+*/
+void cmd_vstr(gentity_t *ent) {
+	char *tag, *log;
+
+	tag = sortTag(ent);
+	AP(va("chat \"console: %s set vstr to ^3%s^7.\n\"", tag, ent->client->pers.cmd2));
+	trap_SendConsoleCommand(EXEC_APPEND, va("vstr %s", ent->client->pers.cmd2));
+
+	// Log it
+	log = va("Player %s (IP: %s) has set vstr to %s",
+		ent->client->pers.netname, clientIP(ent, qtrue), g_entities->client->pers.cmd2);
+	logEntry(ADMACT, log);
+
 	return;
 }
