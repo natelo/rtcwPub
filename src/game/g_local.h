@@ -460,7 +460,6 @@ typedef struct {
 
 //
 #define MAX_NETNAME			36
-#define	MAX_VOTE_COUNT		3
 
 #define PICKUP_ACTIVATE	0	// pickup items only when using "+activate"
 #define PICKUP_TOUCH	1	// pickup items when touched
@@ -486,7 +485,6 @@ typedef struct {
 	int			connectTime;		// DHM - Nerve :: level.time the client first connected to the server
 	playerTeamState_t teamState;	// status in teamplay games
 	int			voteCount;			// to prevent people from constantly calling votes
-	int			teamVoteCount;		// to prevent people from constantly calling votes
 
 	int			complaints;				// DHM - Nerve :: number of complaints lodged against this client
 	int			complaintClient;		// DHM - Nerve :: able to lodge complaint against this client
@@ -1200,6 +1198,7 @@ extern vmCvar_t		adm_help;
 
 // System
 extern vmCvar_t		g_extendedLog;
+extern vmCvar_t		g_maxVotes;
 
 // General
 extern vmCvar_t		g_dropReload;

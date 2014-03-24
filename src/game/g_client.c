@@ -561,9 +561,10 @@ void respawn( gentity_t *ent ) {
 
 	ent->client->ps.pm_flags &= ~PMF_LIMBO; // JPW NERVE turns off limbo
 
-	// DHM - Nerve :: Decrease the number of respawns left
-	if ( g_maxlives.integer > 0 && ent->client->ps.persistant[PERS_RESPAWNS_LEFT] > 0 )
+	// DHM - Nerve :: Decrease the number of respawns left						 // L0 - Ignore this in warmup
+	if (g_maxlives.integer > 0 && ent->client->ps.persistant[PERS_RESPAWNS_LEFT] > 0 && !level.warmupTime) {
 		ent->client->ps.persistant[PERS_RESPAWNS_LEFT]--;
+	}
 
 	G_DPrintf( "Respawning %s, %i lives left\n", ent->client->pers.netname, ent->client->ps.persistant[PERS_RESPAWNS_LEFT]);
 
@@ -1088,12 +1089,6 @@ static void ClientCleanName( const char *in, char *out, int outSize ) {
 				break;
 			}
 
-			// don't allow black in a name, period
-			if( ColorIndex(*in) == 0 ) {
-				in++;
-				continue;
-			}
-
 			// make sure room in dest for both chars
 			if( len > outSize - 2 ) {
 				break;
@@ -1595,10 +1590,8 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	// don't do the "xxx connected" messages if they were caried over from previous level
 	if ( firstTime ) {
-		// Ridah
-		if (!ent->r.svFlags & SVF_CASTAI)
-		// done.
-		trap_SendServerCommand( -1, va("print \"[lof]%s" S_COLOR_WHITE " [lon]connected\n\"", client->pers.netname) );
+		// L0 - Print always..
+		AP(va("print \"[lof]%s" S_COLOR_WHITE " [lon]connected\n\"", client->pers.netname));
 	}
 
 	// count current clients and rank for scoreboard
@@ -1693,19 +1686,6 @@ void ClientBegin( int clientNum ) {
 		AICast_ScriptEvent( AICast_GetCastState(clientNum), "spawn", "" );
 	}
 
-	if ( client->sess.sessionTeam != TEAM_SPECTATOR ) {
-		// send event
-		// DHM - Nerve :: Add back if we decide to have a spawn effect
-		//tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
-		//tent->s.clientNum = ent->s.clientNum;
-
-		if ( g_gametype.integer != GT_TOURNAMENT ) {
-			// Ridah
-			if (!ent->r.svFlags & SVF_CASTAI)
-			// done.
-			trap_SendServerCommand( -1, va("print \"[lof]%s" S_COLOR_WHITE " [lon]entered the game\n\"", client->pers.netname) );
-		}
-	}
 	G_LogPrintf( "ClientBegin: %i\n", clientNum );
 
 	// count current clients and rank for scoreboard
@@ -1798,6 +1778,8 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 	// toggle the teleport bit so the client knows to not lerp
 	flags = ent->client->ps.eFlags & EF_TELEPORT_BIT;
 	flags ^= EF_TELEPORT_BIT;
+	// L0 - Fixes vote abuse by suicide and vote override..
+	flags |= (client->ps.eFlags & EF_VOTED);
 
 	// clear everything but the persistant data
 
@@ -1821,10 +1803,6 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 	client->ps.ping = savedPing;
 	client->ps.teamNum = savedTeam;
 
-	// NERVE - SMF
-	if ( savedVoted )
-		client->ps.eFlags |= EF_VOTED;
-
 	for ( i = 0 ; i < MAX_PERSISTANT ; i++ ) {
 		client->ps.persistant[i] = persistant[i];
 	}
@@ -1840,6 +1818,11 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 	client->ps.eFlags = flags;
 	// MrE: use capsules for AI and player
 	//client->ps.eFlags |= EF_CAPSULE;
+
+	// NERVE - SMF
+	if (savedVoted) {
+		client->ps.eFlags |= EF_VOTED;
+	}
 
 	ent->s.groundEntityNum = ENTITYNUM_NONE;
 	ent->client = &level.clients[index];
@@ -2042,9 +2025,11 @@ void ClientDisconnect( int clientNum ) {
 			}
 
 			if (item) {
-				launchvel[0] = crandom()*20;
-				launchvel[1] = crandom()*20;
-				launchvel[2] = 10+random()*10;
+				// L0 - Fix for docs exploit 				
+				launchvel[0] = 0;
+				launchvel[1] = 0;
+				launchvel[2] = 0;
+				// End
 
 				flag = LaunchItem(item,ent->r.currentOrigin,launchvel,ent->s.number);
 				flag->s.modelindex2 = ent->s.otherEntityNum2;// JPW NERVE FIXME set player->otherentitynum2 with old modelindex2 from flag and restore here

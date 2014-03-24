@@ -146,6 +146,7 @@ vmCvar_t	adm_help;		// If enabled users can use !list_cmds to get list of comman
 
 // System
 vmCvar_t	g_extendedLog;	// Logs various Admin and other related actions
+vmCvar_t	g_maxVotes;		// Max votes client can call per round
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -303,6 +304,7 @@ cvarTable_t		gameCvarTable[] = {
 
 	// System
 	{ &g_extendedLog, "g_extendedLog", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_maxVotes, "g_maxVotes", "3", CVAR_ARCHIVE, 0, qfalse },
 
 	// General
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },

@@ -637,18 +637,17 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 	client->sess.spectatorState = specState;
 	client->sess.spectatorClient = specClient;
 
-	if ( team == TEAM_RED ) {
-		trap_SendServerCommand( -1, va("cp \"[lof]%s" S_COLOR_WHITE " [lon]joined the Axis team.\n\"",
-			client->pers.netname) );
-	} else if ( team == TEAM_BLUE ) {
-		trap_SendServerCommand( -1, va("cp \"[lof]%s" S_COLOR_WHITE " [lon]joined the Allied team.\n\"",
-		client->pers.netname));
-	} else if ( team == TEAM_SPECTATOR && oldTeam != TEAM_SPECTATOR ) {
-		trap_SendServerCommand( -1, va("cp \"[lof]%s" S_COLOR_WHITE " [lon]joined the spectators.\n\"",
-		client->pers.netname));
-	} else if ( team == TEAM_FREE ) {
-		trap_SendServerCommand( -1, va("cp \"[lof]%s" S_COLOR_WHITE " [lon]joined the battle.\n\"",
-		client->pers.netname));
+	if (team == TEAM_RED) { // L0 - Switching this to print as it's annoying..		
+		AP(va("print \"%s ^7joined the ^1Axis ^7team.\n\"", client->pers.netname));
+	}
+	else if (team == TEAM_BLUE) {
+		AP(va("print \"%s ^7joined the ^4Allied ^7team.\n\"", client->pers.netname));
+	}
+	else if (team == TEAM_SPECTATOR && oldTeam != TEAM_SPECTATOR) {
+		AP(va("print \"%s ^7joined the ^3Spectators^7.\n\"", client->pers.netname));
+	}
+	else if (team == TEAM_FREE) {
+		AP(va("print \"%s ^7joined the ^2Battle^7.\n\"", client->pers.netname));
 	}
 
 	// get and distribute relevent paramters
@@ -1429,7 +1428,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		trap_SendServerCommand( ent-g_entities, "print \"A vote is already in progress.\n\"" );
 		return;
 	}
-	if ( ent->client->pers.voteCount >= MAX_VOTE_COUNT ) {
+	if (ent->client->pers.voteCount >= g_maxVotes.integer) {
 		trap_SendServerCommand( ent-g_entities, "print \"You have called the maximum number of votes.\n\"" );
 		return;
 	}
@@ -1556,6 +1555,8 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	level.voteTime = level.time;
 	level.voteYes = 1;
 	level.voteNo = 0;
+	// L0 - Ehm, and where's the user vote count? Doh..
+	ent->client->pers.voteCount++; 
 
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
 		level.clients[i].ps.eFlags &= ~EF_VOTED;
