@@ -1201,6 +1201,10 @@ extern vmCvar_t	adm_help;
 // System
 extern vmCvar_t g_extendedLog;
 
+// General
+extern vmCvar_t g_dropReload;
+extern vmCvar_t g_unlockWeapons;
+
 // L0 - New Cvars end
 
 void	trap_Printf( const char *fmt );

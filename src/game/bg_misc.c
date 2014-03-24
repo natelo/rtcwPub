@@ -3305,7 +3305,20 @@ This needs to be the same for client side prediction and server use.
 qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps ) {
 	gitem_t	*item;
 	int		ammoweap,weapbank; // JPW NERVE
-
+// L0 - unlockWeapons
+#if defined( GAMEDLL )
+	extern vmCvar_t g_unlockWeapons;
+	int unlockWeapons = g_unlockWeapons.integer;
+	int gametype = g_gametype.integer;
+#elif defined ( CGAMEDLL )
+	extern vmCvar_t cg_unlockWeapons;
+	int unlockWeapons = cg_unlockWeapons.integer;
+	int gametype = cg_gameType.integer;
+#else
+	int unlockWeapons = 0;
+	int gametype = 5;
+#endif
+// End
 
 	if ( ent->modelindex < 1 || ent->modelindex >= bg_numItems ) {
 		Com_Error( ERR_DROP, "BG_CanItemBeGrabbed: index out of range" );
