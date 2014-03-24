@@ -775,6 +775,7 @@ void SetWolfData( gentity_t *ent, char *ptype, char *weap, char *grenade, char *
 void Cmd_FollowCycle_f( gentity_t *ent, int dir );
 void SanitizeString(char *in, char *out);
 int ClientNumberFromString(gentity_t *to, char *s);
+char *ConcatArgs(int start);
 
 //
 // g_items.c
@@ -993,6 +994,7 @@ void SendScoreboardMessageToAllClients( void );
 void QDECL G_Printf( const char *fmt, ... );
 void QDECL G_DPrintf( const char *fmt, ... );
 void QDECL G_Error( const char *fmt, ... );
+void CheckVote( void );
 
 //
 // g_client.c

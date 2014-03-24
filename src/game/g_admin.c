@@ -417,14 +417,11 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "nextmap"))		{ if (canUse(ent, qtrue)) cmd_nextmap(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "map"))			{ if (canUse(ent, qtrue)) cmd_map(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "vstr"))			{ if (canUse(ent, qtrue)) cmd_vstr(ent); else cantUse(ent); return qtrue; }
-
-	/*else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "unlock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qtrue); else cantUse(ent); return qtrue; }	
-	/*else if (!strcmp(cmd, "cpa"))			{ if (canUse(ent, qtrue)) cmd_cpa(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "cp"))			    { if (canUse(ent, qtrue)) cmd_cp(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "cpa"))			{ if (canUse(ent, qtrue)) cmd_cpa(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "cp"))			{ if (canUse(ent, qtrue)) cmd_cp(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "chat"))			{ if (canUse(ent, qtrue)) cmd_chat(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "warn"))			{ if (canUse(ent, qtrue)) cmd_warn(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "cancelvote"))		{ if (canUse(ent, qtrue)) cmd_cancelvote(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "cancelvote"))	{ if (canUse(ent, qtrue)) cmd_cancelvote(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "passvote"))		{ if (canUse(ent, qtrue)) cmd_passvote(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "restart"))		{ if (canUse(ent, qtrue)) cmd_restart(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "reset"))			{ if (canUse(ent, qtrue)) cmd_resetmatch(ent); else cantUse(ent); return qtrue; }
@@ -432,6 +429,10 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "shuffle"))		{ if (canUse(ent, qtrue)) cmd_shuffle(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "spec999"))		{ if (canUse(ent, qtrue)) cmd_specs999(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "whereis"))		{ if (canUse(ent, qtrue)) cmd_revealCamper(ent); else cantUse(ent); return qtrue; }
+
+	/*else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "unlock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qtrue); else cantUse(ent); return qtrue; }	
+	/*
 	else if (!strcmp(cmd, "pause"))			{ if (canUse(ent, qtrue)) cmd_pause(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unpause"))		{ if (canUse(ent, qtrue)) cmd_pause(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "banguid"))		{ if (canUse(ent, qtrue)) cmd_banGuid(ent); else cantUse(ent); return qtrue; }
@@ -440,8 +441,7 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "banip"))			{ if (canUse(ent, qtrue)) cmd_banIp(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "tempbanip"))		{ if (canUse(ent, qtrue)) cmd_tempBanIp(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "addip"))			{ if (canUse(ent, qtrue)) cmd_addIp(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "rename"))			{ if (canUse(ent, qtrue)) cmd_rename(ent); else cantUse(ent); return qtrue; }
-	
+	else if (!strcmp(cmd, "rename"))			{ if (canUse(ent, qtrue)) cmd_rename(ent); else cantUse(ent); return qtrue; }	
 	else if (!strcmp(cmd, "renameon"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "renameoff"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "speclock"))		{ if (canUse(ent, qtrue)) cmd_specHandle(ent, qtrue); else cantUse(ent); return qtrue; }

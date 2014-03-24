@@ -671,9 +671,8 @@ Team_GetLocation
 
 Report a location for the player. Uses placed nearby target_location entities
 ============
-*/
-qboolean Team_GetLocationMsg(gentity_t *ent, char *loc, int loclen)
-{
+*/																	// L0 - Print nicer for commands
+qboolean Team_GetLocationMsg(gentity_t *ent, char *loc, int loclen, qboolean sanitized) {
 	gentity_t *best;
 
 	best = Team_GetLocation( ent );
@@ -686,9 +685,19 @@ qboolean Team_GetLocationMsg(gentity_t *ent, char *loc, int loclen)
 			best->count = 0;
 		if (best->count > 7)
 			best->count = 7;
-		Com_sprintf(loc, loclen, "%c%c[lon]%s[lof]" S_COLOR_WHITE, Q_COLOR_ESCAPE, best->count + '0', best->message );
-	} else
-		Com_sprintf(loc, loclen, "[lon]%s[lof]", best->message);
+		// L0 - Do nicer prints when asked..
+		if (sanitized)
+			Com_sprintf(loc, loclen, "%c%c%s" S_COLOR_WHITE, Q_COLOR_ESCAPE, best->count + '0', best->message);
+		else
+			Com_sprintf(loc, loclen, "%c%c[lon]%s[lof]" S_COLOR_WHITE, Q_COLOR_ESCAPE, best->count + '0', best->message);
+	}
+	else {
+		// L0 - Do nicer prints when asked..
+		if (sanitized)
+			Com_sprintf(loc, loclen, "%s", best->message);
+		else
+			Com_sprintf(loc, loclen, "[lon]%s[lof]", best->message);
+	}
 
 	return qtrue;
 }

@@ -282,7 +282,6 @@ extern gentity_t * SelectCTFSpawnPoint ( team_t team , int teamstate , vec3_t or
 extern gentity_t * SelectRandomTeamSpawnPoint ( int teamstate , team_t team , int spawnObjective ) ;
 extern int FindClosestObjectiveIndex ( vec3_t source ) ;
 extern int FindFarthestObjectiveIndex ( vec3_t source ) ;
-extern qboolean Team_GetLocationMsg ( gentity_t * ent , char * loc , int loclen ) ;
 extern gentity_t * Team_GetLocation ( gentity_t * ent ) ;
 extern int Pickup_Team ( gentity_t * ent , gentity_t * other ) ;
 extern int Team_TouchEnemyFlag ( gentity_t * ent , gentity_t * other , int team ) ;

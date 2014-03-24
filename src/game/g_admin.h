@@ -50,4 +50,17 @@ void cmd_nextmap(gentity_t *ent);
 void cmd_map(gentity_t *ent);
 void cmd_vstr(gentity_t *ent);
 
+void cmd_cpa(gentity_t *ent);
+void cmd_cp(gentity_t *ent);
+void cmd_warn(gentity_t *ent);
+void cmd_chat(gentity_t *ent);
+void cmd_cancelvote(gentity_t *ent);
+void cmd_passvote(gentity_t *ent);
+void cmd_restart(gentity_t *ent);
+void cmd_resetmatch(gentity_t *ent);
+void cmd_swap(gentity_t *ent);
+void cmd_shuffle(gentity_t *ent);
+qboolean cmd_specs999(gentity_t *ent);
+void cmd_revealCamper(gentity_t *ent);
+
 #endif // __ADMIN_H
