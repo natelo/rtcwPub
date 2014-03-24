@@ -1187,14 +1187,17 @@ void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qbool
 		Prevent any vsay exploits...
 		Additionally client will get slapped..
 	*/
-	if ((mode == (SAY_TEAM || SAY_ALL)) && 
+	if ((mode == SAY_TEAM || mode == SAY_ALL) && 
 		(!Q_stricmp(id, "DynamiteDefused") 
 		|| !Q_stricmp(id, "DynamitePlanted") 
 		|| !Q_stricmp(id, "Axiswin") 
 		|| !Q_stricmp(id, "Alliedwin"))) 
 	{	
-		CP(va("cp \"^7You got slapped for your Vsay exploit attempt!\n\"2"));
-		G_Damage(ent, NULL, NULL, NULL, NULL, 20, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+		if (ent->client->sess.sessionTeam == TEAM_RED || ent->client->sess.sessionTeam == TEAM_BLUE)
+		{
+			CP(va("cp \"You got slapped for Vsay exploit attempt!\n\"2"));
+			G_Damage(ent, NULL, NULL, NULL, NULL, 20, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+		}
 		return;
 	}
 
