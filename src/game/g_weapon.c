@@ -2078,20 +2078,70 @@ LIGHTNING GUN
 
 ======================================================================
 */
+// L0 - Flamer bug fix
+void G_BurnMeGood(gentity_t *self, gentity_t *body){
+	// add the new damage
+	body->flameQuota += 5;
+	body->flameQuotaTime = level.time;
+
+	if (level.time - body->lastBurnedFrameNumber >= 1) {	//12/21/08 - Martin - This now checks to see if its not the same frame then burns
+		G_Damage(body, self->parent, self->parent, vec3_origin, self->r.currentOrigin, 4, 0, MOD_FLAMETHROWER);	// Martin 12/21/08 - Was 1 dmg, now 3 for faster cooking
+		body->lastBurnedFrameNumber = level.time;		
+	}
+	// make em burn
+	if (body->client && (body->health <= 0 || body->flameQuota > 0)) {
+		if (body->s.onFireEnd < level.time)
+			body->s.onFireStart = level.time;
+
+		body->s.onFireEnd = level.time + FIRE_FLASH_TIME;
+		body->flameBurnEnt = self->s.number;
+
+		// add to playerState for client-side effect
+		body->client->ps.onFireStart = level.time;
+	}
+}
+
+// those are used in the cg_ traces calls
+static vec3_t	flameChunkMins = { -4, -4, -4 };
+static vec3_t	flameChunkMaxs = { 4, 4, 4 };
 
 // RF, not used anymore for Flamethrower (still need it for tesla?)
-void Weapon_FlamethrowerFire( gentity_t *ent ) {
+void Weapon_FlamethrowerFire(gentity_t *ent) {
 	gentity_t	*traceEnt;
 	vec3_t		start;
+	vec3_t		trace_start;
+	vec3_t		trace_end;
+	trace_t 	trace;
 
-	VectorCopy( ent->r.currentOrigin, start );
+	VectorCopy(ent->r.currentOrigin, start);
 	start[2] += ent->client->ps.viewheight;
+	VectorCopy(start, trace_start);
 
-	VectorMA( start, -8, forward, start );
-	VectorMA( start, 10, right, start );
-	VectorMA( start, -6, up, start );
+	VectorMA(start, -8, forward, start);
+	VectorMA(start, 10, right, start);
+	VectorMA(start, -6, up, start);
 
-	traceEnt = fire_flamechunk ( ent, start, forward );
+	// prevent flame thrower cheat, run & fire while aiming at the ground, don't get hurt
+	// 72 total box height, 18 xy -> 77 trace radius (from view point towards the ground) is enough to cover the area around the feet
+	VectorMA(trace_start, 77.0, forward, trace_end);
+	trap_Trace(&trace, trace_start, flameChunkMins, flameChunkMaxs, trace_end, ent->s.number, MASK_SHOT | MASK_WATER);
+	if (trace.fraction != 1.0)
+	{
+		// additional checks to filter out false positives
+		if (trace.endpos[2] > (ent->r.currentOrigin[2] + ent->r.mins[2] - 8) && trace.endpos[2] < ent->r.currentOrigin[2])
+		{
+			// trigger in a 21 radius around origin
+			trace_start[0] -= trace.endpos[0];
+			trace_start[1] -= trace.endpos[1];
+			if (trace_start[0] * trace_start[0] + trace_start[1] * trace_start[1] < 441)
+			{
+				// set self in flames
+				G_BurnMeGood(ent, ent);
+			}
+		}
+	}
+
+	traceEnt = fire_flamechunk(ent, start, forward);
 }
 
 //======================================================================

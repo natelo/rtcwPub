@@ -178,22 +178,27 @@ void P_WorldEffects( gentity_t *ent ) {
 	// check for burning from flamethrower
 	//
 	// JPW NERVE MP way
+	// L0 - Flamer bug fix
 	if (ent->s.onFireEnd && ent->client) {
-		if (level.time - ent->client->lastBurnTime >= MIN_BURN_INTERVAL) { 
-
-			// JPW NERVE server-side incremental damage routine / player damage/health is int (not float)
-			// so I can't allocate 1.5 points per server tick, and 1 is too weak and 2 is too strong.  
-			// solution: allocate damage far less often (MIN_BURN_INTERVAL often) and do more damage.
-			// That way minimum resolution (1 point) damage changes become less critical.
-
+		//Martin 6/28/08 REDONE
+		if ((level.time - ent->client->lastBurnTime >= 1000) && (ent->health > 0)) {
 			ent->client->lastBurnTime = level.time;
 			if ((ent->s.onFireEnd > level.time) && (ent->health > 0)) {
 				gentity_t *attacker;
-   				attacker = g_entities + ent->flameBurnEnt;
-				G_Damage (ent, attacker->parent, attacker->parent, NULL, NULL, 5, DAMAGE_NO_KNOCKBACK, MOD_FLAMETHROWER); // JPW NERVE was 7
+				attacker = g_entities + ent->flameBurnEnt;
+				G_Damage(ent, attacker->parent, attacker->parent, NULL, NULL, 5, DAMAGE_NO_KNOCKBACK, MOD_FLAMETHROWER); // JPW NERVE was 7
+			}
+			// G_burnMeGood isnt called if they are dead so do the work here.
+		}
+		else if ((level.time - ent->client->lastBurnTime >= 10) && (ent->health <= 0)) {
+			ent->client->lastBurnTime = level.time;
+			if ((ent->s.onFireEnd > level.time) && (ent->health <= 0)) {
+				gentity_t *attacker;
+				attacker = g_entities + ent->flameBurnEnt;
+				G_Damage(ent, attacker->parent, attacker->parent, NULL, NULL, 5, DAMAGE_NO_KNOCKBACK, MOD_FLAMETHROWER);
 			}
 		}
-	}
+	}	// L0 - Flamer end
 	// jpw
 }
 
