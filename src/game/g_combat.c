@@ -236,6 +236,11 @@ char	*modNames[] = {
 	"MOD_ENGINEER",	// not sure if we'll use
 	"MOD_MEDIC",		// these like this or not
 // jpw
+
+// L0 - New MODs
+	"MOD_ADMKILL",
+// End
+
 	"MOD_BAT"
 };
 
@@ -297,12 +302,16 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		killer, self->s.number, meansOfDeath, killerName, 
 		self->client->pers.netname, obit );
 
-	// broadcast the death event to everyone
-	ent = G_TempEntity( self->r.currentOrigin, EV_OBITUARY );
-	ent->s.eventParm = meansOfDeath;
-	ent->s.otherEntityNum = self->s.number;
-	ent->s.otherEntityNum2 = killer;
-	ent->r.svFlags = SVF_BROADCAST;	// send to everyone
+	// L0 - (a hack) Only if it's not a custom mod
+	if (!isCustomMOD(meansOfDeath, self, attacker)) 
+	{
+		// broadcast the death event to everyone
+		ent = G_TempEntity(self->r.currentOrigin, EV_OBITUARY);
+		ent->s.eventParm = meansOfDeath;
+		ent->s.otherEntityNum = self->s.number;
+		ent->s.otherEntityNum2 = killer;
+		ent->r.svFlags = SVF_BROADCAST;	// send to everyone
+	}
 
 	self->enemy = attacker;
 

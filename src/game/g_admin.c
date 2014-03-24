@@ -406,11 +406,11 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "unignore"))		{ if (canUse(ent, qtrue)) cmd_unignore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientignore"))	{ if (canUse(ent, qtrue)) cmd_clientIgnore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientunignore"))	{ if (canUse(ent, qtrue)) cmd_clientUnignore(ent); else cantUse(ent); return qtrue; }
-	/*else if (!strcmp(cmd, "kick"))			{ if (canUse(ent, qtrue)) cmd_kick(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "kick"))			{ if (canUse(ent, qtrue)) cmd_kick(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientkick"))		{ if (canUse(ent, qtrue)) cmd_clientkick(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "slap"))			{ if (canUse(ent, qtrue)) cmd_slap(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "kill"))			{ if (canUse(ent, qtrue)) cmd_kill(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
+	/*else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unlock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "specs"))			{ if (canUse(ent, qtrue)) cmd_specs(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "axis"))			{ if (canUse(ent, qtrue)) cmd_axis(ent); else cantUse(ent); return qtrue; }

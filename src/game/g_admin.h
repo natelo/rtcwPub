@@ -38,5 +38,9 @@ void cmd_ignore(gentity_t *ent);
 void cmd_unignore(gentity_t *ent);
 void cmd_clientIgnore(gentity_t *ent);
 void cmd_clientUnignore(gentity_t *ent);
+void cmd_kick(gentity_t *ent);
+void cmd_clientkick(gentity_t *ent);
+void cmd_slap(gentity_t *ent);
+void cmd_kill(gentity_t *ent);
 
 #endif // __ADMIN_H

@@ -1478,4 +1478,9 @@ void G_StoreTrail(gentity_t *ent);
 void G_TimeShiftAllClients(int time, gentity_t *skip);
 void G_UnTimeShiftAllClients(gentity_t *skip);
 
+//
+// g_hacks.c
+//
+qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
+
 #endif // __SHARED_H
