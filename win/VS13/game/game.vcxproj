@@ -196,6 +196,7 @@ echo Done - Garbage removed.</Command>
     <ClCompile Include="..\..\..\src\game\g_client.c" />
     <ClCompile Include="..\..\..\src\game\g_cmds.c" />
     <ClCompile Include="..\..\..\src\game\g_combat.c" />
+    <ClCompile Include="..\..\..\src\game\g_files.c" />
     <ClCompile Include="..\..\..\src\game\g_items.c" />
     <ClCompile Include="..\..\..\src\game\g_main.c" />
     <ClCompile Include="..\..\..\src\game\g_mem.c" />
@@ -207,6 +208,7 @@ echo Done - Garbage removed.</Command>
     <ClCompile Include="..\..\..\src\game\g_script.c" />
     <ClCompile Include="..\..\..\src\game\g_script_actions.c" />
     <ClCompile Include="..\..\..\src\game\g_session.c" />
+    <ClCompile Include="..\..\..\src\game\g_shared.c" />
     <ClCompile Include="..\..\..\src\game\g_spawn.c" />
     <ClCompile Include="..\..\..\src\game\g_svcmds.c" />
     <ClCompile Include="..\..\..\src\game\g_syscalls.c" />
