@@ -155,6 +155,7 @@ vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
 vmCvar_t	g_unlockWeapons;	// Enable weapon dropping..
 vmCvar_t	g_tapReports;		// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
 vmCvar_t	g_gibReports;		// Prints Gib reports
+vmCvar_t	g_weaponOwnerLock;
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -315,6 +316,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_unlockWeapons, "g_unlockWeapons", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_tapReports, "g_tapReports", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_gibReports, "g_gibReports", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_weaponOwnerLock, "g_weaponOwnerLock", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },

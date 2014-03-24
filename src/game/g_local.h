@@ -1225,6 +1225,7 @@ extern vmCvar_t		g_dropReload;
 extern vmCvar_t		g_unlockWeapons;
 extern vmCvar_t		g_tapReports;
 extern vmCvar_t		g_gibReports;
+extern vmCvar_t		g_weaponOwnerLock;
 
 // L0 - New Cvars end
 

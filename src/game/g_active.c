@@ -910,6 +910,7 @@ void ClientThink_real( gentity_t *ent ) {
 								VectorCopy( tr.endpos, org );
 	
 								ent2 = LaunchItem( item, org, velocity, client->ps.clientNum );
+								ent2->s.clientNum = ent->client->ps.clientNum; // g_weaponOwnerLock
 								COM_BitClear(client->ps.weapons,weapon);
 	
 								if ( weapon == WP_MAUSER )
