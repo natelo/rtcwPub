@@ -1193,8 +1193,22 @@ void ClientThink_real( gentity_t *ent ) {
 			else if (( ucmd->upmove > 0 ) &&
 				(!(ent->client->ps.pm_flags & PMF_LIMBO)) ) { // JPW NERVE
 				// JPW NERVE
-				if (g_gametype.integer >= GT_WOLF)
+				if (g_gametype.integer >= GT_WOLF){
 					limbo(ent, qtrue);
+
+					// L0 - Tap reports
+					if (g_tapReports.integer > 1) {
+						// Axis 
+						if (ent->client->sess.sessionTeam == TEAM_RED)
+							G_TeamCommand(TEAM_RED, va("print \"%s ^7tapped out\n\"", ent->client->pers.netname));
+						// Allied
+						else if (ent->client->sess.sessionTeam == TEAM_BLUE)
+							G_TeamCommand(TEAM_BLUE, va("print \"%s ^7tapped out\n\"", ent->client->pers.netname));
+					}
+					else if (g_tapReports.integer == 1) {
+						AP(va("print \"%s ^7tapped out\n\"", ent->client->pers.netname));
+					} // End
+				}
 				else
 					respawn(ent);
 				// jpw
