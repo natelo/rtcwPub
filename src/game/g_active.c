@@ -1131,6 +1131,9 @@ void ClientThink_real( gentity_t *ent ) {
 	// NOTE: now copy the exact origin over otherwise clients can be snapped into solid
 	VectorCopy( ent->client->ps.origin, ent->r.currentOrigin );
 
+	// L0 - antilag
+	G_StoreTrail(ent);
+
 	// touch other objects
 	ClientImpacts( ent, &pm );
 

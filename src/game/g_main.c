@@ -145,8 +145,10 @@ vmCvar_t	a5_allowAll;	// Allows level 5 to execute all admin commands + any othe
 vmCvar_t	adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
 
 // System
-vmCvar_t	g_extendedLog;	// Logs various Admin and other related actions
-vmCvar_t	g_maxVotes;		// Max votes client can call per round
+vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
+vmCvar_t	g_maxVotes;			// Max votes client can call per round
+vmCvar_t	g_antilag;			// Antilag
+vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -305,6 +307,8 @@ cvarTable_t		gameCvarTable[] = {
 	// System
 	{ &g_extendedLog, "g_extendedLog", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_maxVotes, "g_maxVotes", "3", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_antilag, "g_antilag", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
+	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
 
 	// General
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -2570,7 +2574,9 @@ void G_RunFrame( int levelTime ) {
 	gentity_t	*ent;
 	int			msec;
 	int			worldspawnflags, gt;
-//int start, end;
+	
+	// L0 - Antilag
+	level.frameStartTime = trap_Milliseconds();
 
 	// if we are waiting for the level to restart, do nothing
 	if ( level.restarted ) {

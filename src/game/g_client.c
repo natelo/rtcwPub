@@ -578,6 +578,10 @@ void respawn( gentity_t *ent ) {
 	// add a teleportation effect
 	//tent = G_TempEntity( ent->client->ps.origin, EV_PLAYER_TELEPORT_IN );
 	//tent->s.clientNum = ent->s.clientNum;
+
+	// L0 - antilag
+	G_ResetTrail(ent);
+	ent->client->saved.leveltime = 0;
 }
 
 // NERVE - SMF - merge from team arena
@@ -1659,6 +1663,11 @@ void ClientBegin( int clientNum ) {
 
 	// locate ent at a spawn point
 	ClientSpawn( ent, qfalse );
+
+// L0 - antilag
+	G_ResetTrail(ent);
+	ent->client->saved.leveltime = 0;
+// End
 
 	if ( g_maxlives.integer > 0 ) {
 		ent->client->ps.persistant[PERS_RESPAWNS_LEFT] = (g_maxlives.integer - 1);

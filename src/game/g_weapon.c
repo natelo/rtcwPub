@@ -290,6 +290,10 @@ void Weapon_Syringe(gentity_t *ent) {
 
 				ClientSpawn(traceEnt, qtrue);
 
+				// L0 - antilag
+				G_ResetTrail(traceEnt);
+				traceEnt->client->saved.leveltime = 0;
+
 				memcpy(traceEnt->client->ps.ammo,ammo,sizeof(int)*MAX_WEAPONS);
 				memcpy(traceEnt->client->ps.ammoclip,ammoclip,sizeof(int)*MAX_WEAPONS);
 				memcpy(traceEnt->client->ps.weapons,weapons,sizeof(int)*(MAX_WEAPONS/(sizeof(int)*8)));
@@ -1566,6 +1570,12 @@ Bullet_Fire
 void Bullet_Fire (gentity_t *ent, float spread, int damage ) {
 	vec3_t		end;
 
+	// L0 - Antilag
+	if (g_antilag.integer && ent->client &&
+		!(ent->r.svFlags & SVF_BOT)) {
+		G_TimeShiftAllClients(ent->client->pers.cmd.serverTime, ent);
+	}
+
 	Bullet_Endpos(ent, spread, &end);
 	Bullet_Fire_Extended(ent, ent, muzzleTrace, end, spread, damage);
 }
@@ -1587,11 +1597,15 @@ void Bullet_Fire_Extended(gentity_t *source, gentity_t *attacker, vec3_t start, 
 
 	damage *= s_quadFactor;
 
-
 	// (SA) changed so player could shoot his own dynamite.
 	// (SA) whoops, but that broke bullets going through explosives...
 	trap_Trace (&tr, start, NULL, NULL, end, source->s.number, MASK_SHOT);
 //	trap_Trace (&tr, start, NULL, NULL, end, ENTITYNUM_NONE, MASK_SHOT);
+
+	// L0 - antilag
+	if (tr.surfaceFlags & SURF_NOIMPACT) {
+		goto untimeshift;
+	}
 
 	// DHM - Nerve :: only in single player
 	if ( g_gametype.integer == GT_SINGLE_PLAYER )
@@ -1742,6 +1756,13 @@ void Bullet_Fire_Extended(gentity_t *source, gentity_t *attacker, vec3_t start, 
 			}
 
 		}
+	}
+
+	// L0 - antilag
+	untimeshift:
+	if (g_antilag.integer && attacker->client &&
+		!(attacker->r.svFlags & SVF_BOT)) {
+		G_UnTimeShiftAllClients(attacker);
 	}
 }
 
@@ -1917,6 +1938,12 @@ void VenomPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 
 	oldScore = ent->client->ps.persistant[PERS_SCORE];
 
+	// L0 - Antilag
+	if (g_antilag.integer && ent->client &&
+		!(ent->r.svFlags & SVF_BOT)) {
+		G_TimeShiftAllClients(ent->client->pers.cmd.serverTime, ent);
+	}
+
 	// generate the "random" spread pattern
 	for ( i = 0 ; i < DEFAULT_VENOM_COUNT ; i++ ) {
 		r = Q_crandom( &seed ) * DEFAULT_VENOM_SPREAD;
@@ -1928,6 +1955,12 @@ void VenomPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 			hitClient = qtrue;
 			ent->client->ps.persistant[PERS_ACCURACY_HITS]++;
 		}
+	}
+
+	// L0 - Antilag
+	if (g_antilag.integer && ent->client &&
+		!(ent->r.svFlags & SVF_BOT)) {
+		G_UnTimeShiftAllClients(ent);
 	}
 }
 

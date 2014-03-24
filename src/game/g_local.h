@@ -502,6 +502,14 @@ typedef struct {
 
 } clientPersistant_t;
 
+// L0 - antilag 
+#define NUM_CLIENT_TRAILS 10
+typedef struct {
+	vec3_t    mins, maxs;
+	vec3_t    currentOrigin;
+	int       time, leveltime;
+} clientTrail_t;
+
 #define LT_SPECIAL_PICKUP_MOD	3		// JPW NERVE # of times (minus one for modulo) LT must drop ammo before scoring a point
 #define MEDIC_SPECIAL_PICKUP_MOD	4	// JPW NERVE same thing for medic
 
@@ -594,6 +602,11 @@ struct gclient_s {
 	int			lastBurnTime; // JPW NERVE last time index for flamethrower burn
 	int			PCSpecialPickedUpCount; // JPW NERVE used to count # of times somebody's picked up this LTs ammo (or medic health) (for scoring)
 	int			saved_persistant[MAX_PERSISTANT];	// DHM - Nerve :: Save ps->persistant here during Limbo
+
+	// L0 - antilag
+	int              trailHead;
+	clientTrail_t    trail[NUM_CLIENT_TRAILS];
+	clientTrail_t    saved;    // used to restore after time shift
 };
 
 
@@ -620,6 +633,7 @@ typedef struct {
 	int			framenum;
 	int			time;					// in msec
 	int			previousTime;			// so movers can back up when blocked
+	int         frameStartTime;         // L0 - antilag - actual time frame started
 
 	int			startTime;				// level.time the map was started
 
@@ -1199,6 +1213,8 @@ extern vmCvar_t		adm_help;
 // System
 extern vmCvar_t		g_extendedLog;
 extern vmCvar_t		g_maxVotes;
+extern vmCvar_t		g_antilag;
+extern vmCvar_t		g_antilagVersion;
 
 // General
 extern vmCvar_t		g_dropReload;
@@ -1452,5 +1468,12 @@ void DecolorString(char *in, char *out);
 //
 void logEntry(char *filename, char *info);
 
+//
+// g_antilag.c
+//
+void G_ResetTrail(gentity_t *ent);
+void G_StoreTrail(gentity_t *ent);
+void G_TimeShiftAllClients(int time, gentity_t *skip);
+void G_UnTimeShiftAllClients(gentity_t *skip);
 
 #endif // __SHARED_H
