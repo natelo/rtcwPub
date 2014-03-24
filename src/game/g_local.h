@@ -10,7 +10,7 @@
 
 // the "gameversion" client command will print this plus compile date
 //----(SA) Wolfenstein
-#define	GAMEVERSION	"main"
+#define	GAMEVERSION	"rtcw^1Pub ^70.1"
 // done.
 
 #define BODY_QUEUE_SIZE		8
@@ -421,6 +421,16 @@ typedef struct {
 #define	FOLLOW_ACTIVE1	-1
 #define	FOLLOW_ACTIVE2	-2
 
+// L0 - Admins
+typedef enum {
+	ADM_NONE, // Normal players	
+	ADM_1,    // Level 1 Admin
+	ADM_2,    // Level 2 Admin
+	ADM_3,    // Level 3 Admin
+	ADM_4,	  // Level 4 Admin 
+	ADM_5	  // Level 5 Admin
+} admLvls_t;
+
 // client data that stays across multiple levels or tournament restarts
 // this is achieved by writing all the data to cvar strings at game shutdown
 // time and reading them back at connection time.  Anything added here
@@ -440,6 +450,9 @@ typedef struct {
 	int			latchPlayerWeapon;	// DHM - Nerve :: for GT_WOLF not archived
 	int			latchPlayerItem;	// DHM - Nerve :: for GT_WOLF not archived
 	int			latchPlayerSkin;	// DHM - Nerve :: for GT_WOLF not archived
+
+	// L0 - New stuff
+	admLvls_t admin;	// Admins
 } clientSession_t;
 
 //
@@ -1152,6 +1165,29 @@ extern vmCvar_t		g_gamestate;
 extern vmCvar_t		g_swapteams;
 // -NERVE - SMF
 
+// L0 - New cvars
+
+// Admins
+extern vmCvar_t	a1_pass;
+extern vmCvar_t	a2_pass;
+extern vmCvar_t	a3_pass;
+extern vmCvar_t	a4_pass;
+extern vmCvar_t	a5_pass;
+extern vmCvar_t	a1_tag;
+extern vmCvar_t	a2_tag;
+extern vmCvar_t	a3_tag;
+extern vmCvar_t	a4_tag;
+extern vmCvar_t	a5_tag;
+extern vmCvar_t	a1_cmds;
+extern vmCvar_t	a2_cmds;
+extern vmCvar_t	a3_cmds;
+extern vmCvar_t	a4_cmds;
+extern vmCvar_t	a5_cmds;
+extern vmCvar_t	a5_allowAll;
+extern vmCvar_t	adm_help;
+
+// L0 - New Cvars end
+
 void	trap_Printf( const char *fmt );
 void	trap_Error( const char *fmt );
 int		trap_Milliseconds( void );
@@ -1373,3 +1409,14 @@ typedef enum
 	shard_ceramic,
 	shard_rubble
 } shards_t;
+
+/***************************
+	L0 - New stuff bellow
+***************************/
+
+// Macros
+#define AP(x)		trap_SendServerCommand(-1, x)				// Print to all
+#define CP(x)		trap_SendServerCommand(ent-g_entities, x)	// Print to an ent
+#define CPx(x, y)	trap_SendServerCommand(x, y)				// Print to id = x
+#define TP(x,y,z)	G_SayToTeam(x, y, z)						// Prints to selected team
+

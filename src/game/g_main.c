@@ -123,6 +123,28 @@ vmCvar_t		g_soldierChargeTime;
 vmCvar_t		sv_screenshake;
 // jpw
 
+// L0 - New stuff
+// Admins
+vmCvar_t a1_pass;		// Level 1 admin
+vmCvar_t a2_pass;		// Level 2 admin
+vmCvar_t a3_pass;		// Level 3 admin
+vmCvar_t a4_pass;		// Level 4 admin
+vmCvar_t a5_pass;		// Level 4 admin
+vmCvar_t a1_tag;		// Level 1 admin tag
+vmCvar_t a2_tag;		// Level 2 admin tag
+vmCvar_t a3_tag;		// Level 3 admin tag
+vmCvar_t a4_tag;		// Level 3 admin tag
+vmCvar_t a5_tag;		// Level 5 admin tag
+vmCvar_t a1_cmds;		// Level 1 admin commands
+vmCvar_t a2_cmds;		// Level 2 admin commands
+vmCvar_t a3_cmds;		// Level 3 admin commands
+vmCvar_t a4_cmds;		// Level 4 admin commands
+vmCvar_t a5_cmds;		// Level 5 admin commands
+vmCvar_t a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
+						// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
+vmCvar_t adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
+// End
+
 cvarTable_t		gameCvarTable[] = {
 	// don't override the cheat state set by the system
 	{ &g_cheats, "sv_cheats", "", 0, qfalse },
@@ -235,6 +257,28 @@ cvarTable_t		gameCvarTable[] = {
 	{&g_mg42arc, "g_mg42arc", "0", CVAR_TEMP, 0, qfalse},
 
 	{&g_footstepAudibleRange, "g_footstepAudibleRange", "256", CVAR_CHEAT, 0, qfalse},
+
+// L0 - New cvars
+	// Admins	
+	{ &a1_pass, "a1_pass", "none", CVAR_ARCHIVE, 0, qfalse },
+	{ &a2_pass, "a2_pass", "none", CVAR_ARCHIVE, 0, qfalse },
+	{ &a3_pass, "a3_pass", "none", CVAR_ARCHIVE, 0, qfalse },
+	{ &a4_pass, "a4_pass", "none", CVAR_ARCHIVE, 0, qfalse },
+	{ &a5_pass, "a5_pass", "none", CVAR_ARCHIVE, 0, qfalse },
+	{ &a1_tag, "a1_tag", "^1Referee", CVAR_ARCHIVE, 0, qfalse },
+	{ &a2_tag, "a2_tag", "^jMember", CVAR_ARCHIVE, 0, qfalse },
+	{ &a3_tag, "a3_tag", "^2Adm!n", CVAR_ARCHIVE, 0, qfalse },
+	{ &a4_tag, "a4_tag", "^3Adm!n", CVAR_ARCHIVE, 0, qfalse },
+	{ &a5_tag, "a5_tag", "^dAdm!n", CVAR_ARCHIVE, 0, qfalse },
+	{ &a1_cmds, "a1_cmds", "", CVAR_ARCHIVE, 0, qfalse },
+	{ &a2_cmds, "a2_cmds", "", CVAR_ARCHIVE, 0, qfalse },
+	{ &a3_cmds, "a3_cmds", "", CVAR_ARCHIVE, 0, qfalse },
+	{ &a4_cmds, "a4_cmds", "", CVAR_ARCHIVE, 0, qfalse },
+	{ &a5_cmds, "a5_cmds", "", CVAR_ARCHIVE, 0, qfalse },
+	{ &a5_allowAll, "a5_allowAll", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &adm_help, "adm_help", "1", CVAR_ARCHIVE, 0, qfalse },
+
+// End
 
 	{&g_scriptName, "g_scriptName", "", CVAR_ROM, 0, qfalse},
 	{&ai_scriptName, "ai_scriptName", "", CVAR_ROM, 0, qfalse}

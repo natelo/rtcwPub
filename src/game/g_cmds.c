@@ -854,6 +854,24 @@ void Cmd_FollowCycle_f( gentity_t *ent, int dir ) {
 	// leave it where it was
 }
 
+/*
+==================
+L0 - G_SayToTeam
+
+Prints to selected team only.
+==================
+*/
+void G_SayToTeam(int team, char *type, char *msg) {
+	int j;
+	gentity_t   *other;
+
+	for (j = 0; j < level.maxclients; j++) {
+		other = &g_entities[j];
+
+		if (other->client->sess.sessionTeam == team)
+			trap_SendServerCommand(other - g_entities, va("%s \"%s\n\"", type, msg));
+	}
+}
 
 /*
 ==================

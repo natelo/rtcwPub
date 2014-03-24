@@ -22,7 +22,7 @@ void G_WriteClientSessionData( gclient_t *client ) {
 	const char	*s;
 	const char	*var;
 
-	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",		// DHM - Nerve
+	s = va("%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",		// DHM - Nerve
 		client->sess.sessionTeam,
 		client->sess.spectatorTime,
 		client->sess.spectatorState,
@@ -37,7 +37,9 @@ void G_WriteClientSessionData( gclient_t *client ) {
 		client->sess.latchPlayerType,		// DHM - Nerve
 		client->sess.latchPlayerWeapon,		// DHM - Nerve
 		client->sess.latchPlayerItem,		// DHM - Nerve
-		client->sess.latchPlayerSkin		// DHM - Nerve
+		client->sess.latchPlayerSkin,		// DHM - Nerve
+		// L0 - New stuff
+		client->sess.admin					// User is Admin
 		);
 
 	var = va( "session%i", client - level.clients );
@@ -60,7 +62,7 @@ void G_ReadSessionData( gclient_t *client ) {
 	var = va( "session%i", client - level.clients );
 	trap_Cvar_VariableStringBuffer( var, s, sizeof(s) );
 
-	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",		// DHM - Nerve
+	sscanf( s, "%i %i %i %i %i %i %i %i %i %i %i %i %i %i %i %i",		// DHM - Nerve
 		(int *)&client->sess.sessionTeam,
 		&client->sess.spectatorTime,
 		(int *)&client->sess.spectatorState,
@@ -75,7 +77,9 @@ void G_ReadSessionData( gclient_t *client ) {
 		&client->sess.latchPlayerType,		// DHM - Nerve
 		&client->sess.latchPlayerWeapon,	// DHM - Nerve
 		&client->sess.latchPlayerItem,		// DHM - Nerve
-		&client->sess.latchPlayerSkin		// DHM - Nerve
+		&client->sess.latchPlayerSkin,		// DHM - Nerve
+		// L0 - New stuff
+		(int *)&client->sess.admin
 		);
 
 	// NERVE - SMF
@@ -163,6 +167,10 @@ void G_InitSessionData( gclient_t *client, char *userinfo ) {
 
 	sess->spawnObjectiveIndex = 0;
 	// dhm - end
+
+	// L0 - New stuff
+	sess->admin = ADM_NONE;
+	// End
 
 	G_WriteClientSessionData( client );
 }
