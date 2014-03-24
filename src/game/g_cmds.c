@@ -961,7 +961,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 			Q_strncpyz(ent->client->pers.cmd2, cmd2, sizeof(ent->client->pers.cmd2));
 			Q_strncpyz(ent->client->pers.cmd3, cmd3, sizeof(ent->client->pers.cmd3));
 
-			cmds_admin((char *)text[0], ent);
+			cmds_admin(text[0] == '?' ? "?" : "!", ent);
 			return;
 		}
 	}
@@ -2456,6 +2456,25 @@ void ClientCommand( int clientNum ) {
 		Cmd_Team_f (ent);
 		return;
 	}
+
+// L0 - Hook our commands above intermission
+	if (Q_stricmp(cmd, "login") == 0) {
+		cmd_do_login(ent, qfalse);
+		return;
+	}
+	if (Q_stricmp(cmd, "@login") == 0) {
+		cmd_do_login(ent, qtrue);
+		return;
+	}
+	if (Q_stricmp(cmd, "logout") == 0) {
+		cmd_do_logout(ent);
+		return;
+	}
+	if (Q_stricmp(cmd, "incognito") == 0) {
+		cmd_incognito(ent);
+		return;
+	}
+// End
 
 	// ignore all other commands when at intermission
 	if (level.intermissiontime) {

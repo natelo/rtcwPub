@@ -25,10 +25,13 @@ Created: 24. Mar / 2014
 char *sortTag(gentity_t *ent);
 void ParseAdmStr(const char *strInput, char *strCmd, char *strArgs);
 qboolean cmds_admin(char cmd[MAX_TOKEN_CHARS], gentity_t *ent);
+void cmd_do_login(gentity_t *ent, qboolean silent);
+void cmd_do_logout(gentity_t *ent);
 
 //
 // g_admin_cmds.c
 //
 void cmd_incognito(gentity_t *ent);
+void cmdCustom(gentity_t *ent, char *cmd);
 
 #endif // __ADMIN_H
