@@ -124,7 +124,7 @@ vmCvar_t		sv_screenshake;
 // jpw
 
 // L0 - New stuff
-//-------Admins-------
+// Admins
 vmCvar_t a1_pass;		// Level 1 admin
 vmCvar_t a2_pass;		// Level 2 admin
 vmCvar_t a3_pass;		// Level 3 admin
@@ -143,129 +143,6 @@ vmCvar_t a5_cmds;		// Level 5 admin commands
 vmCvar_t a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
 						// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
 vmCvar_t adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
-//-------Server Stuff-------
-vmCvar_t g_gamelocked;	// Controls if Admin locked the game so players can't join
-vmCvar_t sv_hostname;	// So it's more accesible
-vmCvar_t g_extendedLog;	// Logs various admin actions in a seperate logs
-vmCvar_t g_bannedMSG;	// Message that's printed to banned users
-vmCvar_t g_privateServer; // If disabled it doesn't check for password but instead re-uses it for ban bypass based on NO-SQL solution.
-vmCvar_t g_banFile;		// Optional so text (file) based checks (ip/guid tempban-ban) can be disabled..
-vmCvar_t g_maxVotes;	// Max votes per user
-vmCvar_t g_showFlags;	// mcwf GeoIP
-vmCvar_t g_serverMessage;	// Shows a center print each time when player switches teams.
-//-------MOTD's-------
-vmCvar_t g_showMOTD;		// Enable MOTD's (message of the day)
-vmCvar_t motdNum;			// To track motds..
-vmCvar_t g_motd1;			// MESSAGE 1
-vmCvar_t g_motd2;			// MESSAGE 2
-vmCvar_t g_motd3;			// MESSAGE 3
-vmCvar_t g_motd4;			// MESSAGE 4
-vmCvar_t g_motd5;			// MESSAGE 5
-vmCvar_t g_motd6;			// MESSAGE 6
-vmCvar_t g_motd7;			// MESSAGE 7
-vmCvar_t g_motd8;			// MESSAGE 8
-vmCvar_t g_motd9;			// MESSAGE 9
-vmCvar_t g_motd10;			// MESSAGE 10
-vmCvar_t g_motd11;			// MESSAGE 11
-vmCvar_t g_motd12;			// MESSAGE 12
-vmCvar_t g_motdTime;		// Time between each message
-//-------SAB-------
-vmCvar_t sab_system;		// Controls all sab_ settings (NOTE: To disable any sab_ setting set -1 ->
-// with exception for low score kick..0 = off rest will be transformed in negative value..)
-vmCvar_t sab_maxTeamKills;	// Max team kills before client gets kicked
-vmCvar_t sab_maxTeamBleed;	// Max bleed points before client gets kicked (NOTE: one hit = 1 point)
-vmCvar_t sab_minLowScore;	// Min low score before client gets kicked
-vmCvar_t sab_MaxPingFlux;	// Max ping limit client can hit
-vmCvar_t sab_maxPingHits;	// How many times can hit it before client gets kicked ->
-// (1hit = each time it's hitted otherwise counts as 1 per second if constantly above)
-vmCvar_t sab_censorPenalty;	// 1 = Auto ignore client after 3 strikes, 2 = kick client after 3 strikes.
-vmCvar_t sab_autoIgnore;	// If enabled it will auto ignore player (for a round) after 3 spam warnings.
-//-------General-------
-vmCvar_t g_ignoreSpecs;	// Ignores spectators - Admins can still bypass the ignore..
-vmCvar_t g_allowVote;	// Replaced voteFlags as i hate it and see it to complicated for new users..
-vmCvar_t g_disallowedVotes; // Disalloved votes separeted by space..
-vmCvar_t g_headshotsOnly;	// Enables headshots only mode
-vmCvar_t g_fixedphysics;	// So it's fair for all..
-vmCvar_t g_drawHitboxes;	// So I can adjust them a little..
-vmCvar_t g_allowPMs;		// Allow private messages
-vmCvar_t g_autoSwap;		// Auto swaps teams 
-vmCvar_t g_autoSwapRounds;	// How many rounds until it auto swaps
-vmCvar_t g_swapCounter;		// Count times so it auto swaps once it reaches it..
-
-vmCvar_t g_mapConfigs;		// Essentials for custom map configs...
-vmCvar_t g_censorWords;		// Censored words
-vmCvar_t g_disallowedNames;	// Disallowed names
-vmCvar_t g_noHardcodedCensor;	// Don't use hardcoded censor..
-vmCvar_t g_shortcuts;		// Enable shortcuts
-vmCvar_t g_fairGame;		// Limits some exploits that are generally used like fast drop-pickup weapon that's common on DM
-vmCvar_t g_lifeStats;		// If enabled it prints killer health
-vmCvar_t g_dragBodies;		// If enabled player can drag bodies using salute or activate command
-//-------Game Specific-------
-vmCvar_t g_gamemode;	// Sorts game mode for gametypes
-vmCvar_t g_dropReload;	// For any 1.0 DM players..
-vmCvar_t g_hitsounds;		// Hitsounds - client can disable them localy if they're on.
-vmCvar_t g_unlockWeapons; // Gives ability to drop weapon to all classes..
-vmCvar_t g_axisSpawnProtectionTime;		// How long Axis player is invulrable when (s)he spawns.
-vmCvar_t g_alliedSpawnProtectionTime;	// How long Allied player is invulrable when (s)he spawns.
-vmCvar_t g_warmupDamage;	// Allows damage in warmup
-vmCvar_t g_inactivityToSpecs;	// Puts inactive players in spectators instead of dropping them.
-vmCvar_t g_flagRetake;	// How many times flag can be retaken
-vmCvar_t g_disableInv;	// Disables (re)spawn/revive protection crap when one starts to shot..
-vmCvar_t g_throwKnives;	// 0 = disabled, anything else is the value of knives player gets, alt -1 = unlimited.
-vmCvar_t g_dropHealth;	// The number od medpacks medic will drop when going to limbo
-vmCvar_t g_dropNades;	// The number of grenades eng will drop when going to limbo
-vmCvar_t g_dropAmmo;	// The number of ammo packs leut drops when going to limbo
-vmCvar_t g_customMGs;	// Allow custom mg's so player can chose with what weapon to spawn with.
-vmCvar_t g_smokeGrenades;	// Smoke grenades for leut
-vmCvar_t g_poison;		// Enable/Disable poison
-vmCvar_t g_shove;		// Enables or disables shove..(pushing of players..).
-vmCvar_t g_pauseLimit;	// How many pauses per team
-vmCvar_t g_duelAutoPause; // If enabled, it auto pauses when in duel mode with uneven teams.
-vmCvar_t g_staminaBoost;// If enabled it recharges stamina faster when player is crouching..
-vmCvar_t g_bunnyJump;	// Enable bunny jumps...
-vmCvar_t g_gibReports;	// Show gib print
-vmCvar_t g_tapReports;	// Show tap print when player taps out - 0 = off, 1 = shows to all, 2 = shows to team only
-vmCvar_t g_easyASBlock; // If enabled it prints when AirStrike is blocked
-vmCvar_t g_teamAutoBalance;	// If enabled it will auto sort teams when there's more then 1 player more in any team
-vmCvar_t g_needBalance;	// Flag for auto balance check
-vmCvar_t g_chicken;		// Check if player is 'laming' out of combat with self kill..
-//-------Match specific-------
-vmCvar_t team_commands; // Team commands (captain..)
-vmCvar_t g_tournament;	// Ready-unready system
-//-------Sniper mode-------
-vmCvar_t sm_fraglimit;	// How many frags to win the match..
-vmCvar_t sm_scriptExt;	// Script extension so one can load with obj, cp etc..
-//-------Gold rush mode-------
-vmCvar_t gr_scriptExt;	// Script extension so one can load with obj, cp etc..
-//-------DM-------
-vmCvar_t dm_scriptExt;	// Script extension so one can load with obj, cp etc..
-//-------Weapons-------
-vmCvar_t g_ltNades;			// Number of nades a lt starts with 
-vmCvar_t g_medicNades;		// Number of nades a med starts with 
-vmCvar_t g_soldNades;		// Number of nades sold starts with
-vmCvar_t g_engNades;		// Number of nades eng starts with
-vmCvar_t g_medicClips;		// Number of clips in weapon med starts with 
-vmCvar_t g_engineerClips;	// Number of clips in weapon eng starts with
-vmCvar_t g_soldierClips;	// Number of clips in weapon sold starts with
-vmCvar_t g_leutClips;		// Number of clips in weapon leut starts with
-vmCvar_t g_pistolClips;		// How many clips pistol gets
-vmCvar_t g_maxTeamPF;		// Max Pf's per team
-vmCvar_t g_maxTeamSniper;	// Max snipers per team
-vmCvar_t g_maxTeamVenom;	// Max venoms per team
-vmCvar_t g_maxTeamFlamer;	// Max flamers per team
-vmCvar_t g_balancePF;		// Some basic weapon balancing
-vmCvar_t g_balanceSniper;	// Some basic weapon balancing
-vmCvar_t g_balanceVenom;	// Some basic weapon balancing
-vmCvar_t g_balanceFlamer;	// Some basic weapon balancing
-vmCvar_t g_balanceFlagRetake; // Checks if flag can be taken..it always allows team with less to claim it last and then locks till even.
-//-------Eye Candy-------
-vmCvar_t g_doubleKills;		// Double, tripple & quad kills
-vmCvar_t g_killingSprees;	// Killing sprees for each 5/10 kill..
-vmCvar_t g_deathSprees;		// Death spress
-vmCvar_t g_killerSpree;		// Killer sprees - per life.
-vmCvar_t g_showFirstHeadshot;	// Show who done it
-vmCvar_t g_showFirstBlood;		// Show who done it
-// End
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -396,7 +273,7 @@ cvarTable_t		gameCvarTable[] = {
 	{&g_footstepAudibleRange, "g_footstepAudibleRange", "256", CVAR_CHEAT, 0, qfalse},
 
 // L0 - New cvars
-// Admins	
+	// Admins	
 	{ &a1_pass, "a1_pass", "none", CVAR_ARCHIVE, 0, qfalse },
 	{ &a2_pass, "a2_pass", "none", CVAR_ARCHIVE, 0, qfalse },
 	{ &a3_pass, "a3_pass", "none", CVAR_ARCHIVE, 0, qfalse },
@@ -414,134 +291,6 @@ cvarTable_t		gameCvarTable[] = {
 	{ &a5_cmds, "a5_cmds", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &a5_allowAll, "a5_allowAll", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &adm_help, "adm_help", "1", CVAR_ARCHIVE, 0, qfalse },
-
-	// Server stuff
-	{ &g_maxVotes, "g_maxVotes", "2", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_showFlags, "g_showFlags", "1", 0 },
-	{ &g_gamelocked, "g_gamelocked", "0", CVAR_ROM, 0, qfalse },
-	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
-	{ &g_extendedLog, "g_extendedLog", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_bannedMSG, "g_bannedMSG", "You are ^3Banned ^7from this server!", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_privateServer, "g_privateServer", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_banFile, "g_banFile", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_serverMessage, "g_serverMessage", "", CVAR_ARCHIVE, 0, qfalse },
-
-	// MOTDs
-	{ &g_showMOTD, "g_showMOTD", "0", 0, 0, qfalse },
-	{ &g_motd1, "g_motd1", "", 0, 0, qfalse },
-	{ &g_motd2, "g_motd2", "", 0, 0, qfalse },
-	{ &g_motd3, "g_motd3", "", 0, 0, qfalse },
-	{ &g_motd4, "g_motd4", "", 0, 0, qfalse },
-	{ &g_motd5, "g_motd5", "", 0, 0, qfalse },
-	{ &g_motd6, "g_motd6", "", 0, 0, qfalse },
-	{ &g_motd7, "g_motd7", "", 0, 0, qfalse },
-	{ &g_motd8, "g_motd8", "", 0, 0, qfalse },
-	{ &g_motd9, "g_motd9", "", 0, 0, qfalse },
-	{ &g_motd10, "g_motd10", "", 0, 0, qfalse },
-	{ &g_motd11, "g_motd11", "", 0, 0, qfalse },
-	{ &g_motd12, "g_motd12", "", 0, 0, qfalse },
-	{ &g_motdTime, "g_motdTime", "80", 0, 0, qtrue },
-	{ &motdNum, "motdNum", "1", 0, 0, qfalse },
-
-	// SAB (Server Admin Bot)
-	{ &sab_system, "sab_system", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &sab_maxTeamKills, "sab_maxTeamKills", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &sab_maxTeamBleed, "sab_maxTeamBleed", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &sab_minLowScore, "sab_minLowScore", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &sab_MaxPingFlux, "sab_MaxPingFlux", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &sab_maxPingHits, "sab_maxPingHits", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &sab_censorPenalty, "sab_censorPenalty", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &sab_autoIgnore, "sab_autoIgnore", "0", CVAR_ARCHIVE, 0, qfalse },
-
-	// Game specific
-	{ &g_gamemode, "g_gamemode", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_hitsounds, "g_hitsounds", "0", 0 },
-	{ &g_dropReload, "g_dropReload", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_unlockWeapons, "g_unlockWeapons", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_disableInv, "g_disableInv", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_inactivityToSpecs, "g_inactivityToSpecs", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_ignoreSpecs, "g_ignoreSpecs", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_flagRetake, "g_flagRetake", "-1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_allowVote, "g_allowVote", "1", 0, 0, qfalse },
-	{ &g_disallowedVotes, "g_disallowedVotes", "", CVAR_ARCHIVE, qfalse },
-	{ &g_headshotsOnly, "g_headshotsOnly", "0", 0 },
-	{ &g_fixedphysics, "g_fixedphysics", "1", CVAR_ARCHIVE | CVAR_SERVERINFO },
-#if _DEBUG
-	{ &g_drawHitboxes, "g_drawHitboxes", "0", CVAR_ARCHIVE },
-#else
-	{ &g_drawHitboxes, "g_drawHitboxes", "0", CVAR_CHEAT },
-#endif
-	{ &g_allowPMs, "g_allowPMs", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_warmupDamage, "g_warmupDamage", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_autoSwap, "g_autoSwap", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_autoSwapRounds, "g_autoSwapRounds", "1", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
-	{ &g_axisSpawnProtectionTime, "g_axisSpawnProtectionTime", "3000", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_alliedSpawnProtectionTime, "g_alliedSpawnProtectionTime", "3000", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_mapConfigs, "g_mapConfigs", "0", CVAR_LATCH, 0, qfalse },
-	{ &g_censorWords, "g_censorWords", "fuuck", 0 },
-	{ &g_disallowedNames, "g_disallowedNames", "nazi, admin, console", 0 },
-	{ &g_noHardcodedCensor, "g_noHardcodedCensor", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_shortcuts, "g_shortcuts", "0", 0 },
-	{ &g_fairGame, "g_fairGame", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_lifeStats, "g_lifeStats", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_dragBodies, "g_dragBodies", "0", CVAR_ARCHIVE, 0, qfalse },
-
-	// Weapon/class related
-	{ &g_ltNades, "g_ltNades", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_medicNades, "g_medicNades", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_engNades, "g_engNades", "4", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_soldNades, "g_soldNades", "8", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_medicClips, "g_medicClips", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_engineerClips, "g_engineerClips", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_soldierClips, "g_soldierClips", "2", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_leutClips, "g_leutClips", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_pistolClips, "g_pistolClips", "8", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_maxTeamPF, "g_maxTeamPF", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_maxTeamSniper, "g_maxTeamSniper", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_maxTeamVenom, "g_maxTeamVenom", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_maxTeamFlamer, "g_maxTeamFlamer", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_balancePF, "g_balancePF", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_balanceSniper, "g_balanceSniper", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_balanceVenom, "g_balanceVenom", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_balanceFlamer, "g_balanceFlamer", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_balanceFlagRetake, "g_balanceFlagRetake", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_throwKnives, "g_throwKnives", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_dropNades, "g_dropNades", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_dropAmmo, "g_dropAmmo", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-	{ &g_customMGs, "g_customMGs", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_smokeGrenades, "g_smokeGrenades", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_poison, "g_poison", "0", CVAR_ARCHIVE, 0, qfalse },
-
-	// Misc (unsorted atm)
-	{ &g_shove, "g_shove", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_duelAutoPause, "g_duelAutoPause", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_staminaBoost, "g_staminaBoost", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_bunnyJump, "g_bunnyJump", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_gibReports, "g_gibReports", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_tapReports, "g_tapReports", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_easyASBlock, "g_easyASBlock", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_teamAutoBalance, "g_teamAutoBalance", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_needBalance, "g_needBalance", "0", CVAR_CHEAT, qfalse },
-	{ &g_chicken, "g_chicken", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &team_commands, "team_commands", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_tournament, "g_tournament", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
-
-	// Gametypes
-	{ &sm_fraglimit, "sm_fraglimit", "50", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &sm_scriptExt, "sm_scriptExt", "_sm", CVAR_ARCHIVE, 0, qfalse },
-	{ &gr_scriptExt, "gr_scriptExt", "_gr", CVAR_ARCHIVE, 0, qfalse },
-	{ &dm_scriptExt, "dm_scriptExt", "_dm", CVAR_ARCHIVE, 0, qfalse },
-
-	// Eye candy
-	{ &g_doubleKills, "g_doubleKills", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_killingSprees, "g_killingSprees", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_deathSprees, "g_deathSprees", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_killerSpree, "g_killerSpree", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_showFirstHeadshot, "g_showFirstHeadshot", "0", CVAR_ARCHIVE | CVAR_LATCH, qfalse },
-	{ &g_showFirstBlood, "g_showFirstBlood", "1", CVAR_ARCHIVE | CVAR_LATCH, qfalse },
-	// L0 - wolfX stuff ends here..
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },

@@ -872,12 +872,10 @@ void ClientThink_real( gentity_t *ent ) {
 		if (ucmd->wbuttons & WBUTTON_DROP) {
 			if (!client->dropWeaponTime) {
 				client->dropWeaponTime = 1; // just latch it for now
-				// L0 - Patched it for g_unlockWeapons..
-				if ((client->ps.stats[STAT_PLAYER_CLASS] == PC_SOLDIER) || (client->ps.stats[STAT_PLAYER_CLASS] == PC_LT) ||
-					(g_unlockWeapons.integer && client->ps.stats[STAT_PLAYER_CLASS] == PC_MEDIC) ||
-					(g_unlockWeapons.integer && client->ps.stats[STAT_PLAYER_CLASS] == PC_ENGINEER)) {
+				if ((client->ps.stats[STAT_PLAYER_CLASS] == PC_SOLDIER) || (client->ps.stats[STAT_PLAYER_CLASS] == PC_LT))
 					for (i=0;i<MAX_WEAPS_IN_BANK_MP;i++) {
 						weapon = weapBanksMultiPlayer[3][i];
+//						if ((weapon != WP_FLAMETHROWER) && (weapon != WP_VENOM)) // JPW NERVE pulled per id request
 							if (COM_BitCheck(client->ps.weapons,weapon)) {
 		
 								item = BG_FindItemForWeapon(weapon);
@@ -1193,22 +1191,8 @@ void ClientThink_real( gentity_t *ent ) {
 			else if (( ucmd->upmove > 0 ) &&
 				(!(ent->client->ps.pm_flags & PMF_LIMBO)) ) { // JPW NERVE
 				// JPW NERVE
-				if (g_gametype.integer >= GT_WOLF){
+				if (g_gametype.integer >= GT_WOLF)
 					limbo(ent, qtrue);
-
-					// L0 - Tap reports
-					if (g_tapReports.integer > 1) {
-						// Axis 
-						if (ent->client->sess.sessionTeam == TEAM_RED)
-							G_TeamCommand(TEAM_RED, va("print \"%s ^7tapped out\n\"", ent->client->pers.netname));
-						// Allied
-						else if (ent->client->sess.sessionTeam == TEAM_BLUE)
-							G_TeamCommand(TEAM_BLUE, va("print \"%s ^7tapped out\n\"", ent->client->pers.netname));
-					}
-					else if (g_tapReports.integer == 1) {
-						AP(va("print \"%s ^7tapped out\n\"", ent->client->pers.netname));
-					} // End
-				}
 				else
 					respawn(ent);
 				// jpw
