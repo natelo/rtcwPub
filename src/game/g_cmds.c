@@ -493,7 +493,7 @@ void Cmd_Kill_f( gentity_t *ent ) {
 SetTeam
 =================
 */
-void SetTeam( gentity_t *ent, char *s ) {
+void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 	int					team, oldTeam;
 	gclient_t			*client;
 	int					clientNum;
@@ -591,6 +591,14 @@ void SetTeam( gentity_t *ent, char *s ) {
 		trap_SendServerCommand( clientNum, 
 			"cp \"You can't switch teams because you are out of lives.\n\" 3" );
 		return;	// ignore the request
+	}
+
+	// L0 - in warmup wait 2 sec before you allow team switch to fix the team switch nuke
+	// After warmup we have teamswitch cvar that will handle it..
+	if (g_gametype.integer >= GT_WOLF && team != oldTeam && !level.warmupTime == 0 && (level.time - client->pers.enterTime) < 2000 && !forced) {
+		trap_SendServerCommand(clientNum,
+			"cp \"Wait ^32 ^7sec before team switch^3!\n\" 3");
+		return;
 	}
 
 	// DHM - Nerve :: Force players to wait 30 seconds before they can join a new team.
@@ -734,7 +742,7 @@ void Cmd_Team_f( gentity_t *ent ) {
 
 	trap_Argv( 1, s, sizeof( s ) );
 
-	SetTeam( ent, s );
+	SetTeam( ent, s, qfalse );
 }
 
 /*
@@ -781,7 +789,7 @@ void Cmd_Follow_f( gentity_t *ent ) {
 
 	// first set them to spectator
 	if ( ent->client->sess.sessionTeam != TEAM_SPECTATOR ) {
-		SetTeam( ent, "spectator" );
+		SetTeam( ent, "spectator", qfalse );
 	}
 
 	ent->client->sess.spectatorState = SPECTATOR_FOLLOW;
@@ -803,7 +811,7 @@ void Cmd_FollowCycle_f( gentity_t *ent, int dir ) {
 	}
 	// first set them to spectator
 	if (( ent->client->sess.spectatorState == SPECTATOR_NOT ) && (!( ent->client->ps.pm_flags & PMF_LIMBO)) ) { // JPW NERVE for limbo state
-		SetTeam( ent, "spectator" );
+		SetTeam( ent, "spectator", qfalse );
 	}
 
 	if ( dir != 1 && dir != -1 ) {
@@ -934,6 +942,14 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	char		text[MAX_SAY_TEXT];
 	char		location[64];
 	qboolean	localize = qfalse;
+
+	//L0 - Nuke
+	if (strlen(chatText) >= 700) {
+		trap_SendServerCommand(-1, va("chat \"console: %s ^7kicked: ^3Nuking^7.\n\"", ent->client->pers.netname));
+		G_LogPrintf("NUKING: %s\n", ent->client->pers.netname);
+		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking 1");
+		return;
+	}
 
 	if ( g_gametype.integer < GT_TEAM && mode == SAY_TEAM ) {
 		mode = SAY_ALL;
@@ -1069,6 +1085,15 @@ static void G_VoiceTo( gentity_t *ent, gentity_t *other, int mode, const char *i
 	if ( mode == SAY_TEAM && !OnSameTeam(ent, other) ) {
 		return;
 	}
+
+	//L0 - Nuke
+	if (strlen(id) >= 700) {
+		trap_SendServerCommand(-1, va("chat \"console: %s ^7kicked: ^3Nuking^7.\n\"", ent->client->pers.netname));
+		G_LogPrintf("NUKING: %s\n", ent->client->pers.netname);
+		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking 1");
+		return;
+	}
+
 	// no chatting to players in tournements
 	if ( (g_gametype.integer == GT_TOURNAMENT )) {
 		return;
@@ -1116,6 +1141,23 @@ void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qbool
 	else
 		return;
 	// dhm
+
+	/*
+		// L0 
+
+		Prevent any vsay exploits...
+		Additionally client will get slapped..
+	*/
+	if ((mode == (SAY_TEAM || SAY_ALL)) && 
+		(!Q_stricmp(id, "DynamiteDefused") 
+		|| !Q_stricmp(id, "DynamitePlanted") 
+		|| !Q_stricmp(id, "Axiswin") 
+		|| !Q_stricmp(id, "Alliedwin"))) 
+	{	
+		CPx(ent, va("cp \"^7You got slapped for your Vsay exploit attempt!\n\"2"));
+		G_Damage(ent, NULL, NULL, NULL, NULL, 20, DAMAGE_NO_PROTECTION, MOD_TELEFRAG);
+		return;
+	}
 
 	if ( target ) {
 		G_VoiceTo( ent, target, mode, id, voiceonly );
@@ -1336,6 +1378,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	char	arg1[MAX_STRING_TOKENS];
 	char	arg2[MAX_STRING_TOKENS];
 	char	cleanName[64]; // JPW NERVE
+	char	*check;
 
 	if ( !g_allowVote.integer ) {
 		trap_SendServerCommand( ent-g_entities, "print \"Voting not enabled on this server.\n\"" );
@@ -1359,9 +1402,17 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	trap_Argv( 1, arg1, sizeof( arg1 ) );
 	trap_Argv( 2, arg2, sizeof( arg2 ) );
 
-	if( strchr( arg1, ';' ) || strchr( arg2, ';' ) ) {
-		trap_SendServerCommand( ent-g_entities, "print \"Invalid vote string.\n\"" );
-		return;
+	// L0 - Fix callvote exploit
+	for (check = arg2; *check; ++check) {
+		switch (*check) {
+		case '\n':
+		case '\r':
+		case '"':
+		case ';':
+			trap_SendServerCommand(ent - g_entities, "print \"Invalid vote string.\n\"");
+			return;
+			break;
+		}
 	}
 
 	if ( !Q_stricmp( arg1, "map_restart" ) ) {
@@ -2400,8 +2451,9 @@ void ClientCommand( int clientNum ) {
 		Cmd_CallVote_f (ent);
 	else if (Q_stricmp (cmd, "vote") == 0)
 		Cmd_Vote_f (ent);
-	else if (Q_stricmp (cmd, "gc") == 0)
-		Cmd_GameCommand_f( ent );
+// L0 - /gc crashes the server.
+//	else if (Q_stricmp (cmd, "gc") == 0)
+//		Cmd_GameCommand_f( ent );
 //	else if (Q_stricmp (cmd, "startCamera") == 0)
 //		Cmd_StartCamera_f( ent );
 //	else if (Q_stricmp (cmd, "stopCamera") == 0)

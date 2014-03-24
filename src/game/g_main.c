@@ -143,6 +143,20 @@ vmCvar_t a5_cmds;		// Level 5 admin commands
 vmCvar_t a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
 						// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
 vmCvar_t adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
+
+// Forced cvars
+vmCvar_t	cl_allowdownload;		// Map downloading 
+vmCvar_t	r_znear;				// Fix wall glitching
+vmCvar_t	rate;					// Most people have broadband now...
+vmCvar_t	snaps;					// To sort 1000 issues..
+vmCvar_t	cl_anonymous;			// Useless..
+vmCvar_t	r_mapoverbrightbits;	// Force 2..
+vmCvar_t	r_vertexLight;			// Fixes bug on certain maps (hit shader)
+vmCvar_t	r_depthbits;			// Fix bug where players can see through walls with this at 16
+vmCvar_t	cl_timenudge;			// Yeah right...let them teleport in star trek not in rtcw..
+vmCvar_t	com_maxfps;				// Ppl keep saying they can't handle 125.. yeah well... it's 2009, they can play tetris then...
+vmCvar_t	cl_packetdup;			// The days of 56k modem are over...all should be able to use 1...
+vmCvar_t	cl_maxpackets;			// Again... no more warping and crap...
 // End
 
 cvarTable_t		gameCvarTable[] = {
@@ -277,6 +291,20 @@ cvarTable_t		gameCvarTable[] = {
 	{ &a5_cmds, "a5_cmds", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &a5_allowAll, "a5_allowAll", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &adm_help, "adm_help", "1", CVAR_ARCHIVE, 0, qfalse },
+
+	// Forced stuff
+	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "r_znear", "1", CVAR_SYSTEMINFO, qfalse },			
+	{ 0, "rate", "25000", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "snaps", "20", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "cl_anonymous", "0", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "r_vertexLight", "1", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "r_mapoverbrightbits", "3", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "r_depthbits", "24", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "cl_timenudge", "0", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "com_maxfps", "125", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "cl_packetdup", "1", CVAR_SYSTEMINFO, qfalse },
+	{ 0, "cl_maxpackets", "100", CVAR_SYSTEMINFO, qfalse },
 
 // End
 
@@ -1338,7 +1366,7 @@ void AddTournamentPlayer( void ) {
 	level.warmupTime = -1;
 
 	// set them to free-for-all team
-	SetTeam( &g_entities[ nextInLine - level.clients ], "f" );
+	SetTeam( &g_entities[ nextInLine - level.clients ], "f", qfalse );
 }
 
 /*
@@ -1362,7 +1390,7 @@ void RemoveTournamentLoser( void ) {
 	}
 
 	// make them a spectator
-	SetTeam( &g_entities[ clientNum ], "s" );
+	SetTeam( &g_entities[ clientNum ], "s", qfalse );
 }
 
 
@@ -2719,3 +2747,4 @@ void G_RunFrame( int levelTime ) {
 	// Ridah, check if we are reloading, and times have expired
 	CheckReloadStatus();
 }
+

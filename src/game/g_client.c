@@ -1260,6 +1260,27 @@ qboolean G_ParseAnimationFiles( char *modelname, gclient_t *cl )
 	return qtrue;
 }
 
+/*
+===========
+L0 - Save players IP
+============
+*/
+void SaveIP_f(gclient_t * client, char * sip) 
+{
+	if (strcmp(sip, "localhost") == 0 || sip == NULL) {
+		// Localhost, just enter 0 for all values:
+		client->sess.ip[0] = 0;
+		client->sess.ip[1] = 0;
+		client->sess.ip[2] = 0;
+		client->sess.ip[3] = 0;
+		return;
+	}
+
+	sscanf(sip, "%3i.%3i.%3i.%3i",
+		(int *)&client->sess.ip[0], (int *)&client->sess.ip[1],
+		(int *)&client->sess.ip[2], (int *)&client->sess.ip[3]);
+	return;
+}
 
 /*
 ===========
@@ -1301,6 +1322,12 @@ void ClientUserinfoChanged( int clientNum ) {
 	s = Info_ValueForKey( userinfo, "ip" );
 	if ( s && !strcmp( s, "localhost" ) ) {
 		client->pers.localClient = qtrue;
+	}
+
+	// L0 - save IP for getstatus..
+	s = Info_ValueForKey(userinfo, "ip");
+	if (s[0] != 0) {
+		SaveIP_f(client, s);
 	}
 
 	// check the item prediction
@@ -1453,6 +1480,20 @@ void ClientUserinfoChanged( int clientNum ) {
 //----(SA) end
 
 	trap_SetConfigstring( CS_PLAYERS+clientNum, s );
+
+	// L0 - We need to send client private info (ip) only to log..not a configstring
+	// as \configstrings reveals user data which is something we don't want..
+	if (!(ent->r.svFlags & SVF_BOT)) {
+		char *team;
+
+		team = (client->sess.sessionTeam == TEAM_RED) ? "Axis" :
+			((client->sess.sessionTeam == TEAM_BLUE) ? "Allied" : "Spectator");
+
+		// Print essentials and skip garbage
+		s = va("name\\%s\\team\\%s\\\\IP\\%s",
+			client->pers.netname, team, client->sess.ip[0], clientIP(client)
+		);
+	}
 
 	G_LogPrintf( "ClientUserinfoChanged: %i %s\n", clientNum, s );
 	G_DPrintf( "ClientUserinfoChanged: %i :: %s\n", clientNum, s );
