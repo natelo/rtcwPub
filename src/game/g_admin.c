@@ -174,7 +174,7 @@ void cmd_do_logout(gentity_t *ent) {
 Get client number from name
 ===========
 */
-int ClientNumberFromNameMatch(char *name, int *matches){
+int ClientNumberFromNameMatch(char *name, int *matches) {
 	int i, textLen;
 	char nm[32];
 	char c;
@@ -402,11 +402,11 @@ qboolean do_cmds(gentity_t *ent) {
 
 	if (!strcmp(cmd, "incognito"))			{ if (canUse(ent, qtrue)) cmd_incognito(ent); else cantUse(ent);	return qtrue; }
 	else if (!strcmp(cmd, "list_cmds"))		{ cmd_listCmds(ent);	return qtrue; }
-	/*	else if (!strcmp(cmd, "ignore"))			{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "ignore"))			{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unignore"))		{ if (canUse(ent, qtrue)) cmd_unignore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientignore"))	{ if (canUse(ent, qtrue)) cmd_clientIgnore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientunignore"))	{ if (canUse(ent, qtrue)) cmd_clientUnignore(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "kick"))			{ if (canUse(ent, qtrue)) cmd_kick(ent); else cantUse(ent); return qtrue; }
+	/*else if (!strcmp(cmd, "kick"))			{ if (canUse(ent, qtrue)) cmd_kick(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientkick"))		{ if (canUse(ent, qtrue)) cmd_clientkick(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "slap"))			{ if (canUse(ent, qtrue)) cmd_slap(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "kill"))			{ if (canUse(ent, qtrue)) cmd_kill(ent); else cantUse(ent); return qtrue; }

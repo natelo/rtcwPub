@@ -166,6 +166,18 @@ int ClientNumberFromString( gentity_t *to, char *s ) {
 	char		s2[MAX_STRING_CHARS];
 	char		n2[MAX_STRING_CHARS];
 
+	// check for a name match
+	SanitizeString(s, s2);
+	for (idnum = 0, cl = level.clients; idnum < level.maxclients; idnum++, cl++) {
+		if (cl->pers.connected != CON_CONNECTED) {
+			continue;
+		}
+		SanitizeString(cl->pers.netname, n2);
+		if (!strcmp(n2, s2)) {
+			return idnum;
+		}
+	}
+
 	// numeric values are just slot numbers
 	if (s[0] >= '0' && s[0] <= '9') {
 		idnum = atoi( s );
@@ -180,18 +192,6 @@ int ClientNumberFromString( gentity_t *to, char *s ) {
 			return -1;
 		}
 		return idnum;
-	}
-
-	// check for a name match
-	SanitizeString( s, s2 );
-	for ( idnum=0,cl=level.clients ; idnum < level.maxclients ; idnum++,cl++ ) {
-		if ( cl->pers.connected != CON_CONNECTED ) {
-			continue;
-		}
-		SanitizeString( cl->pers.netname, n2 );
-		if ( !strcmp( n2, s2 ) ) {
-			return idnum;
-		}
 	}
 
 	trap_SendServerCommand( to-g_entities, va("print \"User [lof]%s [lon]is not on the server\n\"", s));
@@ -941,7 +941,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	char		text[MAX_SAY_TEXT];
 	char		location[64];
 	qboolean	localize = qfalse;
-	// L0  
+// L0  
 	char *tag = "";
 	char arg[MAX_SAY_TEXT]; // ! & ? 
 	char cmd1[128];
@@ -990,6 +990,14 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}
+
+	// Ignored
+	if (ent->client->sess.ignored) {		
+		CP("cp \"You are ignored^1!\n\"2");		
+		return;
+	}
+
+// L0 - End
 
 	if ( g_gametype.integer < GT_TEAM && mode == SAY_TEAM ) {
 		mode = SAY_ALL;
@@ -1086,7 +1094,14 @@ static void Cmd_Tell_f( gentity_t *ent ) {
 	char		*p;
 	char		arg[MAX_TOKEN_CHARS];
 
-	if ( trap_Argc () < 2 ) {
+	// L0 - Ignored
+	if (ent->client->sess.ignored) {
+		CP("cp \"You are ignored^1!\n\"2");
+		return;
+	}
+
+	if (trap_Argc() < 3) {
+		trap_SendServerCommand(ent - g_entities, "print \"Usage: tell <player id> <message>\n\"");
 		return;
 	}
 
@@ -1158,6 +1173,12 @@ static void G_VoiceTo( gentity_t *ent, gentity_t *other, int mode, const char *i
 void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qboolean voiceonly ) {
 	int			j;
 	gentity_t	*other;
+
+	// L0 - Ignored
+	if (ent->client->sess.ignored) {
+		CP("cp \"You are ignored^1!\n\"2");
+		return;
+	}
 
 	if ( g_gametype.integer < GT_TEAM && mode == SAY_TEAM ) {
 		mode = SAY_ALL;
@@ -1255,6 +1276,12 @@ static void Cmd_VoiceTell_f( gentity_t *ent, qboolean voiceonly ) {
 	char		*id;
 	char		arg[MAX_TOKEN_CHARS];
 
+	// L0 - Ignored
+	if (ent->client->sess.ignored) {
+		CP("cp \"You are ignored^1!\n\"2");
+		return;
+	}
+
 	if ( trap_Argc () < 2 ) {
 		return;
 	}
@@ -1294,6 +1321,12 @@ static void Cmd_VoiceTaunt_f( gentity_t *ent ) {
 	int i;
 
 	if (!ent->client) {
+		return;
+	}
+
+	// L0 - Ignored
+	if (ent->client->sess.ignored) {
+		CP("cp \"You are ignored^1!\n\"2");
 		return;
 	}
 
@@ -1368,24 +1401,24 @@ static char	*gc_orders[] = {
 	"report"
 };
 
-void Cmd_GameCommand_f( gentity_t *ent ) {
+void Cmd_GameCommand_f(gentity_t *ent) {
 	int		player;
 	int		order;
 	char	str[MAX_TOKEN_CHARS];
 
-	trap_Argv( 1, str, sizeof( str ) );
-	player = atoi( str );
-	trap_Argv( 2, str, sizeof( str ) );
-	order = atoi( str );
+	trap_Argv(1, str, sizeof(str));
+	player = atoi(str);
+	trap_Argv(2, str, sizeof(str));
+	order = atoi(str);
 
-	if ( player < 0 || player >= MAX_CLIENTS ) {
+	if (player < 0 || player >= MAX_CLIENTS) {
 		return;
 	}
-	if ( order < 0 || order > sizeof(gc_orders)/sizeof(char *) ) {
+	if (order < 0 || order > sizeof(gc_orders) / sizeof(char *)) {
 		return;
 	}
-	G_Say( ent, &g_entities[player], SAY_TELL, gc_orders[order] );
-	G_Say( ent, ent, SAY_TELL, gc_orders[order] );
+	G_Say(ent, &g_entities[player], SAY_TELL, gc_orders[order]);
+	G_Say(ent, ent, SAY_TELL, gc_orders[order]);
 }
 
 /*
@@ -1409,7 +1442,6 @@ static const char *gameNames[] = {
 	"Wolf Checkpoint"
 };
 
-
 /*
 ==================
 Cmd_CallVote_f
@@ -1421,6 +1453,12 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	char	arg2[MAX_STRING_TOKENS];
 	char	cleanName[64]; // JPW NERVE
 	char	*check;
+
+	// L0 - Ignored
+	if (ent->client->sess.ignored) {
+		CP("cp \"You are ignored^1!\n\"2");
+		return;
+	}
 
 	if ( !g_allowVote.integer ) {
 		trap_SendServerCommand( ent-g_entities, "print \"Voting not enabled on this server.\n\"" );
@@ -2514,9 +2552,6 @@ void ClientCommand( int clientNum ) {
 		Cmd_CallVote_f (ent);
 	else if (Q_stricmp (cmd, "vote") == 0)
 		Cmd_Vote_f (ent);
-// L0 - /gc crashes the server.
-//	else if (Q_stricmp (cmd, "gc") == 0)
-//		Cmd_GameCommand_f( ent );
 //	else if (Q_stricmp (cmd, "startCamera") == 0)
 //		Cmd_StartCamera_f( ent );
 //	else if (Q_stricmp (cmd, "stopCamera") == 0)

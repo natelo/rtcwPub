@@ -456,6 +456,7 @@ typedef struct {
 	admLvls_t		admin;			// Admins
 	unsigned char	ip[4];			// IPs
 	unsigned int	incognito;		// Incognito
+	unsigned int	ignored;		// If client is ignored or not
 } clientSession_t;
 
 //
@@ -773,6 +774,7 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced);
 void SetWolfData( gentity_t *ent, char *ptype, char *weap, char *grenade, char *skinnum );	// DHM - Nerve
 void Cmd_FollowCycle_f( gentity_t *ent, int dir );
 void SanitizeString(char *in, char *out);
+int ClientNumberFromString(gentity_t *to, char *s);
 
 //
 // g_items.c

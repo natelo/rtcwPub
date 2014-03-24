@@ -27,11 +27,16 @@ void ParseAdmStr(const char *strInput, char *strCmd, char *strArgs);
 qboolean cmds_admin(char cmd[MAX_TOKEN_CHARS], gentity_t *ent);
 void cmd_do_login(gentity_t *ent, qboolean silent);
 void cmd_do_logout(gentity_t *ent);
+int ClientNumberFromNameMatch(char *name, int *matches);
 
 //
 // g_admin_cmds.c
 //
 void cmd_incognito(gentity_t *ent);
 void cmdCustom(gentity_t *ent, char *cmd);
+void cmd_ignore(gentity_t *ent);
+void cmd_unignore(gentity_t *ent);
+void cmd_clientIgnore(gentity_t *ent);
+void cmd_clientUnignore(gentity_t *ent);
 
 #endif // __ADMIN_H
