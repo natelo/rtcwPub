@@ -1180,32 +1180,32 @@ extern vmCvar_t		g_swapteams;
 // L0 - New cvars
 
 // Admins
-extern vmCvar_t	a1_pass;
-extern vmCvar_t	a2_pass;
-extern vmCvar_t	a3_pass;
-extern vmCvar_t	a4_pass;
-extern vmCvar_t	a5_pass;
-extern vmCvar_t	a1_tag;
-extern vmCvar_t	a2_tag;
-extern vmCvar_t	a3_tag;
-extern vmCvar_t	a4_tag;
-extern vmCvar_t	a5_tag;
-extern vmCvar_t	a1_cmds;
-extern vmCvar_t	a2_cmds;
-extern vmCvar_t	a3_cmds;
-extern vmCvar_t	a4_cmds;
-extern vmCvar_t	a5_cmds;
-extern vmCvar_t	a5_allowAll;
-extern vmCvar_t	adm_help;
+extern vmCvar_t		a1_pass;
+extern vmCvar_t		a2_pass;
+extern vmCvar_t		a3_pass;
+extern vmCvar_t		a4_pass;
+extern vmCvar_t		a5_pass;
+extern vmCvar_t		a1_tag;
+extern vmCvar_t		a2_tag;
+extern vmCvar_t		a3_tag;
+extern vmCvar_t		a4_tag;
+extern vmCvar_t		a5_tag;
+extern vmCvar_t		a1_cmds;
+extern vmCvar_t		a2_cmds;
+extern vmCvar_t		a3_cmds;
+extern vmCvar_t		a4_cmds;
+extern vmCvar_t		a5_cmds;
+extern vmCvar_t		a5_allowAll;
+extern vmCvar_t		adm_help;
 
 // System
-extern vmCvar_t g_extendedLog;
+extern vmCvar_t		g_extendedLog;
 
 // General
-extern vmCvar_t g_dropReload;
-extern vmCvar_t g_unlockWeapons;
-extern vmCvar_t g_tapReports;
-extern vmCvar_t g_gibReports;
+extern vmCvar_t		g_dropReload;
+extern vmCvar_t		g_unlockWeapons;
+extern vmCvar_t		g_tapReports;
+extern vmCvar_t		g_gibReports;
 
 // L0 - New Cvars end
 

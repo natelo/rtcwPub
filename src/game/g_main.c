@@ -112,46 +112,46 @@ vmCvar_t	g_mg42arc;
 
 vmCvar_t	g_footstepAudibleRange;
 // JPW NERVE multiplayer reinforcement times
-vmCvar_t		g_redlimbotime;
-vmCvar_t		g_bluelimbotime;
+vmCvar_t	g_redlimbotime;
+vmCvar_t	g_bluelimbotime;
 // charge times for character class special weapons
-vmCvar_t		g_medicChargeTime;
-vmCvar_t		g_engineerChargeTime;
-vmCvar_t		g_LTChargeTime;
-vmCvar_t		g_soldierChargeTime;
+vmCvar_t	g_medicChargeTime;
+vmCvar_t	g_engineerChargeTime;
+vmCvar_t	g_LTChargeTime;
+vmCvar_t	g_soldierChargeTime;
 // screen shakey magnitude multiplier
-vmCvar_t		sv_screenshake;
+vmCvar_t	sv_screenshake;
 // jpw
 
 // L0 - New stuff
 // Admins
-vmCvar_t a1_pass;		// Level 1 admin
-vmCvar_t a2_pass;		// Level 2 admin
-vmCvar_t a3_pass;		// Level 3 admin
-vmCvar_t a4_pass;		// Level 4 admin
-vmCvar_t a5_pass;		// Level 4 admin
-vmCvar_t a1_tag;		// Level 1 admin tag
-vmCvar_t a2_tag;		// Level 2 admin tag
-vmCvar_t a3_tag;		// Level 3 admin tag
-vmCvar_t a4_tag;		// Level 3 admin tag
-vmCvar_t a5_tag;		// Level 5 admin tag
-vmCvar_t a1_cmds;		// Level 1 admin commands
-vmCvar_t a2_cmds;		// Level 2 admin commands
-vmCvar_t a3_cmds;		// Level 3 admin commands
-vmCvar_t a4_cmds;		// Level 4 admin commands
-vmCvar_t a5_cmds;		// Level 5 admin commands
-vmCvar_t a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
-						// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
-vmCvar_t adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
+vmCvar_t	a1_pass;		// Level 1 admin
+vmCvar_t	a2_pass;		// Level 2 admin
+vmCvar_t	a3_pass;		// Level 3 admin
+vmCvar_t	a4_pass;		// Level 4 admin
+vmCvar_t	a5_pass;		// Level 4 admin
+vmCvar_t	a1_tag;			// Level 1 admin tag
+vmCvar_t	a2_tag;			// Level 2 admin tag
+vmCvar_t	a3_tag;			// Level 3 admin tag
+vmCvar_t	a4_tag;			// Level 3 admin tag
+vmCvar_t	a5_tag;			// Level 5 admin tag
+vmCvar_t	a1_cmds;		// Level 1 admin commands
+vmCvar_t	a2_cmds;		// Level 2 admin commands
+vmCvar_t	a3_cmds;		// Level 3 admin commands
+vmCvar_t	a4_cmds;		// Level 4 admin commands
+vmCvar_t	a5_cmds;		// Level 5 admin commands
+vmCvar_t	a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
+							// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
+vmCvar_t	adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
 
 // System
-vmCvar_t g_extendedLog;	// Logs various Admin and other related actions
+vmCvar_t	g_extendedLog;	// Logs various Admin and other related actions
 
 // Game 
-vmCvar_t g_dropReload;		// Enable / Disable Drop reload
-vmCvar_t g_unlockWeapons;	// Enable weapon dropping..
-vmCvar_t g_tapReports;		// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
-vmCvar_t g_gibReports;		// Prints Gib reports
+vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
+vmCvar_t	g_unlockWeapons;	// Enable weapon dropping..
+vmCvar_t	g_tapReports;		// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
+vmCvar_t	g_gibReports;		// Prints Gib reports
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -288,11 +288,11 @@ cvarTable_t		gameCvarTable[] = {
 	{ &a3_pass, "a3_pass", "none", CVAR_ARCHIVE, 0, qfalse },
 	{ &a4_pass, "a4_pass", "none", CVAR_ARCHIVE, 0, qfalse },
 	{ &a5_pass, "a5_pass", "none", CVAR_ARCHIVE, 0, qfalse },
-	{ &a1_tag, "a1_tag", "^1Referee", CVAR_ARCHIVE, 0, qfalse },
-	{ &a2_tag, "a2_tag", "^jMember", CVAR_ARCHIVE, 0, qfalse },
-	{ &a3_tag, "a3_tag", "^2Adm!n", CVAR_ARCHIVE, 0, qfalse },
-	{ &a4_tag, "a4_tag", "^3Adm!n", CVAR_ARCHIVE, 0, qfalse },
-	{ &a5_tag, "a5_tag", "^dAdm!n", CVAR_ARCHIVE, 0, qfalse },
+	{ &a1_tag, "a1_tag", "^2Referee", CVAR_ARCHIVE, 0, qfalse },
+	{ &a2_tag, "a2_tag", "^1Member", CVAR_ARCHIVE, 0, qfalse },
+	{ &a3_tag, "a3_tag", "^3Adm!n", CVAR_ARCHIVE, 0, qfalse },
+	{ &a4_tag, "a4_tag", "^5Adm!n", CVAR_ARCHIVE, 0, qfalse },
+	{ &a5_tag, "a5_tag", "^0Adm!n", CVAR_ARCHIVE, 0, qfalse },
 	{ &a1_cmds, "a1_cmds", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &a2_cmds, "a2_cmds", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &a3_cmds, "a3_cmds", "", CVAR_ARCHIVE, 0, qfalse },
