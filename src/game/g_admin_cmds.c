@@ -963,3 +963,93 @@ void cmd_revealCamper(gentity_t *ent) {
 
 	return;
 }
+
+/*
+===========
+Rename player
+===========
+*/
+void cmd_rename(gentity_t *ent) {
+	int          clientNum;
+	gclient_t	 *client;
+	char *tag, *log;
+	char userinfo[MAX_INFO_STRING];
+
+	tag = sortTag(ent);
+
+	clientNum = ClientNumberFromString(ent, ent->client->pers.cmd2);
+
+	if (clientNum == -1) {
+		return;
+	}
+
+	// Ugly..
+	log = va("Player %s (IP: %s) has renamed user",
+		ent->client->pers.netname, clientIP(ent, qtrue));
+
+	ent = g_entities + clientNum;
+	client = ent->client;
+
+	log = va("%s %s to", log, client->pers.netname);
+
+	// Print first..
+	AP(va("chat \"console: %s has renamed player %s ^7to %s^3!\n\"", tag, client->pers.netname, ConcatArgs(3)));
+
+	// Rename..
+	trap_GetUserinfo(client->ps.clientNum, userinfo, sizeof(userinfo));
+	Info_SetValueForKey(userinfo, "name", ConcatArgs(3));
+	trap_SetUserinfo(client->ps.clientNum, userinfo);
+	ClientUserinfoChanged(client->ps.clientNum);
+
+	// Log it
+	log = va("%s %s", log, ConcatArgs(3));
+
+	// Not vital..
+	if (g_extendedLog.integer > 1)
+		logEntry(ADMACT, log);
+
+	return;
+}
+
+/*
+===========
+Renameon/renameoff
+
+Takes or restores ability to rename from client.
+NOTE: Taking ability to rename lasts only for that round..
+===========
+*/
+void cmd_nameHandle(gentity_t *ent, qboolean revoke) {
+	int	player_id;
+	gentity_t	*targetclient;
+	char *tag, *log, *action;
+
+	tag = sortTag(ent);
+
+	player_id = ClientNumberFromString(ent, ent->client->pers.cmd2);
+	if (player_id == -1) {
+		return;
+	}
+
+	targetclient = g_entities + player_id;
+
+	if (revoke && targetclient->client->pers.nameLocked) {
+		CP(va("print \"^1Error: ^7%s ^7is already name locked!\n\"", targetclient->client->pers.netname));
+		return;
+	}
+	else if (!revoke && !targetclient->client->pers.nameLocked) {
+		CP(va("print \"^1Error: ^7%s ^7already can rename!\n\"", targetclient->client->pers.netname));
+		return;
+	}
+
+	action = revoke ? "revoked" : "restored";
+	AP(va("chat \"console:^7 %s has %s %s^7's ability to rename.\n\"", tag, action, targetclient->client->pers.netname));
+	targetclient->client->pers.nameLocked = revoke;
+
+	// Log it
+	log = va("Player %s (IP: %s) has %s %s^7's ability to rename",
+		ent->client->pers.netname, clientIP(ent, qtrue), action, targetclient->client->pers.netname);
+	logEntry(ADMACT, log);
+
+	return;
+}

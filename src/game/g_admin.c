@@ -429,25 +429,16 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "shuffle"))		{ if (canUse(ent, qtrue)) cmd_shuffle(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "spec999"))		{ if (canUse(ent, qtrue)) cmd_specs999(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "whereis"))		{ if (canUse(ent, qtrue)) cmd_revealCamper(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "rename"))		{ if (canUse(ent, qtrue)) cmd_rename(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "renameon"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qfalse); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "renameoff"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qtrue); else cantUse(ent); return qtrue; }
 
 	/*else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unlock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qtrue); else cantUse(ent); return qtrue; }	
 	/*
-	else if (!strcmp(cmd, "pause"))			{ if (canUse(ent, qtrue)) cmd_pause(ent, qfalse); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "unpause"))		{ if (canUse(ent, qtrue)) cmd_pause(ent, qtrue); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "banguid"))		{ if (canUse(ent, qtrue)) cmd_banGuid(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "banclientguid"))	{ if (canUse(ent, qtrue)) cmd_banClientGuid(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "tempbanguid"))	{ if (canUse(ent, qtrue)) cmd_tempbanGuid(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "banip"))			{ if (canUse(ent, qtrue)) cmd_banIp(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "tempbanip"))		{ if (canUse(ent, qtrue)) cmd_tempBanIp(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "ban"))			{ if (canUse(ent, qtrue)) cmd_ban(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "tempban"))		{ if (canUse(ent, qtrue)) cmd_tempBan(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "addip"))			{ if (canUse(ent, qtrue)) cmd_addIp(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "rename"))			{ if (canUse(ent, qtrue)) cmd_rename(ent); else cantUse(ent); return qtrue; }	
-	else if (!strcmp(cmd, "renameon"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qfalse); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "renameoff"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qtrue); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "speclock"))		{ if (canUse(ent, qtrue)) cmd_specHandle(ent, qtrue); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "specunlock"))		{ if (canUse(ent, qtrue)) cmd_specHandle(ent, qfalse); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "readyall"))		{ if (canUse(ent, qtrue)) cmd_readyHandle(ent, qfalse); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "unreadyall"))		{ if (canUse(ent, qtrue)) cmd_readyHandle(ent, qtrue); else cantUse(ent); return qtrue; }
 	*/
 	// Any other command
 	else if (canUse(ent, qfalse))			{ cmd_custom(ent, cmd); return qtrue; }
@@ -511,22 +502,13 @@ static const helpCmd_reference_t helpInfo[] = {
 	_HELP("shuffle", "Shuffles the teams.", NULL)
 	_HELP("spec999", "Moves all lagged (999) players to spectators.", NULL)
 	_HELP("whereis", "Reveals players location to all.", "Uses client slot number!")
-	_HELP("pause", "Pauses the match in progress.", NULL)
-	_HELP("unpause", "Resumes a paused match..", NULL)
-	_HELP("banguid", "Bans player's GUID.", "!banguid <unique part of name>")
-	_HELP("banclientguid", "Bans player's GUID.", "!banclientguid <client slot number>")
-	_HELP("tempbanguid", "Temporarily bans player from server.", "!tempbanguid <unique part of name> <mins>")
-	_HELP("banip", "Bans player by IP.", "!banip <unique part of name>")
-	_HELP("tempbanip", "Temporarily Bans player by IP.", "!tempbanip <unique part of name> <mins>")
+	_HELP("ban", "Bans player.", "!ban <unique part of name>")
+	_HELP("tempban", "Temporarily Bans player.", "!tempban <unique part of name> <mins>")
 	_HELP("addip", "Adds IP to banned file. You can use wildcards for subrange bans.", "example - !addip 100.*.*.*")
 	_HELP("rename", "Renames players.", "!rename <client slot> <new name>")
 	_HELP("vstr", "Loads a level from rotation file. Note - You need to know rotation labels..", "!vstr map1")
 	_HELP("renameon", "Restores ability to rename from client.", "!renameon <client number>")
 	_HELP("renameoff", "Revokes ability to rename from client (lasts only that round).", "!renameoff <client number>")
-	_HELP("speclock", "Locks team(s) from spectators viewing.", "!speclock <axis/red allied/blue both>")
-	_HELP("specunlock", "Unlocks team(s) for spectator viewing.", "!specunlock <axis/red allied/blue both>")
-	_HELP("readyall", "Sets all players as ready and starts the countdown..", NULL)
-	_HELP("unreadyall", "Cancels countdown and returns back to warmup..", NULL)
 	// --> Add new ones after this line..
 
 	{

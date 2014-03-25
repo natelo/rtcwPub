@@ -1374,6 +1374,14 @@ void ClientUserinfoChanged( int clientNum ) {
 	s = Info_ValueForKey (userinfo, "name");
 	ClientCleanName( s, client->pers.netname, sizeof(client->pers.netname) );
 
+	// L0 - Name locking prevents name changes
+	// NOTE: It will rename..but simply wont show up till next round, map restart..
+	//       That should give enough of time to issue other 'name based' commands.
+	if (client->pers.nameLocked) {
+		ClientCleanName(oldname, client->pers.netname, sizeof(client->pers.netname));
+		CPx(client->ps.clientNum, "cp \"^1Denied! ^7Admin has revoked your ability to rename for this round^1!\n\"2");
+	}
+
 	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD ) {
 			Q_strncpyz( client->pers.netname, "scoreboard", sizeof(client->pers.netname) );

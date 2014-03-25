@@ -49,7 +49,6 @@ void cmd_exec(gentity_t *ent);
 void cmd_nextmap(gentity_t *ent);
 void cmd_map(gentity_t *ent);
 void cmd_vstr(gentity_t *ent);
-
 void cmd_cpa(gentity_t *ent);
 void cmd_cp(gentity_t *ent);
 void cmd_warn(gentity_t *ent);
@@ -62,5 +61,7 @@ void cmd_swap(gentity_t *ent);
 void cmd_shuffle(gentity_t *ent);
 qboolean cmd_specs999(gentity_t *ent);
 void cmd_revealCamper(gentity_t *ent);
+void cmd_rename(gentity_t *ent);
+void cmd_nameHandle(gentity_t *ent, qboolean revoke);
 
 #endif // __ADMIN_H

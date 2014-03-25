@@ -501,6 +501,8 @@ typedef struct {
 	char cmd2[128];			// !command attribute
 	char cmd3[128];			// !command attribute extra	
 
+	qboolean nameLocked;	// Takes ability to rename from client..it's cleared next round, map load..
+
 } clientPersistant_t;
 
 // L0 - antilag 
