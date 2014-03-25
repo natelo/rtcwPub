@@ -11,7 +11,7 @@ Created: 24. Mar / 2014
 
 /*
 ==================
-L0 - Ported from et: NQ
+Ported from et: NQ
 DecolorString
 
 Remove color characters
@@ -29,4 +29,28 @@ void DecolorString(char *in, char *out)
 	}
 	*out = 0;
 }
+
+/*
+==================
+Time
+
+Returns current time.
+==================
+*/
+extern int trap_RealTime(qtime_t * qtime);
+const char *months[12] = {
+	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+};
+// Returns current time
+char *getTime( void )
+{
+	qtime_t		ct;
+	trap_RealTime(&ct);
+
+	return va("Time: %02d:%02d:%02d/%02d %s %d\n",
+		ct.tm_hour, ct.tm_min, ct.tm_sec, ct.tm_mday,
+		months[ct.tm_mon], 1900 + ct.tm_year);
+}
+
 

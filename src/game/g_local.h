@@ -1488,6 +1488,7 @@ typedef enum
 // g_shared.c
 //
 void DecolorString(char *in, char *out);
+char *getTime( void );
 
 //
 // g_files.c
