@@ -928,6 +928,7 @@ void CalcMuzzlePoint ( gentity_t *ent, int weapon, vec3_t forward, vec3_t right,
 void SnapVectorTowards( vec3_t v, vec3_t to );
 trace_t *CheckMeleeAttack( gentity_t *ent, float dist, qboolean isTest );
 gentity_t *weapon_grenadelauncher_fire (gentity_t *ent, int grenadeWPID);
+void MagicSink(gentity_t *self);
 // Rafael
 
 void CalcMuzzlePoints(gentity_t *ent, int weapon);
@@ -1226,6 +1227,11 @@ extern vmCvar_t		g_unlockWeapons;
 extern vmCvar_t		g_tapReports;
 extern vmCvar_t		g_gibReports;
 extern vmCvar_t		g_weaponOwnerLock;
+
+// Weapon Stuff
+extern vmCvar_t g_dropHealth;
+extern vmCvar_t g_dropNades;
+extern vmCvar_t g_dropAmmo;
 
 // L0 - New Cvars end
 

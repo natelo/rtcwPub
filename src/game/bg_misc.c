@@ -3329,7 +3329,7 @@ qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps 
 
 	switch( item->giType ) {
 	case IT_WEAPON:
-		if (g_weaponOwnerLock.integer && ent->clientNum != ps->clientNum)
+		if (g_weaponOwnerLock.integer && ent->clientNum >= 0 && ent->clientNum != ps->clientNum)
 			return qfalse;
 // JPW NERVE -- medics & engineers can only pick up same weapon type
 		if (item->giTag == WP_AMMO) // magic ammo for any two-handed weapon

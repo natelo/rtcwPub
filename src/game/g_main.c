@@ -157,6 +157,11 @@ vmCvar_t	g_tapReports;		// Print tap outs / 0 = off, 1 = prints to everyone, 2 =
 vmCvar_t	g_gibReports;		// Prints Gib reports
 vmCvar_t	g_weaponOwnerLock;
 
+// Weapon
+vmCvar_t g_dropHealth;	// The number od medpacks medic will drop when going to limbo
+vmCvar_t g_dropNades;	// The number of grenades eng will drop when going to limbo
+vmCvar_t g_dropAmmo;	// The number of ammo packs leut drops when going to limbo
+
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
 vmCvar_t	r_znear;				// Fix wall glitching
@@ -317,6 +322,11 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_tapReports, "g_tapReports", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_gibReports, "g_gibReports", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_weaponOwnerLock, "g_weaponOwnerLock", "0", CVAR_ARCHIVE, 0, qfalse },
+
+	// Weapon
+	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_dropNades, "g_dropNades", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_dropAmmo, "g_dropAmmo", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },
