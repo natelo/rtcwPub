@@ -1232,6 +1232,8 @@ extern vmCvar_t		g_maxVotes;
 extern vmCvar_t		g_antilag;
 extern vmCvar_t		g_antilagVersion;
 extern vmCvar_t		sv_hostname;
+extern vmCvar_t		g_bypassPasswords;
+extern vmCvar_t		bannedMSG;
 
 // General
 extern vmCvar_t		g_dropReload;
@@ -1486,11 +1488,18 @@ typedef enum
 //
 void DecolorString(char *in, char *out);
 char *getTime( void );
+int is_numeric(const char *p);
 
 //
 // g_files.c
 //
 void logEntry(char *filename, char *info);
+void banClient(char arg[MAX_TOKEN_CHARS]);
+void tempbanClient(gentity_t *ent, const int minsbanned);
+extern char *TempBannedMessage;
+void clean_tempbans(void);
+qboolean TempBanned(char * Clientip);
+qboolean Banned(char * Clientip, char * password);
 
 //
 // g_antilag.c

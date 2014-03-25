@@ -1195,6 +1195,7 @@ void cmd_tempBan(gentity_t *ent) {
 	int i;
 	int nums[MAX_CLIENTS];
 	char *tag, *log;
+	int time;
 
 	tag = sortTag(ent);
 	count = ClientNumberFromNameMatch(ent->client->pers.cmd2, nums);
@@ -1206,21 +1207,27 @@ void cmd_tempBan(gentity_t *ent) {
 		CP(va("print \"To many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
 		return;
 	}
+	else if (!is_numeric(ent->client->pers.cmd3)) {
+		CPx(ent - g_entities, "print \"^1Error: ^7Invalid syntax! Only numeric values are allowed..\n\"");
+		return;
+	}
+
+	// Don't allow Tempban to be higher than a week..let them use banning for that..
+	time = (ent->client->pers.cmd3 > "10080" ? 10080 : (int)ent->client->pers.cmd3);
 
 	for (i = 0; i < count; i++){
 		// TempBan player			
-		trap_SendConsoleCommand(EXEC_APPEND, va("tempban %i %s", nums[i], ent->client->pers.cmd3));
+		trap_SendConsoleCommand(EXEC_APPEND, va("tempban %i %d", nums[i], time));
 
 		// Kick player now
-		trap_DropClient(nums[i], va("^3temporarily banned by ^3%s \n^7Tempban will expire in ^3%s ^7minute(s)", tag, ent->client->pers.cmd3));
-		AP(va("chat \"console: %s has tempbanned player %s ^7for ^3%s ^7minute(s)^3!\n\"", tag, g_entities[nums[i]].client->pers.netname, ent->client->pers.cmd3));
+		trap_DropClient(nums[i], va("Temporarily banned by ^3%s \n^7Tempban will expire in ^3%d ^7minutes", tag, time));
+		AP(va("chat \"console: %s has tempbanned player %s ^7for ^3%d ^7minutes^3!\n\"", tag, g_entities[nums[i]].client->pers.netname, time));
 
 		// Log it
-		log = va("Player %s (IP: %s) tempbanned user %s by IP for %s minute(s).",
-			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname, ent->client->pers.cmd3);
+		log = va("Player %s (IP: %s) tempbanned user %s by IP for %d minutes.",
+			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname, time);
 		logEntry(ADMACT, log);
 	}
-
 	return;
 }
 

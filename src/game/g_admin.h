@@ -29,6 +29,8 @@ void cmd_do_login(gentity_t *ent, qboolean silent);
 void cmd_do_logout(gentity_t *ent);
 int ClientNumberFromNameMatch(char *name, int *matches);
 qboolean IPv4Valid(char *s);
+qboolean bypassing(char *password);
+int checkBanned(char *data, char * password);
 void GrabTag(char **fullTag, char *adminName);
 
 //

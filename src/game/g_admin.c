@@ -396,6 +396,50 @@ qboolean canUse(gentity_t *ent, qboolean isCmd) {
 
 /*
 ===========
+Check banned
+
+Checks if user is banned or tempbanned..
+===========
+*/
+int checkBanned(char *data, char * password) {
+	if (Banned(data, password))
+		return 1;
+	if (TempBanned(data))
+		return 2;
+
+	return 0;
+}
+
+/*
+===========
+Password bypass
+
+Basically we re-use existing stuff..
+===========
+*/
+qboolean bypassing(char *password) {
+
+	if (strlen(g_password.string))	{
+		char *token, *text;
+		text = g_bypassPasswords.string;
+
+		while (1)
+		{
+			token = COM_Parse(&text);
+			if (!token || !token[0])
+				break;
+
+			if (!Q_stricmp(password, token))
+				return qtrue;
+			else
+				return qfalse;
+		}
+	}
+	return qfalse;
+}
+
+/*
+===========
 List commands
 ===========
 */

@@ -2,6 +2,54 @@
 #include "g_local.h"
 
 /*
+===========================================================================
+L0
+
+- Removed bunch of useless stuff for old way of IP banning as it's severly outdated.
+===========================================================================
+*/
+
+/*
+=================
+L0 - Svcmd_AddIP_f
+
+- from wolfX
+- wolfX took it from S4NDMoD
+=================
+*/
+void Svcmd_AddIP_f(void) {
+	char	arg[MAX_STRING_TOKENS];
+
+	trap_Argv(1, arg, sizeof(arg));
+	banClient(arg);
+}
+
+/*
+================
+L0 - Svcmd_tempban_f
+
+- from wolfX
+- wolfX took it from S4NDMoD
+================
+*/
+void Svcmd_tempban_f(void){
+	int			clientNum;
+	int			bannedtime;
+	gentity_t	*ent;
+	char		arg1[MAX_STRING_TOKENS];
+	char		arg2[MAX_STRING_TOKENS];
+
+	trap_Argv(1, arg1, sizeof(arg1));
+	clientNum = atoi(arg1);
+	ent = &g_entities[clientNum];
+
+	trap_Argv(2, arg2, sizeof(arg2));
+	bannedtime = atoi(arg2);
+
+	tempbanClient(ent, bannedtime);
+}
+
+/*
 ===================
 Svcmd_EntityList_f
 ===================
@@ -263,6 +311,20 @@ qboolean	ConsoleCommand( void ) {
 		return qtrue;
 	}
 	// done.
+
+// L0 - New stuff
+	// Tempban (IP)
+	if ( Q_stricmp(cmd, "tempban") == 0 ) {
+		Svcmd_tempban_f();
+		return qtrue;
+	}
+
+	// AddIP command
+	if  (Q_stricmp(cmd, "addip") == 0 ) {
+		Svcmd_AddIP_f();
+		return qtrue;
+	}
+// End
 
 	if ( Q_stricmp (cmd, "entitylist") == 0 ) {
 		Svcmd_EntityList_f();

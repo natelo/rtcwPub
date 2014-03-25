@@ -1,4 +1,4 @@
-#include "g_local.h"
+#include "g_admin.h"
 
 // g_client.c -- client functions that don't happen every frame
 
@@ -1555,7 +1555,19 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 	// check to see if they are on the banned IP list
 	value = Info_ValueForKey (userinfo, "ip");
-	
+
+	// L0 - Banned & Tempbanned
+	if (firstTime) {
+
+		if (!Q_stricmp(value, ""))
+			return "^1Socket/IP Spoof- ^7Entrance refused^1!";
+						
+		if (checkBanned(value, Info_ValueForKey(userinfo, "password")) == 1)
+			return bannedMSG.string;
+		else if (checkBanned(value, Info_ValueForKey(userinfo, "password")) == 2)
+			return TempBannedMessage;
+	}
+		
 	// we don't check password for bots and local client
 	// NOTE: local client <-> "ip" "localhost"
 	//   this means this client is not running in our current process

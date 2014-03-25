@@ -53,4 +53,20 @@ char *getTime( void )
 		months[ct.tm_mon], 1900 + ct.tm_year);
 }
 
+/*
+==================
+Check if string is numeric
+==================
+*/
+int is_numeric(const char *p) {
+	if (*p) {
+		char c;
+		while ((c = *p++)) {
+			if (!isdigit(c)) return 0;
+		}
+		return 1;
+	}
+	return 0;
+}
+
 
