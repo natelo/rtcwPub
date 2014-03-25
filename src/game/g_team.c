@@ -3,6 +3,9 @@
 
 #include "g_local.h"
 
+// OSP
+team_info teamInfo[TEAM_NUM_TEAMS];
+
 typedef struct teamgame_s
 {
 	float last_flag_capture;
@@ -1505,4 +1508,40 @@ void SP_team_WOLF_checkpoint (gentity_t *ent)
 // jpw
 
 	trap_LinkEntity (ent);
+}
+
+/*
+==================
+L0 - hanldeTeamLocks
+
+Checks if team is locked and if it is, it unlocks it when
+player tries to join to a team that's locked but without players.
+==================
+*/
+void handleTeamLocks( int team ) {
+	int axis = level.axisPlayers;
+	int allied = level.alliedPlayers;
+
+	if (teamInfo[team].team_lock == qtrue)
+	{
+		if ((team == TEAM_RED && level.axisPlayers < 1) || 
+			(team == TEAM_BLUE && level.alliedPlayers < 1))	{
+
+			teamInfo[team].team_lock = qfalse;
+			AP(va("chat \"console: %s ^7team is empty! Releasing team lock..\n\"",
+				(team == TEAM_RED ? "^1Axis" : "^4Allied")));
+		}
+	}
+	return;
+}
+
+/*
+==================
+L0 - Swap team lock
+==================
+*/
+void G_swapTeamLocks( void ) {
+	qboolean fLock = teamInfo[TEAM_RED].team_lock;
+	teamInfo[TEAM_RED].team_lock = teamInfo[TEAM_BLUE].team_lock;
+	teamInfo[TEAM_BLUE].team_lock = fLock;
 }

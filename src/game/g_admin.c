@@ -432,9 +432,8 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "rename"))		{ if (canUse(ent, qtrue)) cmd_rename(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "renameon"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "renameoff"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qtrue); else cantUse(ent); return qtrue; }
-
-	/*else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qfalse); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "unlock"))			{ if (canUse(ent, qtrue)) cmd_gamelocked(ent, qtrue); else cantUse(ent); return qtrue; }	
+	else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qtrue); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "unlock"))		{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qfalse); else cantUse(ent); return qtrue; }
 	/*
 	else if (!strcmp(cmd, "ban"))			{ if (canUse(ent, qtrue)) cmd_ban(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "tempban"))		{ if (canUse(ent, qtrue)) cmd_tempBan(ent); else cantUse(ent); return qtrue; }
@@ -482,7 +481,7 @@ static const helpCmd_reference_t helpInfo[] = {
 	_HELP("slap", "Slaps player and takes 20hp.", "Uses client slot number!")
 	_HELP("kill", "Kills player on spot.", "Uses client slot number!")
 	_HELP("lock", "Locks the team(s) so players can't join.", "Usage !lock <red/axis> <blue/allied> <both>")
-	_HELP("unlock", "Unlocks the team(s) so players can join.", "Usage !unlock <red/axis> <blue/allied> <both>")
+	_HELP("unlock", "Unlocks the team(s) so players can join.", "Usage !unlock <red/axis/r> <blue/allied/b> <both>")
 	_HELP("specs", "Forces player to spectators.", "Uses unique part of name!")
 	_HELP("axis", "Forces player to Axis team.", "Uses unique part of name!")
 	_HELP("allies", "Forces player to Allied team.", "Uses unique part of name!")

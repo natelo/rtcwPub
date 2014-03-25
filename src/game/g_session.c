@@ -203,7 +203,9 @@ G_InitWorldSession
 */
 void G_InitWorldSession( void ) {
 	char	s[MAX_STRING_CHARS];
-	int			gt;
+	int		gt;
+	char	*tmp = s;
+	qboolean swap = (g_altStopwatchMode.integer != 0 || g_currentRound.integer == 1);
 
 	trap_Cvar_VariableStringBuffer( "session", s, sizeof(s) );
 	gt = atoi( s );
@@ -214,6 +216,19 @@ void G_InitWorldSession( void ) {
 		level.newSession = qtrue;
 		G_Printf( "Gametype changed, clearing session data.\n" );
 	}
+
+// OSP
+#define GETVAL( x ) if ( ( tmp = strchr( tmp, ' ' ) ) == NULL ) {return;} x = atoi(++tmp);
+	
+	GETVAL(gt);
+	teamInfo[TEAM_RED].team_lock = (gt & TEAM_RED) ? qtrue : qfalse;
+	teamInfo[TEAM_BLUE].team_lock = (gt & TEAM_BLUE) ? qtrue : qfalse;
+
+	// L0 - We handle rest of swaps in g_svcmds.c ..
+	if (g_gametype.integer == GT_WOLF_STOPWATCH && g_gamestate.integer != GS_PLAYING && swap) {
+		G_swapTeamLocks();
+	}
+// End
 }
 
 /*
@@ -224,8 +239,12 @@ G_WriteSessionData
 */
 void G_WriteSessionData( void ) {
 	int		i;
-
-	trap_Cvar_Set( "session", va("%i", g_gametype.integer) );
+	
+	trap_Cvar_Set( "session", va("%i %i", 
+		g_gametype.integer, 
+		// OSP
+		(teamInfo[TEAM_RED].team_lock * TEAM_RED | teamInfo[TEAM_BLUE].team_lock * TEAM_BLUE)
+	) );
 
 	for ( i = 0 ; i < level.maxclients ; i++ ) {
 		if ( level.clients[i].pers.connected == CON_CONNECTED ) {

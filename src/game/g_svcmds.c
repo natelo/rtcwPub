@@ -484,6 +484,9 @@ void Svcmd_SwapTeams_f() {
 
 	trap_Cvar_Set( "g_swapteams", "1" );
 	trap_SendConsoleCommand( EXEC_APPEND, va( "map_restart 0 %i\n", GS_WARMUP ) );
+
+	// L0 - Swap teams
+	G_swapTeamLocks();
 }
 
 

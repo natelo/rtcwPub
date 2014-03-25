@@ -2576,6 +2576,28 @@ void G_RunThink (gentity_t *ent) {
 
 /*
 ================
+L0 - sortedActivePlayers
+
+Sort players per teams so I can re-use this call where need it..
+================
+*/
+void sortedActivePlayers( void ) {
+	int i;
+	level.axisPlayers = 0;
+	level.alliedPlayers = 0;
+
+	for (i = 0; i < level.maxclients; i++){
+		if (level.clients[i].pers.connected != CON_CONNECTED)
+			continue;
+		if (level.clients[i].sess.sessionTeam == TEAM_RED)
+			level.axisPlayers++;
+		if (level.clients[i].sess.sessionTeam == TEAM_BLUE)
+			level.alliedPlayers++;
+	}
+}
+
+/*
+================
 G_RunFrame
 
 Advances the non-player objects in the world
@@ -2784,5 +2806,8 @@ void G_RunFrame( int levelTime ) {
 
 	// Ridah, check if we are reloading, and times have expired
 	CheckReloadStatus();
+
+	// L0 - Track active players
+	sortedActivePlayers();
 }
 

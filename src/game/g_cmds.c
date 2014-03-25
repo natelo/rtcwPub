@@ -541,6 +541,14 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 			return;	// ignore the request
 		}
 
+		// L0 - Team Lock		
+		handleTeamLocks(team);
+		if (!forced && teamInfo[team].team_lock == qtrue)
+		{
+			CP(va("cp \"%s team is locked!\n\"", (team == TEAM_RED ? "^1Axis^7" : "^4Allied^7")));
+			return;
+		}
+
 		// NERVE - SMF - merge from team arena
 		if ( g_teamForceBalance.integer  ) {
 			int		counts[TEAM_NUM_TEAMS];

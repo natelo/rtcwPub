@@ -1053,3 +1053,92 @@ void cmd_nameHandle(gentity_t *ent, qboolean revoke) {
 
 	return;
 }
+
+/*
+===========
+Lock/Unlock team
+
+NOTE: Somewhat messy due verbosity
+TODO: Clean this eventually..
+===========
+*/
+qboolean canTeamBeLocked(int team)
+{
+	if (team == TEAM_RED && level.axisPlayers < 1)
+		return qfalse;
+	else if (team == TEAM_BLUE && level.alliedPlayers < 1)
+		return qfalse;
+	else
+		return qtrue;
+}
+// Lock/Unlock
+void cmd_handleTeamLock( gentity_t *ent, qboolean tLock ) {
+	char *tag = sortTag(ent);	
+	char *cmd = ent->client->pers.cmd2;
+	char *action = (tLock ? "Lock" : "Unlock");
+	int team = TEAM_NUM_TEAMS;
+	char *teamTag = "^3Both^7";
+	char *log;
+
+	if (!strcmp(cmd, "")) {
+		CP(va("print \"^1Error: ^7Please select which team you wish to %s!\n\"", action));
+		return;
+	}	
+
+	// Axis
+	if (!strcmp(cmd, "red") || !strcmp(cmd, "axis") || !strcmp(cmd, "r")) {
+		team = TEAM_RED;
+		teamTag = "^1Axis^7";
+	}
+	// Allies
+	else if (!strcmp(cmd, "blue") || !strcmp(cmd, "allies") || !strcmp(cmd, "allied") || !strcmp(cmd, "b"))	{
+		team = TEAM_BLUE;
+		teamTag = "^4Allied^7";
+	} 
+	// Both
+	else if (!(strcmp(cmd, "both") == 0))
+	{
+		CP(va("print \"^1Error: ^7Please select which team you wish to %s!\n\"", action));
+		return;
+	}
+
+	if (team != TEAM_NUM_TEAMS)
+	{
+		if (teamInfo[team].team_lock == tLock)
+		{	
+			CP(va("print \"Error: %s team is already %sed!  \n\"", teamTag, action));
+			return;
+		}
+		else
+		{
+			if (!canTeamBeLocked(team))
+			{
+				CP(va("print \"Error: %s team is empty!\n\"", teamTag));
+				return;
+			}
+
+			AP(va("chat \"console: %s has %sed %s team!\n\"", tag, action, teamTag));
+			teamInfo[team].team_lock = tLock;
+		}
+	}
+	else
+	{	
+		if (teamInfo[TEAM_RED].team_lock != tLock || teamInfo[TEAM_BLUE].team_lock != tLock)
+		{
+			teamInfo[TEAM_RED].team_lock = tLock;
+			teamInfo[TEAM_BLUE].team_lock = tLock;
+			AP(va("chat \"console: %s has %sed %s teams!\n\"", tag, action, teamTag));
+		}
+		else
+			CP(va("print \"Error: Both teams are already %sed!  \n\"", action));
+		return;
+	}
+
+	// Log it
+	log = va("Player %s (IP: %s) has issued %s for %s",
+		ent->client->pers.netname, clientIP(ent, qtrue), action, 
+		(team == TEAM_RED ? "Axis team" : (team == TEAM_BLUE ? "Allied team" : "Both teams" )));
+	logEntry(ADMACT, log);
+
+	return;
+}

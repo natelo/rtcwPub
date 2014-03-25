@@ -743,6 +743,10 @@ typedef struct {
 	int			numOidTriggers;			// DHM - Nerve
 
 	qboolean	latchGametype;			// DHM - Nerve
+
+	// L0
+	int			alliedPlayers;			// Track active Allied players
+	int			axisPlayers;			// Track active Axis players
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -998,6 +1002,7 @@ void QDECL G_Printf( const char *fmt, ... );
 void QDECL G_DPrintf( const char *fmt, ... );
 void QDECL G_Error( const char *fmt, ... );
 void CheckVote( void );
+void sortedActivePlayers( void );
 
 //
 // g_client.c
@@ -1019,7 +1024,15 @@ void G_RunClient( gentity_t *ent );
 // g_team.c
 //
 qboolean OnSameTeam( gentity_t *ent1, gentity_t *ent2 );
-
+// L0 - New team stuff bellow
+typedef struct {
+	qboolean team_lock;
+	char team_name[24];
+	int team_score;
+} team_info;
+extern team_info teamInfo[TEAM_NUM_TEAMS];
+void G_swapTeamLocks( void );
+void handleTeamLocks( int team );
 
 //
 // g_mem.c
@@ -1493,5 +1506,10 @@ void G_UnTimeShiftAllClients(gentity_t *skip);
 // g_hacks.c
 //
 qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
+
+//
+// g_match.c
+//
+
 
 #endif // __SHARED_H

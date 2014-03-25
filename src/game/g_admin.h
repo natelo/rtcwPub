@@ -63,5 +63,6 @@ qboolean cmd_specs999(gentity_t *ent);
 void cmd_revealCamper(gentity_t *ent);
 void cmd_rename(gentity_t *ent);
 void cmd_nameHandle(gentity_t *ent, qboolean revoke);
+void cmd_handleTeamLock(gentity_t *ent, qboolean tLock);
 
 #endif // __ADMIN_H
