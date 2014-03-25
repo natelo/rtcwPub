@@ -40,7 +40,7 @@ void cmd_getstatus(gentity_t *ent) {
 
 			// Has to be done twice to cope with double carrots..
 			DecolorString(cl->pers.netname, n1);
-			SanitizeString(n1, n2);
+			SanitizeString(n1, n2, qtrue);
 			Q_CleanStr(n2);
 			n2[10] = 0;
 

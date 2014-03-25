@@ -1036,7 +1036,7 @@ extern void Cmd_Nofatigue_f ( gentity_t * ent ) ;
 extern void Cmd_God_f ( gentity_t * ent ) ;
 extern void Cmd_Give_f ( gentity_t * ent ) ;
 extern int ClientNumberFromString ( gentity_t * to , char * s ) ;
-extern void SanitizeString ( char * in , char * out ) ;
+void SanitizeString(char *in, char *out, qboolean fToLower);
 extern char * ConcatArgs ( int start ) ;
 extern qboolean CheatsOk ( gentity_t * ent ) ;
 extern void Cmd_Score_f ( gentity_t * ent ) ;

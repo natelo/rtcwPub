@@ -33,7 +33,7 @@ char *sortTag(gentity_t *ent) {
 
 	// No colors in tag for console prints..
 	DecolorString(tag, n1);
-	SanitizeString(n1, tag);
+	SanitizeString(n1, tag, qtrue);
 	Q_CleanStr(tag);
 	tag[20] = 0;
 

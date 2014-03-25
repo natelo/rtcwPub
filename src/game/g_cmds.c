@@ -136,17 +136,21 @@ SanitizeString
 Remove case and control characters
 ==================
 */
-void SanitizeString( char *in, char *out ) {
-	while ( *in ) {
-		if ( *in == 27 ) {
-			in += 2;		// skip color code
+void SanitizeString(char *in, char *out, qboolean fToLower)
+{
+	while (*in) {
+		if (*in == 27 || *in == '^') {
+			in++;		// skip color code
+			if (*in) in++;
 			continue;
 		}
-		if ( *in < 32 ) {
+
+		if (*in < 32) {
 			in++;
 			continue;
 		}
-		*out++ = tolower( *in++ );
+
+		*out++ = (fToLower) ? tolower(*in++) : *in++;
 	}
 
 	*out = 0;
@@ -167,12 +171,12 @@ int ClientNumberFromString( gentity_t *to, char *s ) {
 	char		n2[MAX_STRING_CHARS];
 
 	// check for a name match
-	SanitizeString(s, s2);
+	SanitizeString(s, s2, qtrue);
 	for (idnum = 0, cl = level.clients; idnum < level.maxclients; idnum++, cl++) {
 		if (cl->pers.connected != CON_CONNECTED) {
 			continue;
 		}
-		SanitizeString(cl->pers.netname, n2);
+		SanitizeString(cl->pers.netname, n2, qtrue);
 		if (!strcmp(n2, s2)) {
 			return idnum;
 		}
