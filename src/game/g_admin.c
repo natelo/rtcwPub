@@ -403,12 +403,17 @@ Checks if user is banned or tempbanned..
 ===========
 */
 int checkBanned(char *data, char * password) {
-	if (Banned(data, password))
-		return 1;
-	if (TempBanned(data))
-		return 2;
+	char		port[MAX_INFO_STRING];
+	char		ip[20];
 
-	return 0;
+	GetIP(data, ip, port);
+
+	if (Banned(ip, password))
+		return 1;
+	else if (TempBanned(ip))
+		return 2;
+	else 
+		return 0;
 }
 
 /*
@@ -420,7 +425,7 @@ Basically we re-use existing stuff..
 */
 qboolean bypassing(char *password) {
 
-	if (strlen(g_password.string))	{
+	if (strlen(g_bypassPasswords.string))	{
 		char *token, *text;
 		text = g_bypassPasswords.string;
 

@@ -13,8 +13,7 @@ L0
 =================
 L0 - Svcmd_AddIP_f
 
-- from wolfX
-- wolfX took it from S4NDMoD
+Adds IP to banned file
 =================
 */
 void Svcmd_AddIP_f(void) {
@@ -28,8 +27,7 @@ void Svcmd_AddIP_f(void) {
 ================
 L0 - Svcmd_tempban_f
 
-- from wolfX
-- wolfX took it from S4NDMoD
+Tempban's client
 ================
 */
 void Svcmd_tempban_f(void){

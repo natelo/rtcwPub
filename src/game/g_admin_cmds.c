@@ -1173,7 +1173,7 @@ void cmd_ban(gentity_t *ent) {
 			g_entities[nums[i]].client->sess.ip[2], g_entities[nums[i]].client->sess.ip[3]));
 
 		// Kick player now
-		trap_DropClient(nums[i], va("^3banned by ^3%s \n^7%s", tag, ent->client->pers.cmd3));
+		trap_DropClient(nums[i], va("banned by ^3%s \n^7%s", tag, ent->client->pers.cmd3));
 		AP(va("chat \"console: %s has banned player %s^3! ^3%s\n\"", tag, g_entities[nums[i]].client->pers.netname, ent->client->pers.cmd3));
 
 		// Log it
@@ -1207,10 +1207,13 @@ void cmd_tempBan(gentity_t *ent) {
 		CP(va("print \"To many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
 		return;
 	}
+	/*
+	// FIXME
 	else if (!is_numeric(ent->client->pers.cmd3)) {
 		CPx(ent - g_entities, "print \"^1Error: ^7Invalid syntax! Only numeric values are allowed..\n\"");
 		return;
 	}
+	*/
 
 	// Don't allow Tempban to be higher than a week..let them use banning for that..
 	time = (ent->client->pers.cmd3 > "10080" ? 10080 : (int)ent->client->pers.cmd3);

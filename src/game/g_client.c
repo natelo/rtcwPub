@@ -1548,10 +1548,20 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	gclient_t	*client;
 	char		userinfo[MAX_INFO_STRING];
 	gentity_t	*ent;
+	int			i;
 
 	ent = &g_entities[ clientNum ];
 
 	trap_GetUserinfo( clientNum, userinfo, sizeof( userinfo ) );
+
+	// L0 - ASCII name bug crap..
+	value = Info_ValueForKey(userinfo, "name");
+	for (i = 0; i < strlen(value); i++) {
+		if (value[i] < 0) {
+			// extended ASCII chars have values between -128 and 0 (signed char)
+			return "Change your name, extended ASCII chars are ^1NOT allowed!";
+		}
+	}
 
 	// check to see if they are on the banned IP list
 	value = Info_ValueForKey (userinfo, "ip");
@@ -1562,9 +1572,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		if (!Q_stricmp(value, ""))
 			return "^1Socket/IP Spoof- ^7Entrance refused^1!";
 						
-		if (checkBanned(value, Info_ValueForKey(userinfo, "password")) == 1)
+		if (checkBanned(Info_ValueForKey(userinfo, "ip"), Info_ValueForKey(userinfo, "password")) == 1)
 			return bannedMSG.string;
-		else if (checkBanned(value, Info_ValueForKey(userinfo, "password")) == 2)
+		else if (checkBanned(Info_ValueForKey(userinfo, "ip"), Info_ValueForKey(userinfo, "password")) == 2)
 			return TempBannedMessage;
 	}
 		

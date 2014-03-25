@@ -1489,6 +1489,8 @@ typedef enum
 void DecolorString(char *in, char *out);
 char *getTime( void );
 int is_numeric(const char *p);
+void BreakIP(const char *IP, char *charip1, char* charip2, char* charip3, char* charip4);
+void GetIP(const char *strIP1, char *strIP2, char *strPort);
 
 //
 // g_files.c
