@@ -29,6 +29,7 @@ void cmd_do_login(gentity_t *ent, qboolean silent);
 void cmd_do_logout(gentity_t *ent);
 int ClientNumberFromNameMatch(char *name, int *matches);
 qboolean IPv4Valid(char *s);
+void GrabTag(char **fullTag, char *adminName);
 
 //
 // g_admin_cmds.c
