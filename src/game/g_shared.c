@@ -48,7 +48,7 @@ char *getTime( void )
 	qtime_t		ct;
 	trap_RealTime(&ct);
 
-	return va("Time: %02d:%02d:%02d/%02d %s %d\n",
+	return va("%02d:%02d:%02d/%02d %s %d",
 		ct.tm_hour, ct.tm_min, ct.tm_sec, ct.tm_mday,
 		months[ct.tm_mon], 1900 + ct.tm_year);
 }

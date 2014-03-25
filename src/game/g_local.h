@@ -1235,6 +1235,7 @@ extern vmCvar_t		g_extendedLog;
 extern vmCvar_t		g_maxVotes;
 extern vmCvar_t		g_antilag;
 extern vmCvar_t		g_antilagVersion;
+extern vmCvar_t		sv_hostname;
 
 // General
 extern vmCvar_t		g_dropReload;
@@ -1512,5 +1513,9 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
 // g_match.c
 //
 
+// 
+// g_players.c
+//
+void cmd_getstatus(gentity_t *ent);
 
 #endif // __SHARED_H

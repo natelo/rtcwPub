@@ -2524,6 +2524,11 @@ void ClientCommand( int clientNum ) {
 		cmd_incognito(ent);
 		return;
 	}
+	if ((Q_stricmp(cmd, "getstatus") == 0 ) || 
+		(Q_stricmp(cmd, "listplayers") == 0)) {
+		cmd_getstatus(ent);
+		return;
+	}
 // End
 
 	// ignore all other commands when at intermission

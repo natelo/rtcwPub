@@ -206,6 +206,7 @@ echo Done - Garbage removed.</Command>
     <ClCompile Include="..\..\..\src\game\g_misc.c" />
     <ClCompile Include="..\..\..\src\game\g_missile.c" />
     <ClCompile Include="..\..\..\src\game\g_mover.c" />
+    <ClCompile Include="..\..\..\src\game\g_players.c" />
     <ClCompile Include="..\..\..\src\game\g_props.c" />
     <ClCompile Include="..\..\..\src\game\g_save.c" />
     <ClCompile Include="..\..\..\src\game\g_script.c" />

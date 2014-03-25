@@ -149,6 +149,7 @@ vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
 vmCvar_t	g_maxVotes;			// Max votes client can call per round
 vmCvar_t	g_antilag;			// Antilag
 vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
+vmCvar_t	sv_hostname;		// So it's more accessible 
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -315,6 +316,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_maxVotes, "g_maxVotes", "3", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_antilag, "g_antilag", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
 	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
+	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
 
 	// General
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
