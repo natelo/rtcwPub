@@ -9,13 +9,6 @@ Created: 24. Mar / 2014
 */
 #include "g_admin.h"
 
-// Time
-extern int trap_RealTime(qtime_t * qtime);
-const char *months[12] = {
-	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
-	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-};
-
 /*
 ===========
 Log Admin related stuff
@@ -25,8 +18,6 @@ void logEntry(char *filename, char *info)
 {
 	fileHandle_t	f;
 	char *varLine;
-	qtime_t		ct;
-	trap_RealTime(&ct);
 
 	if (!g_extendedLog.integer)
 		return;
@@ -34,9 +25,7 @@ void logEntry(char *filename, char *info)
 	strcat(info, "\r");
 	trap_FS_FOpenFile(filename, &f, FS_APPEND);
 
-	varLine = va("Time: %02d:%02d:%02d/%02d %s %d : %s \n",
-		ct.tm_hour, ct.tm_min, ct.tm_sec, ct.tm_mday,
-		months[ct.tm_mon], 1900 + ct.tm_year, info);
+	varLine = va("Time: %s : %s \n", getTime(), info);
 
 	trap_FS_Write(varLine, strlen(varLine), f);
 	trap_FS_FCloseFile(f);

@@ -86,8 +86,6 @@ vmCvar_t	g_doWarmup;
 vmCvar_t	g_teamAutoJoin;
 vmCvar_t	g_teamForceBalance;
 vmCvar_t	g_listEntity;
-vmCvar_t	g_banIPs;
-vmCvar_t	g_filterBan;
 vmCvar_t	g_rankings;
 vmCvar_t	g_enableBreath;
 vmCvar_t	g_smoothClients;
@@ -142,13 +140,14 @@ vmCvar_t	a4_cmds;		// Level 4 admin commands
 vmCvar_t	a5_cmds;		// Level 5 admin commands
 vmCvar_t	a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
 							// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
-vmCvar_t	adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
+vmCvar_t	adm_help;		// If enabled users can use !cmds to get list of commands for their level..
 
 // System
 vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
 vmCvar_t	g_maxVotes;			// Max votes client can call per round
 vmCvar_t	g_antilag;			// Antilag
 vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
+vmCvar_t	sv_hostname;		// So it's more accessible 
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -247,7 +246,6 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_logSync, "g_logSync", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	{ &g_password, "g_password", "", CVAR_USERINFO, 0, qfalse },
-	{ &g_banIPs, "g_banIPs", "", CVAR_ARCHIVE, 0, qfalse },
 
 	{ &g_dedicated, "dedicated", "0", 0, 0, qfalse },
 
@@ -315,6 +313,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_maxVotes, "g_maxVotes", "3", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_antilag, "g_antilag", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
 	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
+	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
 
 	// General
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -1148,8 +1147,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	srand( randomSeed );
 
 	G_RegisterCvars();
-
-	G_ProcessIPBans();
 
 	G_InitMemory();
 

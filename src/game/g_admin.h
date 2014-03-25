@@ -28,6 +28,7 @@ qboolean cmds_admin(char cmd[MAX_TOKEN_CHARS], gentity_t *ent);
 void cmd_do_login(gentity_t *ent, qboolean silent);
 void cmd_do_logout(gentity_t *ent);
 int ClientNumberFromNameMatch(char *name, int *matches);
+qboolean IPv4Valid(char *s);
 
 //
 // g_admin_cmds.c
@@ -64,5 +65,8 @@ void cmd_revealCamper(gentity_t *ent);
 void cmd_rename(gentity_t *ent);
 void cmd_nameHandle(gentity_t *ent, qboolean revoke);
 void cmd_handleTeamLock(gentity_t *ent, qboolean tLock);
+void cmd_ban(gentity_t *ent);
+void cmd_tempBan(gentity_t *ent);
+void cmd_addIp(gentity_t *ent);
 
 #endif // __ADMIN_H

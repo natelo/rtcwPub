@@ -779,7 +779,7 @@ void StopFollowing( gentity_t *ent );
 void SetTeam(gentity_t *ent, char *s, qboolean forced);
 void SetWolfData( gentity_t *ent, char *ptype, char *weap, char *grenade, char *skinnum );	// DHM - Nerve
 void Cmd_FollowCycle_f( gentity_t *ent, int dir );
-void SanitizeString(char *in, char *out);
+void SanitizeString(char *in, char *out, qboolean fToLower);
 int ClientNumberFromString(gentity_t *to, char *s);
 char *ConcatArgs(int start);
 
@@ -965,9 +965,7 @@ char *clientIP(gentity_t *ent, qboolean full);
 //
 // g_svcmds.c
 //
-qboolean	ConsoleCommand( void );
-void G_ProcessIPBans(void);
-qboolean G_FilterPacket (char *from);
+qboolean ConsoleCommand( void );
 
 //
 // g_weapon.c
@@ -1159,8 +1157,6 @@ extern	vmCvar_t	g_weaponTeamRespawn;
 extern	vmCvar_t	g_doWarmup;
 extern	vmCvar_t	g_teamAutoJoin;
 extern	vmCvar_t	g_teamForceBalance;
-extern	vmCvar_t	g_banIPs;
-extern	vmCvar_t	g_filterBan;
 extern	vmCvar_t	g_rankings;
 extern	vmCvar_t	g_enableBreath;
 extern	vmCvar_t	g_smoothClients;
@@ -1235,6 +1231,7 @@ extern vmCvar_t		g_extendedLog;
 extern vmCvar_t		g_maxVotes;
 extern vmCvar_t		g_antilag;
 extern vmCvar_t		g_antilagVersion;
+extern vmCvar_t		sv_hostname;
 
 // General
 extern vmCvar_t		g_dropReload;
@@ -1488,6 +1485,7 @@ typedef enum
 // g_shared.c
 //
 void DecolorString(char *in, char *out);
+char *getTime( void );
 
 //
 // g_files.c
@@ -1511,5 +1509,9 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
 // g_match.c
 //
 
+// 
+// g_players.c
+//
+void cmd_getstatus(gentity_t *ent);
 
 #endif // __SHARED_H

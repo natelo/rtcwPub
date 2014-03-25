@@ -32,8 +32,8 @@ char *sortTag(gentity_t *ent) {
 		tag = "";
 
 	// No colors in tag for console prints..
-	//DecolorString(tag, n1);
-	SanitizeString(n1, tag);
+	DecolorString(tag, n1);
+	SanitizeString(n1, tag, qtrue);
 	Q_CleanStr(tag);
 	tag[20] = 0;
 
@@ -167,6 +167,46 @@ void cmd_do_logout(gentity_t *ent) {
 
 		return;
 	}
+}
+
+/*
+===========
+Check if string matches IP pattern
+===========
+*/
+void flip_it(char *s, char in, char out) {
+	while (*s != 0) {
+		if (*s == in)
+			*s = out;
+		s++;
+	}
+}
+// It's not perfect but it helps..
+qboolean IPv4Valid(char *s)
+{
+	int c, i, len = strlen(s);
+	unsigned int d[4];
+	char vrfy[16];
+
+	if (len < 7 || len > 15)
+		return qfalse;
+
+	vrfy[0] = 0;
+	flip_it(s, '*', (char)256);
+
+	c = sscanf(s, "%3u.%3u.%3u.%3u%s",
+		&d[0], &d[1], &d[2], &d[3], vrfy);
+
+	if (c != 4 || vrfy[0])
+		return qfalse;
+
+	for (i = 0; i < 4; i++)
+	if (d[i] > 256)
+		return qfalse;
+
+	flip_it(s, (char)256, '*');
+
+	return qtrue;
 }
 
 /*
@@ -368,10 +408,9 @@ void cmd_listCmds(gentity_t *ent) {
 	}
 
 	// Keep an eye on this..so it's not to big..
-	cmds = "incognito list_cmds ignore unignore clientignore clientunignore kick clientkick slap kill "
+	cmds = "incognito cmds ignore unignore clientignore clientunignore kick clientkick slap kill "
 		"lock unlock specs axis allies exec nextmap map cpa cp chat warn cancelvote passvote restart "
-		"reset swap shuffle spec999 whereis pause unpause rename renameon renameoff vstr banip tempbanip addip"
-		"speclock specunlock readyall undreadyall rememberme forgetme cookies destroycookie viewcookie";
+		"reset swap shuffle spec999 whereis pause unpause rename renameon renameoff vstr ban tempban addip";
 
 	if (ent->client->sess.admin == ADM_1)
 		CP(va("print \"^3Available commands are:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", a1_cmds.string));
@@ -401,7 +440,7 @@ qboolean do_cmds(gentity_t *ent) {
 	admCmds(ent->client->pers.cmd1, alt, cmd, qfalse);
 
 	if (!strcmp(cmd, "incognito"))			{ if (canUse(ent, qtrue)) cmd_incognito(ent); else cantUse(ent);	return qtrue; }
-	else if (!strcmp(cmd, "list_cmds"))		{ cmd_listCmds(ent);	return qtrue; }
+	else if (!strcmp(cmd, "cmds"))			{ cmd_listCmds(ent);	return qtrue; }
 	else if (!strcmp(cmd, "ignore"))		{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unignore"))		{ if (canUse(ent, qtrue)) cmd_unignore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientignore"))	{ if (canUse(ent, qtrue)) cmd_clientIgnore(ent); else cantUse(ent); return qtrue; }
@@ -434,11 +473,9 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "renameoff"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unlock"))		{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qfalse); else cantUse(ent); return qtrue; }
-	/*
 	else if (!strcmp(cmd, "ban"))			{ if (canUse(ent, qtrue)) cmd_ban(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "tempban"))		{ if (canUse(ent, qtrue)) cmd_tempBan(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "addip"))			{ if (canUse(ent, qtrue)) cmd_addIp(ent); else cantUse(ent); return qtrue; }
-	*/
 	// Any other command
 	else if (canUse(ent, qfalse))			{ cmd_custom(ent, cmd); return qtrue; }
 
@@ -471,7 +508,7 @@ static const helpCmd_reference_t helpInfo[] = {
 	_HELP("logout", "Removes you from Administrator status.", NULL)
 	_HELP("incognito", "Toggles your Admin status from hidden to visible or other way around.", NULL)
 	_HELP("getstatus", "Shows basic info of all connected players.", NULL)
-	_HELP("list_cmds", "Shows all available commands for your level.", NULL)
+	_HELP("cmds", "Shows all available commands for your level.", NULL)
 	_HELP("ignore", "Takes player's ability to chat, use vsay or callvotes.", "Uses unique part of name!")
 	_HELP("unignore", "Restores player's ability to chat, use vsay or call votes.", "Uses unique part of name!")
 	_HELP("clientignore", "Takes player's ability to chat, callvotes or use vsay.", "Uses client slot!")
