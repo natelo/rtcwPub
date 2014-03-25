@@ -593,3 +593,12 @@ qboolean cmds_admin(char cmd[MAX_TOKEN_CHARS], gentity_t *ent) {
 
 	return qfalse;
 }
+
+void GrabTag(char **fullTag, char *adminName)
+{
+	char *tempTag = strrchr(adminName, ' ');
+	if (tempTag && *(tempTag + 1))
+		*fullTag = va("^7(%s^7)", tempTag + 1);
+	else
+		*fullTag = va("^7(%s^7)", adminName);
+}
