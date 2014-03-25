@@ -370,8 +370,7 @@ void cmd_listCmds(gentity_t *ent) {
 	// Keep an eye on this..so it's not to big..
 	cmds = "incognito list_cmds ignore unignore clientignore clientunignore kick clientkick slap kill "
 		"lock unlock specs axis allies exec nextmap map cpa cp chat warn cancelvote passvote restart "
-		"reset swap shuffle spec999 whereis pause unpause rename renameon renameoff vstr banip tempbanip addip"
-		"speclock specunlock readyall undreadyall rememberme forgetme cookies destroycookie viewcookie";
+		"reset swap shuffle spec999 whereis pause unpause rename renameon renameoff vstr ban tempban addip";
 
 	if (ent->client->sess.admin == ADM_1)
 		CP(va("print \"^3Available commands are:^7\n%s\n^3Use ? for help with command. E.g. ?incognito.\n\"", a1_cmds.string));

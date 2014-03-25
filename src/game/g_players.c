@@ -13,7 +13,7 @@ Created: 25. Mar / 2014
 ===========
 Getstatus
 
-Prints IP's, GUIDs and some match info..
+Prints IP's and some match info..
 ===========
 */
 void cmd_getstatus(gentity_t *ent) {
