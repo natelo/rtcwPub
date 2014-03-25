@@ -3309,15 +3309,19 @@ qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps 
 #if defined( GAMEDLL )
 	extern vmCvar_t g_unlockWeapons;
 	extern vmCvar_t g_weaponOwnerLock;
-	int unlockWeapons = g_unlockWeapons.integer;	
+	int unlockWeapons = g_unlockWeapons.integer;
+	int weaponOwnerLock = g_weaponOwnerLock.integer;
 /*
 // Uncomment this if at any time, it becomes a client-server mod.
 #elif defined ( CGAMEDLL )
 	extern vmCvar_t cg_unlockWeapons;
+	extern vmCvar_t cg_weaponOwnerLock;
 	int unlockWeapons = cg_unlockWeapons.integer;	
+	int weaponOwnerLock = cg_weaponOwnerLock.integer;
 /*/
 #else
 	int unlockWeapons = 0;	
+	int weaponOwnerLock = 0;
 #endif
 // End
 
@@ -3329,8 +3333,10 @@ qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps 
 
 	switch( item->giType ) {
 	case IT_WEAPON:
-		if (g_weaponOwnerLock.integer && ent->clientNum >= 0 && ent->clientNum != ps->clientNum)
+		// Nobo - Check if client can pickup a weapon.
+		if (weaponOwnerLock && ent->clientNum >= 0 && ent->clientNum != ps->clientNum)
 			return qfalse;
+
 // JPW NERVE -- medics & engineers can only pick up same weapon type
 		if (item->giTag == WP_AMMO) // magic ammo for any two-handed weapon
 			return qtrue;
