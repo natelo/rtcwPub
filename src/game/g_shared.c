@@ -68,5 +68,3 @@ int is_numeric(const char *p) {
 	}
 	return 0;
 }
-
-

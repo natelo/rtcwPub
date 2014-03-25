@@ -17,6 +17,7 @@ Sort tag
 char *sortTag(gentity_t *ent) {
 	char *tag;
 	char n1[MAX_NETNAME];
+	char n2[MAX_NETNAME];	
 
 	if (ent->client->sess.admin == ADM_1)
 		tag = a1_tag.string;
@@ -31,13 +32,13 @@ char *sortTag(gentity_t *ent) {
 	else
 		tag = "";
 
-	// No colors in tag for console prints..
+	// Has to be done twice to cope with double carrots..
 	DecolorString(tag, n1);
-	SanitizeString(n1, tag, qtrue);
-	Q_CleanStr(tag);
-	tag[20] = 0;
+	SanitizeString(n1, n2, qtrue);
+	Q_CleanStr(n2);
+	n2[10] = 0;
 
-	return tag;
+	return va("%s", n2);
 }
 
 /*
@@ -636,13 +637,4 @@ qboolean cmds_admin(char cmd[MAX_TOKEN_CHARS], gentity_t *ent) {
 	}
 
 	return qfalse;
-}
-
-void GrabTag(char **fullTag, char *adminName)
-{
-	char *tempTag = strrchr(adminName, ' ');
-	if (tempTag && *(tempTag + 1))
-		*fullTag = va("^7(%s^7)", tempTag + 1);
-	else
-		*fullTag = va("^7(%s^7)", adminName);
 }

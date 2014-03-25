@@ -27,7 +27,7 @@ void cmd_getstatus(gentity_t *ent) {
 
 	CP(va("print \"\n^3Mod: ^7%s \n^3Server: ^7%s\n\"", GAMEVERSION, sv_hostname.string));
 	CP("print \"^3--------------------------------------------------------------------------\n\"");
-	CP("print \"^7Sl : Team : Name       : ^3IP              ^7: Ping ^7: Status\n\"");
+	CP("print \"^7Sn : Team : Name       : ^3IP              ^7: Ping ^7: Status\n\"");
 	CP("print \"^3--------------------------------------------------------------------------\n\"");
 
 	for (j = 0; j <= (MAX_CLIENTS - 1); j++) {

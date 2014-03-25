@@ -980,22 +980,21 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	// Admin tags..
 	if (!ent->client->sess.incognito) {
 		if (ent->client->sess.admin == ADM_1) {
-			GrabTag(&tag, a1_tag.string);
+			tag = va("^7(%s^7)", &a1_tag.string);
 		}
 		else if (ent->client->sess.admin == ADM_2) {
-			GrabTag(&tag, a2_tag.string);
+			tag = va("^7(%s^7)", &a2_tag.string);
 		}
 		else if (ent->client->sess.admin == ADM_3) {
-			GrabTag(&tag, a3_tag.string);
+			tag = va("^7(%s^7)", &a3_tag.string);
 		}
 		else if (ent->client->sess.admin == ADM_4) {
-			GrabTag(&tag, a4_tag.string);
+			tag = va("^7(%s^7)", &a4_tag.string);
 		}
 		else if (ent->client->sess.admin == ADM_5) {
-			GrabTag(&tag, a5_tag.string);
+			tag = va("^7(%s^7)", &a5_tag.string);
 		}
 	}
-
 
 	// Nuke
 	if (strlen(chatText) >= 700) {

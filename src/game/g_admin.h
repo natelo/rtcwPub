@@ -31,7 +31,6 @@ int ClientNumberFromNameMatch(char *name, int *matches);
 qboolean IPv4Valid(char *s);
 qboolean bypassing(char *password);
 int checkBanned(char *data, char * password);
-void GrabTag(char **fullTag, char *adminName);
 
 //
 // g_admin_cmds.c
