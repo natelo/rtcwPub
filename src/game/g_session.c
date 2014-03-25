@@ -205,7 +205,7 @@ void G_InitWorldSession( void ) {
 	char	s[MAX_STRING_CHARS];
 	int		gt;
 	char	*tmp = s;
-	qboolean swap = (g_altStopwatchMode.integer != 0 || g_currentRound.integer == 1);
+	qboolean swap = ((g_altStopwatchMode.integer != 0 || g_currentRound.integer == 1) ? qtrue : qfalse);
 
 	trap_Cvar_VariableStringBuffer( "session", s, sizeof(s) );
 	gt = atoi( s );
