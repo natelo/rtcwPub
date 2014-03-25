@@ -171,6 +171,46 @@ void cmd_do_logout(gentity_t *ent) {
 
 /*
 ===========
+Check if string matches IP pattern
+===========
+*/
+void flip_it(char *s, char in, char out) {
+	while (*s != 0) {
+		if (*s == in)
+			*s = out;
+		s++;
+	}
+}
+// It's not perfect but it helps..
+qboolean IPv4Valid(char *s)
+{
+	int c, i, len = strlen(s);
+	unsigned int d[4];
+	char vrfy[16];
+
+	if (len < 7 || len > 15)
+		return qfalse;
+
+	vrfy[0] = 0;
+	flip_it(s, '*', (char)256);
+
+	c = sscanf(s, "%3u.%3u.%3u.%3u%s",
+		&d[0], &d[1], &d[2], &d[3], vrfy);
+
+	if (c != 4 || vrfy[0])
+		return qfalse;
+
+	for (i = 0; i < 4; i++)
+	if (d[i] > 256)
+		return qfalse;
+
+	flip_it(s, (char)256, '*');
+
+	return qtrue;
+}
+
+/*
+===========
 Get client number from name
 ===========
 */
@@ -433,11 +473,9 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "renameoff"))		{ if (canUse(ent, qtrue)) cmd_nameHandle(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unlock"))		{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qfalse); else cantUse(ent); return qtrue; }
-	/*
 	else if (!strcmp(cmd, "ban"))			{ if (canUse(ent, qtrue)) cmd_ban(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "tempban"))		{ if (canUse(ent, qtrue)) cmd_tempBan(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "addip"))			{ if (canUse(ent, qtrue)) cmd_addIp(ent); else cantUse(ent); return qtrue; }
-	*/
 	// Any other command
 	else if (canUse(ent, qfalse))			{ cmd_custom(ent, cmd); return qtrue; }
 

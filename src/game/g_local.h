@@ -965,9 +965,7 @@ char *clientIP(gentity_t *ent, qboolean full);
 //
 // g_svcmds.c
 //
-qboolean	ConsoleCommand( void );
-void G_ProcessIPBans(void);
-qboolean G_FilterPacket (char *from);
+qboolean ConsoleCommand( void );
 
 //
 // g_weapon.c
@@ -1159,8 +1157,6 @@ extern	vmCvar_t	g_weaponTeamRespawn;
 extern	vmCvar_t	g_doWarmup;
 extern	vmCvar_t	g_teamAutoJoin;
 extern	vmCvar_t	g_teamForceBalance;
-extern	vmCvar_t	g_banIPs;
-extern	vmCvar_t	g_filterBan;
 extern	vmCvar_t	g_rankings;
 extern	vmCvar_t	g_enableBreath;
 extern	vmCvar_t	g_smoothClients;

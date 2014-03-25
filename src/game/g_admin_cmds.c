@@ -1142,3 +1142,111 @@ void cmd_handleTeamLock( gentity_t *ent, qboolean tLock ) {
 
 	return;
 }
+
+/*
+===========
+Ban ip
+===========
+*/
+void cmd_ban(gentity_t *ent) {
+	int count = 0;
+	int i;
+	int nums[MAX_CLIENTS];
+	char *tag, *log;
+
+	tag = sortTag(ent);
+	count = ClientNumberFromNameMatch(ent->client->pers.cmd2, nums);
+
+	if (count == 0){
+		CP("print \"Client not on server^3!\n\"");
+		return;
+	}
+	else if (count > 1) {
+		CP(va("print \"To many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
+		return;
+	}
+
+	for (i = 0; i < count; i++){
+		// Ban player			
+		trap_SendConsoleCommand(EXEC_APPEND, va("addip %i.%i.%i.%i",
+			g_entities[nums[i]].client->sess.ip[0], g_entities[nums[i]].client->sess.ip[1],
+			g_entities[nums[i]].client->sess.ip[2], g_entities[nums[i]].client->sess.ip[3]));
+
+		// Kick player now
+		trap_DropClient(nums[i], va("^3banned by ^3%s \n^7%s", tag, ent->client->pers.cmd3));
+		AP(va("chat \"console: %s has banned player %s^3! ^3%s\n\"", tag, g_entities[nums[i]].client->pers.netname, ent->client->pers.cmd3));
+
+		// Log it
+		log = va("Player %s (IP: %s) has (IP)banned user %s",
+			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
+		logEntry(ADMACT, log);
+	}
+
+	return;
+}
+
+/*
+===========
+tempBan ip
+===========
+*/
+void cmd_tempBan(gentity_t *ent) {
+	int count = 0;
+	int i;
+	int nums[MAX_CLIENTS];
+	char *tag, *log;
+
+	tag = sortTag(ent);
+	count = ClientNumberFromNameMatch(ent->client->pers.cmd2, nums);
+	if (count == 0){
+		CP("print \"Client not on server^3!\n\"");
+		return;
+	}
+	else if (count > 1) {
+		CP(va("print \"To many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
+		return;
+	}
+
+	for (i = 0; i < count; i++){
+		// TempBan player			
+		trap_SendConsoleCommand(EXEC_APPEND, va("tempban %i %s", nums[i], ent->client->pers.cmd3));
+
+		// Kick player now
+		trap_DropClient(nums[i], va("^3temporarily banned by ^3%s \n^7Tempban will expire in ^3%s ^7minute(s)", tag, ent->client->pers.cmd3));
+		AP(va("chat \"console: %s has tempbanned player %s ^7for ^3%s ^7minute(s)^3!\n\"", tag, g_entities[nums[i]].client->pers.netname, ent->client->pers.cmd3));
+
+		// Log it
+		log = va("Player %s (IP: %s) tempbanned user %s by IP for %s minute(s).",
+			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname, ent->client->pers.cmd3);
+		logEntry(ADMACT, log);
+	}
+
+	return;
+}
+
+/*
+===========
+Add IP
+===========
+*/
+void cmd_addIp(gentity_t *ent) {
+	char *tag, *log;
+
+	tag = sortTag(ent);
+
+	if (!IPv4Valid(ent->client->pers.cmd2)) {
+		CP(va("print \"^1Error: ^7%s is not a valid IPv4 address^1!\n\"", ent->client->pers.cmd2));
+		return;
+	}
+
+	// Note that this blindly accepts what ever user inputs. Not ideal..
+	trap_SendConsoleCommand(EXEC_APPEND, va("addip %s", ent->client->pers.cmd2));
+	AP(va("chat \"console: %s has added IP ^3%s ^7to banned file.\n\"", tag, ent->client->pers.cmd2));
+
+	// Log it
+	log = va("Player %s (IP: %s) added IP %s to banned file.",
+		ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
+	logEntry(ADMACT, log);
+
+	return;
+}

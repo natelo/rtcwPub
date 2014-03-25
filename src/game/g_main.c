@@ -86,8 +86,6 @@ vmCvar_t	g_doWarmup;
 vmCvar_t	g_teamAutoJoin;
 vmCvar_t	g_teamForceBalance;
 vmCvar_t	g_listEntity;
-vmCvar_t	g_banIPs;
-vmCvar_t	g_filterBan;
 vmCvar_t	g_rankings;
 vmCvar_t	g_enableBreath;
 vmCvar_t	g_smoothClients;
@@ -142,7 +140,7 @@ vmCvar_t	a4_cmds;		// Level 4 admin commands
 vmCvar_t	a5_cmds;		// Level 5 admin commands
 vmCvar_t	a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
 							// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
-vmCvar_t	adm_help;		// If enabled users can use !list_cmds to get list of commands for their level..
+vmCvar_t	adm_help;		// If enabled users can use !cmds to get list of commands for their level..
 
 // System
 vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
@@ -248,7 +246,6 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_logSync, "g_logSync", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	{ &g_password, "g_password", "", CVAR_USERINFO, 0, qfalse },
-	{ &g_banIPs, "g_banIPs", "", CVAR_ARCHIVE, 0, qfalse },
 
 	{ &g_dedicated, "dedicated", "0", 0, 0, qfalse },
 
@@ -1150,8 +1147,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	srand( randomSeed );
 
 	G_RegisterCvars();
-
-	G_ProcessIPBans();
 
 	G_InitMemory();
 
