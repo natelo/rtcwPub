@@ -368,7 +368,7 @@ void cmd_listCmds(gentity_t *ent) {
 	}
 
 	// Keep an eye on this..so it's not to big..
-	cmds = "incognito list_cmds ignore unignore clientignore clientunignore kick clientkick slap kill "
+	cmds = "incognito cmds ignore unignore clientignore clientunignore kick clientkick slap kill "
 		"lock unlock specs axis allies exec nextmap map cpa cp chat warn cancelvote passvote restart "
 		"reset swap shuffle spec999 whereis pause unpause rename renameon renameoff vstr ban tempban addip";
 
@@ -400,7 +400,7 @@ qboolean do_cmds(gentity_t *ent) {
 	admCmds(ent->client->pers.cmd1, alt, cmd, qfalse);
 
 	if (!strcmp(cmd, "incognito"))			{ if (canUse(ent, qtrue)) cmd_incognito(ent); else cantUse(ent);	return qtrue; }
-	else if (!strcmp(cmd, "list_cmds"))		{ cmd_listCmds(ent);	return qtrue; }
+	else if (!strcmp(cmd, "cmds"))			{ cmd_listCmds(ent);	return qtrue; }
 	else if (!strcmp(cmd, "ignore"))		{ if (canUse(ent, qtrue)) cmd_ignore(ent);	else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unignore"))		{ if (canUse(ent, qtrue)) cmd_unignore(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "clientignore"))	{ if (canUse(ent, qtrue)) cmd_clientIgnore(ent); else cantUse(ent); return qtrue; }
@@ -470,7 +470,7 @@ static const helpCmd_reference_t helpInfo[] = {
 	_HELP("logout", "Removes you from Administrator status.", NULL)
 	_HELP("incognito", "Toggles your Admin status from hidden to visible or other way around.", NULL)
 	_HELP("getstatus", "Shows basic info of all connected players.", NULL)
-	_HELP("list_cmds", "Shows all available commands for your level.", NULL)
+	_HELP("cmds", "Shows all available commands for your level.", NULL)
 	_HELP("ignore", "Takes player's ability to chat, use vsay or callvotes.", "Uses unique part of name!")
 	_HELP("unignore", "Restores player's ability to chat, use vsay or call votes.", "Uses unique part of name!")
 	_HELP("clientignore", "Takes player's ability to chat, callvotes or use vsay.", "Uses client slot!")
