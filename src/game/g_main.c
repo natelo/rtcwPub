@@ -157,7 +157,6 @@ vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
 vmCvar_t	g_maxVotes;			// Max votes client can call per round
 vmCvar_t	g_disallowedVotes;	// Disalloved votes separeted by space..
 vmCvar_t	g_antilag;			// Antilag
-vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 vmCvar_t	sv_hostname;		// So it's more accessible
 vmCvar_t	g_bypassPasswords;	// Tokens separated by space for bypassing a ban
 vmCvar_t	bannedMSG;			// Meesage printed to banned clients
@@ -166,7 +165,6 @@ vmCvar_t	g_inactivityToSpecs;// Puts inactive players in spectators instead of d
 vmCvar_t	g_mapConfigs;		// Essentials for custom map configs...
 vmCvar_t	g_autoSwap;			// Auto swaps teams 
 vmCvar_t	g_autoSwapRounds;	// How many rounds until it auto swaps
-vmCvar_t	g_swapCounter;		// Count times so it auto swaps once it reaches it..
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -202,6 +200,10 @@ vmCvar_t	g_mapStatsNotify;		// Notifies when record gets broken (during intermis
 vmCvar_t	g_mapStatsWarmupOnly;	// Shows only in warmup, otherwise every time game init's
 vmCvar_t	g_roundStats;			// Prints high achievers each round
 vmCvar_t	g_excludedRoundStats;	// List of excluded stats (not tracked and not printed)
+
+// Static
+vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
+vmCvar_t	g_swapCounter;		// Count times so it auto swaps once it reaches it..
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -366,8 +368,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_extendedLog, "g_extendedLog", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_maxVotes, "g_maxVotes", "3", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_disallowedVotes, "g_disallowedVotes", "", CVAR_ARCHIVE, qfalse },
-	{ &g_antilag, "g_antilag", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
-	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
+	{ &g_antilag, "g_antilag", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },	
 	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_bypassPasswords, "g_bypassPasswords", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &bannedMSG, "bannedMSG", "^7You are ^1Banned^7 from this server^1!", CVAR_ARCHIVE, 0, qfalse},
@@ -376,7 +377,6 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_mapConfigs, "g_mapConfigs", "0", CVAR_LATCH, 0, qfalse },	
 	{ &g_autoSwap, "g_autoSwap", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_autoSwapRounds, "g_autoSwapRounds", "1", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -410,6 +410,10 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_mapStats, "g_mapStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },		
 	{ &g_roundStats, "g_roundStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 	{ &g_excludedRoundStats, "g_excludedRoundStats", "", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+
+	// Static
+	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
+	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },

@@ -1327,7 +1327,6 @@ extern vmCvar_t		g_extendedLog;
 extern vmCvar_t		g_maxVotes;
 extern vmCvar_t		g_disallowedVotes;
 extern vmCvar_t		g_antilag;
-extern vmCvar_t		g_antilagVersion;
 extern vmCvar_t		sv_hostname;
 extern vmCvar_t		g_bypassPasswords;
 extern vmCvar_t		bannedMSG;
@@ -1367,6 +1366,9 @@ extern vmCvar_t		g_mapStats;
 extern vmCvar_t		g_mapStatsNotify;
 extern vmCvar_t		g_roundStats;
 extern vmCvar_t		g_excludedRoundStats;
+
+// Static
+extern vmCvar_t		g_antilagVersion;
 
 // L0 - New Cvars end
 
