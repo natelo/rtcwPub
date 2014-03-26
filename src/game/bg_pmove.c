@@ -3912,6 +3912,49 @@ void PmoveSingle (pmove_t *pmove) {
 		// entering / leaving water splashes
 		PM_WaterEvents();
 
+// L0 - fixed physics / ET port
+
+		// snap some parts of playerstate to save network bandwidth
+		if (pm->fixedphysicsfps && pm->ps->stats[STAT_HEALTH] > 0) {
+			// forty - Haste's Pmove Accurate Code
+			// the new way: don't care so much about 6 bytes/frame
+			// or so of network bandwidth, and add some mostly framerate-
+			// independent error to make up for the lack of rounding error
+			// halt if not going fast enough (0.5 units/sec)
+			if (VectorLengthSquared(pm->ps->velocity) < 0.25f) {
+				VectorClear(pm->ps->velocity);
+			}
+			else {
+				int i;
+				float fac;
+
+				fac = (float)pml.msec / (1000.0f / (float)pm->fixedphysicsfps);
+
+				// add some error...
+				for (i = 0; i < 3; i++) {
+					// ...if the velocity in this direction changed enough
+					if (fabs(pm->ps->velocity[i] - pml.previous_velocity[i]) > 0.5f / fac) {
+						if (pm->ps->velocity[i] < 0) {
+							pm->ps->velocity[i] -= 0.5f * fac;
+						}
+						else {
+							pm->ps->velocity[i] += 0.5f * fac;
+						}
+					}
+				}
+				// we can stand a little bit of rounding error for the sake
+				// of lower bandwidth
+				VectorScale(pm->ps->velocity, 64.0f, pm->ps->velocity);
+				trap_SnapVector(pm->ps->velocity);
+				VectorScale(pm->ps->velocity, 1.0f / 64.0f, pm->ps->velocity);
+			}
+		}
+		else {
+			// snap some parts of playerstate to save network bandwidth
+			trap_SnapVector(pm->ps->velocity);
+		}
+// End
+
 		// snap some parts of playerstate to save network bandwidth
 		trap_SnapVector( pm->ps->velocity );
 //		SnapVector( pm->ps->velocity );

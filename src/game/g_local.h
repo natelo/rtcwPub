@@ -1316,6 +1316,7 @@ extern vmCvar_t		g_chicken;
 extern vmCvar_t		g_poison;
 extern vmCvar_t		g_hitsounds;
 extern vmCvar_t		g_screenShake;
+extern vmCvar_t		g_fixedphysics;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;

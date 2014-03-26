@@ -920,13 +920,13 @@ void ClientThink_real( gentity_t *ent ) {
 			if (!client->dropWeaponTime) {
 				client->dropWeaponTime = 1; // just latch it for now
 
-				// L0 - Throw knife & Drop Obj
+				// L0 - Throw knife
 				if (client->ps.weapon == WP_KNIFE) {
 					if (client->ps.stats[STAT_HEALTH] > 0) {
 							Cmd_ThrowKnives(ent);
 					}
 					return;
-				}// End
+				}
 
 				// L0 - Patched it for g_unlockWeapons..
 				if ((client->ps.stats[STAT_PLAYER_CLASS] == PC_SOLDIER) && !client->ps.grenadeTimeLeft ||
@@ -1058,6 +1058,11 @@ void ClientThink_real( gentity_t *ent ) {
 	pm.noWeapClips = ( g_dmflags.integer & DF_NO_WEAPRELOAD ) > 0;
 	if (ent->aiCharacter && AICast_NoReload(ent->s.number))
 		pm.noWeapClips = qtrue;	// ensure AI characters don't use clips if they're not supposed to.
+
+	// L0 - Fixedpsyhics
+	if (g_fixedphysics.integer) {
+		pm.fixedphysicsfps = 125;
+	}
 
 	// Ridah
 //	if (ent->r.svFlags & SVF_NOFOOTSTEPS)
