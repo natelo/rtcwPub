@@ -556,8 +556,8 @@ void G_ExplodeMissile( gentity_t *ent ) {
 			// give big weapons the shakey shakey
 			if (ent->s.weapon == WP_DYNAMITE || ent->s.weapon == WP_PANZERFAUST || ent->s.weapon == WP_GRENADE_LAUNCHER ||
 				ent->s.weapon == WP_GRENADE_PINEAPPLE || ent->s.weapon == WP_ROCKET_LAUNCHER || ent->s.weapon == WP_MORTAR ||
-				ent->s.weapon == WP_ARTY )
-				Ground_Shaker(ent->r.currentOrigin, ent->splashDamage*4);
+				ent->s.weapon == WP_ARTY)								// L0 - Custom screen shake..as default blows.
+				Ground_Shaker(ent->r.currentOrigin, ent->splashDamage * (!g_screenShake.integer ? 1 : g_screenShake.integer));
 			return;
 		}
 // jpw

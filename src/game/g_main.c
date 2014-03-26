@@ -163,6 +163,7 @@ vmCvar_t	g_showLifeStats;	// If enabled it prints some life info to player when 
 vmCvar_t	g_chicken;			// Check if player is 'laming' out of combat with self kill..
 vmCvar_t	g_poison;			// Poison... anything above 0 is value that will be used
 vmCvar_t	g_hitsounds;		// Hitsounds - Requires soundpack
+vmCvar_t	g_screenShake;		// Screenshaking on explosions (4 = default, 2 = half.. etc)
 
 // Weapon
 vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
@@ -352,6 +353,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_chicken, "g_chicken", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_poison, "g_poison", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_hitsounds, "g_hitsounds", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_screenShake, "g_screenShake", "2", CVAR_ARCHIVE, 0, qtrue },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
