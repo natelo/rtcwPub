@@ -1638,6 +1638,13 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		return;
 	}
 
+	// L0 - disallow any votes defined in g_disallowedVotes cvar		
+	if (Q_FindToken(g_disallowedVotes.string, arg1))
+	{
+		CPx(ent - g_entities, va("print \"Voting for %s disabled on this server\n\"", arg1));
+		return;
+	} 
+
 	// if there is still a vote to be executed
 	if ( level.voteExecuteTime ) {
 		level.voteExecuteTime = 0;

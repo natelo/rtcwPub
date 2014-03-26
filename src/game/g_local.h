@@ -1325,6 +1325,7 @@ extern vmCvar_t		sb_autoIgnore;
 // System
 extern vmCvar_t		g_extendedLog;
 extern vmCvar_t		g_maxVotes;
+extern vmCvar_t		g_disallowedVotes;
 extern vmCvar_t		g_antilag;
 extern vmCvar_t		g_antilagVersion;
 extern vmCvar_t		sv_hostname;

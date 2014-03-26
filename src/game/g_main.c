@@ -155,6 +155,7 @@ vmCvar_t	sb_autoIgnore;					// Auto ignores players (for the round) that reach s
 // System
 vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
 vmCvar_t	g_maxVotes;			// Max votes client can call per round
+vmCvar_t	g_disallowedVotes;	// Disalloved votes separeted by space..
 vmCvar_t	g_antilag;			// Antilag
 vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 vmCvar_t	sv_hostname;		// So it's more accessible
@@ -360,6 +361,7 @@ cvarTable_t		gameCvarTable[] = {
 	// System
 	{ &g_extendedLog, "g_extendedLog", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_maxVotes, "g_maxVotes", "3", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_disallowedVotes, "g_disallowedVotes", "", CVAR_ARCHIVE, qfalse },
 	{ &g_antilag, "g_antilag", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },
 	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
 	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
