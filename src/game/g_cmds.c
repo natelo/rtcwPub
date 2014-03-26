@@ -1594,12 +1594,23 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		trap_SendServerCommand( ent-g_entities, "print \"A vote is already in progress.\n\"" );
 		return;
 	}
-	if (ent->client->pers.voteCount >= g_maxVotes.integer) {
+	// L0 - Admins can bypass this
+	if (ent->client->pers.voteCount >= g_maxVotes.integer && !ent->client->sess.admin) {
 		trap_SendServerCommand( ent-g_entities, "print \"You have called the maximum number of votes.\n\"" );
 		return;
 	}
-	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR ) {
+	// L0 - Admins can bypass this
+	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR && !ent->client->sess.admin) {
 		trap_SendServerCommand( ent-g_entities, "print \"Not allowed to call a vote as spectator.\n\"" );
+		return;
+	}
+
+	// L0 - Check if enough of time has passed before calling another vote (only non logged in players)
+	if ((level.lastVoteTime + 1000 * g_voteDelay.integer) > level.time && !ent->client->sess.admin
+		&& g_gamestate.integer == GS_PLAYING)
+	{
+		CP(va("cp \"Please wait ^3%d ^7seconds before calling a vote.\n\"2",
+			(int)((level.lastVoteTime + 1000 * g_voteDelay.integer) - level.time) / 1000));
 		return;
 	}
 
@@ -1630,6 +1641,13 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	} else if ( !Q_stricmp( arg1, "start_match" ) ) {		// NERVE - SMF
 	} else if ( !Q_stricmp( arg1, "reset_match" ) ) {		// NERVE - SMF
 	} else if ( !Q_stricmp( arg1, "swap_teams" ) ) {		// NERVE - SMF
+// L0 - New votes
+	} else if ( !Q_stricmp( arg1, "shuffle" ) ) {  	
+	} else if ( !Q_stricmp( arg1, "?" )) {
+	} else if ( !Q_stricmp( arg1, "ignore" )) {
+	} else if ( !Q_stricmp( arg1, "unignore" )) {
+// End
+
 // JPW NERVE
 #ifndef PRE_RELEASE_DEMO
 	} else if ( !Q_stricmp( arg1, testid1 ) ) { 
@@ -1639,14 +1657,14 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 // jpw
 	} else {
 		trap_SendServerCommand( ent-g_entities, "print \"Invalid vote string.\n\"" );
-		trap_SendServerCommand( ent-g_entities, "print \"Vote commands are: map_restart, nextmap, start_match, swap_teams, reset_match, map <mapname>, g_gametype <n>, kick <player>, clientkick <clientnum>\n\"" );
+		trap_SendServerCommand( ent-g_entities, "print \"Vote commands are: map_restart, nextmap, start_match, swap_teams, reset_match, map <mapname>, g_gametype <n>, kick <player>, clientkick <clientnum>, ? (poll), shuffle, ignore, unignore\n\"" );
 		return;
 	}
 
 	// L0 - disallow any votes defined in g_disallowedVotes cvar		
 	if (Q_FindToken(g_disallowedVotes.string, arg1))
 	{
-		CPx(ent - g_entities, va("print \"Voting for %s is disabled on this server.\n\"", arg1));
+		CPx(ent - g_entities, va("print \"Voting for ^3%s ^7is disabled on this server^3!\n\"", arg1));
 		return;
 	} 
 
@@ -1717,6 +1735,71 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 			return;
 		}
 // jpw
+
+// L0 - New votes
+	// Shuffle
+	} else if (!Q_stricmp(arg1, "shuffle")) {
+		Com_sprintf(level.voteString, sizeof(level.voteString), "Shuffle teams?");
+
+		Com_sprintf(level.voteDisplayString, sizeof(level.voteDisplayString), "%s", level.voteString);
+	// Poll
+	} else if (!Q_stricmp(arg1, "?")) {
+		char	*s;
+		s = ConcatArgs(2);
+
+		if (*s) {
+			Com_sprintf(level.voteString, sizeof(level.voteString), "\"poll\"");
+		}
+		Com_sprintf(level.voteDisplayString, sizeof(level.voteDisplayString), "Poll: %s", s);
+	// Ignore
+	} else if (!Q_stricmp(arg1, "ignore")) {
+		int i, num = MAX_CLIENTS;
+		for (i = 0; i < MAX_CLIENTS; i++)
+		{
+			if (level.clients[i].pers.connected != CON_CONNECTED) {
+				continue;
+			}
+
+			Q_strncpyz(cleanName, level.clients[i].pers.netname, sizeof(cleanName));
+			Q_CleanStr(cleanName);
+
+			if (!Q_stricmp(cleanName, arg2)) {
+				num = i;
+			}
+		}
+		Com_sprintf(level.voteDisplayString, sizeof(level.voteDisplayString), "ignore %s", level.clients[num].pers.netname);
+		if (num != MAX_CLIENTS) {
+			Com_sprintf(level.voteString, sizeof(level.voteString), "ignore \"%d\"", num);
+		}
+		else {
+			CPx(ent - g_entities, "print \"Client not on server.\n\"");
+			return;
+		}
+	// Unignore
+	} else if (!Q_stricmp(arg1, "unignore")) {
+		int i, num = MAX_CLIENTS;
+		for (i = 0; i < MAX_CLIENTS; i++)
+		{
+			if (level.clients[i].pers.connected != CON_CONNECTED) {
+				continue;
+			}
+
+			Q_strncpyz(cleanName, level.clients[i].pers.netname, sizeof(cleanName));
+			Q_CleanStr(cleanName);
+
+			if (!Q_stricmp(cleanName, arg2)) {
+				num = i;
+			}
+		}
+		Com_sprintf(level.voteDisplayString, sizeof(level.voteDisplayString), "unignore %s", level.clients[num].pers.netname);
+		if (num != MAX_CLIENTS) {
+			Com_sprintf(level.voteString, sizeof(level.voteString), "unignore \"%d\"", num);
+		}
+		else {
+			CPx(ent - g_entities, "print \"Client not on server.\n\"");
+			return;
+		}
+// End
 	} else {
 		Com_sprintf( level.voteString, sizeof( level.voteString ), "%s \"%s\"", arg1, arg2 );
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "%s", level.voteString );
@@ -1724,8 +1807,12 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 
 	trap_SendServerCommand( -1, va("print \"[lof]%s [lon]called a vote.\n\"", ent->client->pers.netname ) );
 
+	// L0 - For verbosity print in console as well
+	AP(va("print \"^3Vote^7: %s \n\"", level.voteDisplayString));
+
 	// start the voting, the caller autoamtically votes yes
 	level.voteTime = level.time;
+	level.lastVoteTime = level.time;
 	level.voteYes = 1;
 	level.voteNo = 0;
 	// L0 - Ehm, and where's the user vote count? Doh..

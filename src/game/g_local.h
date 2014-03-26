@@ -831,6 +831,9 @@ typedef struct {
 	int			statsPrint;
 	qboolean	statsStarted;
 
+	// Delay between votes..
+	int			lastVoteTime;		
+
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -1326,6 +1329,7 @@ extern vmCvar_t		sb_autoIgnore;
 extern vmCvar_t		g_extendedLog;
 extern vmCvar_t		g_maxVotes;
 extern vmCvar_t		g_disallowedVotes;
+extern vmCvar_t		g_voteDelay;
 extern vmCvar_t		g_antilag;
 extern vmCvar_t		sv_hostname;
 extern vmCvar_t		g_bypassPasswords;

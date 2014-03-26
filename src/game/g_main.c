@@ -156,6 +156,7 @@ vmCvar_t	sb_autoIgnore;					// Auto ignores players (for the round) that reach s
 vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
 vmCvar_t	g_maxVotes;			// Max votes client can call per round
 vmCvar_t	g_disallowedVotes;	// Disalloved votes separeted by space..
+vmCvar_t	g_voteDelay;		// Time that has to pass before another vote can be called
 vmCvar_t	g_antilag;			// Antilag
 vmCvar_t	sv_hostname;		// So it's more accessible
 vmCvar_t	g_bypassPasswords;	// Tokens separated by space for bypassing a ban
@@ -368,6 +369,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_extendedLog, "g_extendedLog", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_maxVotes, "g_maxVotes", "3", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_disallowedVotes, "g_disallowedVotes", "", CVAR_ARCHIVE, qfalse },
+	{ &g_voteDelay, "g_voteDelay", "30", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_antilag, "g_antilag", "1", CVAR_ARCHIVE | CVAR_SERVERINFO, 0, qtrue },	
 	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_bypassPasswords, "g_bypassPasswords", "", CVAR_ARCHIVE, 0, qfalse },

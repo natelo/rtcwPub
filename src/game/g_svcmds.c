@@ -273,7 +273,124 @@ void Svcmd_SwapTeams_f() {
 	G_swapTeamLocks();
 }
 
+/*
+===========
+L0 - Shuffle
+===========
+*/
+void Svcmd_Shuffle_f(void)
+{
+	int count = 0, tmpCount, i;
+	int players[MAX_CLIENTS];
+	char	cmd[MAX_TOKEN_CHARS];
 
+	trap_Argv(1, cmd, sizeof(cmd));
+
+	memset(players, -1, sizeof(players));
+
+	if (g_gamestate.integer == GS_RESET)
+		return;
+
+	for (i = 0; i < MAX_CLIENTS; i++)
+	{
+		//skip client numbers that aren't used
+		if ((!g_entities[i].inuse) || (level.clients[i].pers.connected != CON_CONNECTED))
+			continue;
+
+		//ignore spectators
+		if ((level.clients[i].sess.sessionTeam != TEAM_RED) && (level.clients[i].sess.sessionTeam != TEAM_BLUE))
+			continue;
+
+		players[count] = i;
+		count++;
+	}
+
+	tmpCount = count;	// copy the number of active clients
+
+	//loop through all the active players
+	for (i = 0; i < count; i++)
+	{
+		int j;
+
+		do {
+			j = (rand() % count);
+		} while (players[j] == -1);
+
+		//put every other random choice on allies
+		if (i & 1)
+			level.clients[players[j]].sess.sessionTeam = TEAM_BLUE;
+		else
+			level.clients[players[j]].sess.sessionTeam = TEAM_RED;
+
+		ClientUserinfoChanged(players[j]);
+		ClientBegin(players[j]);
+
+
+		players[j] = players[tmpCount - 1];
+		players[tmpCount - 1] = -1;
+		tmpCount--;
+	}
+
+	// Auto shuffle deals with that in it's own way..
+	if (Q_stricmp(cmd, "@") != 0 && Q_stricmp(cmd, "@print") != 0)
+		Svcmd_ResetMatch_f();
+
+	// Auto shuffle already prints it's own stuff..
+	if (Q_stricmp(cmd, "@print") != 0)
+		AP("chat \"console: Teams were shuffled^3!\n\"");
+}
+
+/*
+============
+L0 - Print Poll answer..
+============
+*/
+void Svcmd_PollPrint_f(void) {
+	AP("chat \"console:^7 Poll result is ^2Yes^7!\n\"");
+}
+
+/*
+=================
+L0 - (Un)Ignores player
+
+Called by vote or by admin directly (console)
+=================
+*/
+void Svcmd_handleIgnore_f(qboolean unignore) {
+	int clientNum;
+	char buf[5];
+
+	if (trap_Argc() != 2) {
+		G_Printf("Usage: ignore <clientnum>\n");
+		return;
+	}
+
+	trap_Argv(1, buf, sizeof(buf));
+	clientNum = atoi(buf);
+
+	if ((clientNum < 0) || (clientNum >= MAX_CLIENTS)) {
+		G_Printf("Invalid client number.\n");
+		return;
+	}
+
+	if ((!g_entities[clientNum].client) || (level.clients[clientNum].pers.connected != CON_CONNECTED)) {
+		G_Printf("Client not on server.\n");
+		return;
+	}
+
+	if (unignore)
+	{
+		g_entities[clientNum].client->sess.ignored = 0;
+		CPx(clientNum, "cp \"You are now ^3Unignored^7!\n\"2");
+		AP(va("chat \"console: ^7%s ^7has been Unignored.\n\"", g_entities[clientNum].client->pers.netname));
+	}
+	else
+	{
+		g_entities[clientNum].client->sess.ignored = 1;
+		CPx(clientNum, "cp \"You are now ^1ignored^7!\n\"2");
+		AP(va("chat \"console: ^7%s ^7has been ignored.\n\"", g_entities[clientNum].client->pers.netname));
+	}
+}
 
 char	*ConcatArgs( int start );
 
@@ -320,6 +437,30 @@ qboolean	ConsoleCommand( void ) {
 	// AddIP command
 	if  (Q_stricmp(cmd, "addip") == 0 ) {
 		Svcmd_AddIP_f();
+		return qtrue;
+	}
+
+	// Shuffle
+	if (Q_stricmp(cmd, "shuffle") == 0) {
+		Svcmd_Shuffle_f();
+		return qtrue;
+	}
+
+	// Poll
+	if (Q_stricmp(cmd, "poll") == 0) {
+		Svcmd_PollPrint_f();
+		return qtrue;
+	}
+
+	// Ignore
+	if (Q_stricmp(cmd, "ignore") == 0) {
+		Svcmd_handleIgnore_f(qfalse);
+		return qtrue;
+	}
+
+	// Unignore
+	if (Q_stricmp(cmd, "unignore") == 0) {
+		Svcmd_handleIgnore_f(qtrue);
 		return qtrue;
 	}
 // End
