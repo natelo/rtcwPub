@@ -15,30 +15,26 @@ Sort tag
 ===========
 */
 char *sortTag(gentity_t *ent) {
-	char *tag;
-	char n1[MAX_NETNAME];
-	char n2[MAX_NETNAME];	
+	char n1[MAX_STRING_TOKENS]; // Nobo - this needs to be atleast 256.. matching vmCvar's string (otherwise crash if > 36(previous size))
 
 	if (ent->client->sess.admin == ADM_1)
-		tag = a1_tag.string;
+		SanitizeString(a1_tag.string, n1, qtrue);
 	else if (ent->client->sess.admin == ADM_2)
-		tag = a2_tag.string;
+		SanitizeString(a2_tag.string, n1, qtrue);
 	else if (ent->client->sess.admin == ADM_3)
-		tag = a3_tag.string;
+		SanitizeString(a3_tag.string, n1, qtrue);
 	else if (ent->client->sess.admin == ADM_4)
-		tag = a4_tag.string;
+		SanitizeString(a4_tag.string, n1, qtrue);
 	else if (ent->client->sess.admin == ADM_5)
-		tag = a5_tag.string;
+		SanitizeString(a5_tag.string, n1, qtrue);
 	else
-		tag = "";
+		Q_strncpyz(n1, "", sizeof(n1));
 
 	// Has to be done twice to cope with double carrots..
-	DecolorString(tag, n1);
-	SanitizeString(n1, n2, qtrue);
-	Q_CleanStr(n2);
-	n2[10] = 0;
+	Q_CleanStr(n1);
+	//n2[10] = 0; Nobo - It may look nicer, but the size should be left to the descretion of the server owner.
 
-	return va("%s", n2);
+	return va("%s", n1);
 }
 
 /*
