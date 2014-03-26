@@ -164,6 +164,9 @@ vmCvar_t	bannedMSG;			// Meesage printed to banned clients
 vmCvar_t	g_ignoreSpecs;		// Ignores spectators - Admins can still bypass the ignore..
 vmCvar_t	g_inactivityToSpecs;// Puts inactive players in spectators instead of dropping them.
 vmCvar_t	g_mapConfigs;		// Essentials for custom map configs...
+vmCvar_t	g_autoSwap;			// Auto swaps teams 
+vmCvar_t	g_autoSwapRounds;	// How many rounds until it auto swaps
+vmCvar_t	g_swapCounter;		// Count times so it auto swaps once it reaches it..
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -370,7 +373,10 @@ cvarTable_t		gameCvarTable[] = {
 	{ &bannedMSG, "bannedMSG", "^7You are ^1Banned^7 from this server^1!", CVAR_ARCHIVE, 0, qfalse},
 	{ &g_ignoreSpecs, "g_ignoreSpecs", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_inactivityToSpecs, "g_inactivityToSpecs", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_mapConfigs, "g_mapConfigs", "0", CVAR_LATCH, 0, qfalse },
+	{ &g_mapConfigs, "g_mapConfigs", "0", CVAR_LATCH, 0, qfalse },	
+	{ &g_autoSwap, "g_autoSwap", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_autoSwapRounds, "g_autoSwapRounds", "1", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -1920,8 +1926,8 @@ void BeginIntermission( void ) {
 
 		stats_MapStats();
 	}
+// End
 }
-
 
 /*
 =============
@@ -1973,6 +1979,18 @@ void ExitLevel (void) {
 
 		if ( level.clients[i].pers.connected == CON_CONNECTED ) {
 			level.clients[i].pers.connected = CON_CONNECTING;
+		}
+	}
+
+	// L0 - Swap teams if enabled and we're not in SW mode as SW deals with that on it's own..
+	if (g_autoSwap.integer && g_gametype.integer != GT_WOLF_STOPWATCH)  {
+		// See  if swap is due..
+		if (g_swapCounter.integer >= g_autoSwapRounds.integer) {
+			trap_Cvar_Set("g_swapteams", "1");
+			trap_Cvar_Set("g_swapCounter", "1");
+		}
+		else {
+			trap_Cvar_Set("g_swapCounter", va("%i", g_swapCounter.integer + 1));
 		}
 	}
 
