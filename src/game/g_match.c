@@ -80,3 +80,27 @@ void CountDown(void) {
 	level.cnNum++;
 }
 
+/*
+=================
+Chicken Run
+
+Originally from etPUB (i think)
+
+TODO: Once stats are ported make sure it counts as kill for attacker.
+=================
+*/
+gentity_t *G_FearCheck(gentity_t *ent) {
+	qboolean fear = qfalse;
+	gentity_t *attacker = &level.gentities[ent->client->lasthurt_client];
+
+	if (g_chicken.integer && attacker && attacker->client &&
+		(level.time - ent->client->lasthurt_time) < g_chicken.integer &&
+		attacker->client->sess.sessionTeam != ent->client->sess.sessionTeam &&
+		attacker->health > 0) {
+
+		fear = qtrue;
+	}
+
+	return (fear ? attacker : NULL);
+}
+

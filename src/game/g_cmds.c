@@ -486,9 +486,66 @@ void Cmd_Kill_f( gentity_t *ent ) {
 		return;
 	}
 
+	// L0 - Chicken
+	if (G_FearCheck(ent)) {
+		ent->flags &= ~FL_GODMODE;
+		ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
+		ent->client->ps.persistant[PERS_HWEAPON_USE] = 0;
+
+		APRS(ent, "rtcwpub/sound/game/events/comeback.wav");
+		player_die(ent, ent, ent, (ent->health + 100000), MOD_CHICKEN);
+
+		// Stats
+		ent->client->pers.suicides++;
+		write_RoundStats(ent->client->pers.netname, ent->client->pers.suicides, ROUND_SUICIDES);
+
+		return;
+	}
+
 	ent->flags &= ~FL_GODMODE;
 	ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
-	player_die (ent, ent, ent, 100000, MOD_SUICIDE);
+	ent->client->ps.persistant[PERS_HWEAPON_USE] = 0; // TTimo - if using /kill while at MG42
+	player_die(ent, ent, ent, 100000, MOD_SUICIDE);
+
+	// L0 - Stats
+	ent->client->pers.suicides++;
+	write_RoundStats(ent->client->pers.netname, ent->client->pers.suicides, ROUND_SUICIDES);
+}
+
+/*
+=================
+L0 - Cmd_Kill_f
+
+Kills but doesn't gibs
+=================
+*/
+void Cmd_SoftKill_f(gentity_t *ent) {
+	if (ent->client->sess.sessionTeam == TEAM_SPECTATOR) {
+		return;
+	}
+	if (g_gametype.integer >= GT_WOLF && ent->client->ps.pm_flags & PMF_LIMBO) {
+		return;
+	}
+
+	// L0 - Chicken
+	if (G_FearCheck(ent)) {
+		ent->flags &= ~FL_GODMODE;
+		ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
+		ent->client->ps.persistant[PERS_HWEAPON_USE] = 0;
+
+		APRS(ent, "rtcwpub/sound/game/events/comeback.wav");
+		player_die(ent, ent, ent, ent->health, MOD_CHICKEN);
+
+		// Stats
+		ent->client->pers.suicides++;
+		write_RoundStats(ent->client->pers.netname, ent->client->pers.suicides, ROUND_SUICIDES);
+		return;
+	}
+
+	ent->flags &= ~FL_GODMODE;
+	ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
+	ent->client->ps.persistant[PERS_HWEAPON_USE] = 0; // TTimo - if using /kill while at MG42
+	player_die(ent, ent, ent, 100000, MOD_SELFKILL);   // L0 - Kill but not gib...
 
 	// L0 - Stats
 	ent->client->pers.suicides++;
@@ -2555,8 +2612,12 @@ void ClientCommand( int clientNum ) {
 		Cmd_Notarget_f (ent);
 	else if (Q_stricmp (cmd, "noclip") == 0)
 		Cmd_Noclip_f (ent);
-	else if (Q_stricmp (cmd, "kill") == 0)
+	else if (Q_stricmp (cmd, "gib") == 0)
 		Cmd_Kill_f (ent);
+// L0
+	else if (Q_stricmp(cmd, "kill") == 0)
+		Cmd_SoftKill_f(ent);
+// End
 	else if (Q_stricmp (cmd, "levelshot") == 0)
 		Cmd_LevelShot_f (ent);
 	else if (Q_stricmp (cmd, "follow") == 0)

@@ -298,6 +298,10 @@ char	*modNames[] = {
 
 // L0 - New MODs
 	"MOD_ADMKILL",
+	"MOD_SELFKILL",		// Suicide (not gib!)
+	"MOD_THROWKNIFE",	// Killed by knife throw
+	"MOD_CHICKEN",		// Funny print when player self kills to avoid being killed
+	"MOD_POISONDMED",	// Killed by poison
 // End
 
 	"MOD_BAT"
@@ -690,6 +694,12 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 	// L0 - show First Blood
 	stats_FirstBlood(self, attacker);
+
+// L0 - reset chicken test so it doesn't spam when not need it
+	self->client->lasthurt_time = 0;
+	self->client->lasthurt_client = ENTITYNUM_NONE;
+	self->client->lasthurt_mod = 0;
+// End
 }
 
 
@@ -1235,6 +1245,7 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		// set the last client who damaged the target
 		targ->client->lasthurt_client = attacker->s.number;
 		targ->client->lasthurt_mod = mod;
+		targ->client->lasthurt_time = level.time;	// L0 - chicken test
 	}
 
 	// do the damage

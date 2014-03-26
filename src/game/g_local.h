@@ -588,10 +588,10 @@ struct gclient_s {
 	int			accuracy_shots;		// total number of shots
 	int			accuracy_hits;		// total number of hits
 
-	//
 	int			lastkilled_client;	// last client that this client killed
 	int			lasthurt_client;	// last client that damaged this client
 	int			lasthurt_mod;		// type of damage the client did
+	int			lasthurt_time;		// L0 - Chicken check
 
 	// timers
 	int			respawnTime;		// can respawn when time > this, force after g_forcerespwan
@@ -647,6 +647,8 @@ struct gclient_s {
 
 	// Double kill
 	int			doublekill;		// (stats) Double+ Kills
+
+
 };
 
 
@@ -1301,6 +1303,7 @@ extern vmCvar_t		g_gibReports;
 extern vmCvar_t		g_weaponOwnerLock;
 extern vmCvar_t		g_fastStabSound;
 extern vmCvar_t		g_showLifeStats;
+extern vmCvar_t		g_chicken;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
@@ -1592,6 +1595,7 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
 // g_match.c
 //
 void CountDown(void);
+gentity_t *G_FearCheck(gentity_t *ent);
 
 // 
 // g_players.c

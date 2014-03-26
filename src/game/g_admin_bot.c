@@ -4,7 +4,7 @@ L0 / rtcwPub :: g_admin.c
 
 	Server Admin Bot (SAB) functionality.
 
-Created: 24. Mar / 2014
+Created: 26. Mar / 2014
 ===========================================================================
 */
 #include "g_admin.h"
