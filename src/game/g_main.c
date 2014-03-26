@@ -150,6 +150,7 @@ vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 vmCvar_t	sv_hostname;		// So it's more accessible
 vmCvar_t	g_bypassPasswords;	// Tokens separated by space for bypassing a ban
 vmCvar_t	bannedMSG;			// Meesage printed to banned clients
+vmCvar_t	mapAchiever;		// A static cvar for map achiever..
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -157,6 +158,8 @@ vmCvar_t	g_unlockWeapons;	// Enable weapon dropping..
 vmCvar_t	g_tapReports;		// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
 vmCvar_t	g_gibReports;		// Prints Gib reports
 vmCvar_t	g_weaponOwnerLock;  // Disable weapon picking for anyone but owner of it
+vmCvar_t	g_fastStabSound;	// 0 = off, 1 = (OSP's) goat sound, 2 = humiliation sound, 3 = random between 1 or 2
+vmCvar_t	g_showLifeStats;	// If enabled it prints some life info to player when (s)he dies
 
 // Weapon
 vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
@@ -332,6 +335,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_bypassPasswords, "g_bypassPasswords", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &bannedMSG, "bannedMSG", "^7You are ^1Banned^7 from this server^1!", CVAR_ARCHIVE, 0, qfalse},
+	{ &mapAchiever, "mapAchiever", "", 0, 0, qfalse },
 
 	// General
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -339,6 +343,8 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_tapReports, "g_tapReports", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_gibReports, "g_gibReports", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_weaponOwnerLock, "g_weaponOwnerLock", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_fastStabSound, "g_fastStabSound", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_showLifeStats, "g_showLifeStats", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
@@ -1299,6 +1305,13 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
 	G_RemapTeamShaders();
+
+	// L0 - Map Stats
+	if (g_mapStats.integer && !g_mapStatsWarmupOnly.integer)
+	{
+		if (mapAchiever.string)
+			AP(va("chat \"%s \n\"", mapAchiever.string));
+	}
 }
 
 

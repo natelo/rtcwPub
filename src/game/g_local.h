@@ -502,6 +502,40 @@ typedef struct {
 	char		cmd3[128];			// !command attribute extra	
 
 	qboolean	nameLocked;	// Takes ability to rename from client..it's cleared next round, map load..
+
+	// Stats	
+	int			kills;
+	int			deaths;
+	int			teamKills;	// Note that SB uses it as well!
+	int			headshots;
+	int			revives;
+	int			medPacks;
+	int			ammoPacks;
+	int			acc_shots;
+	int			acc_hits;
+	int			dmgGiven;
+	int			dmgReceived;
+	int			dmgTeam;
+	int			gibs;
+	int			suicides;
+	int			poison;
+	int			chicken;
+	int			knifeKills;
+	int			fastStabs;
+
+	// Death Spree
+	int			spreeDeaths;
+
+	// Life Stats
+	int			lifeKills;
+	int			lifeRevives;
+	int			lifeAcc_shots;
+	int			lifeAcc_hits;
+	int			lifeHeadshots;
+
+	// Map Stats
+	int			lifeKillsPeak;
+	int			lifeDeathsPeak;
 } clientPersistant_t;
 
 // L0 - antilag 
@@ -752,9 +786,24 @@ typedef struct {
 	int			alliedPlayers;
 	int			axisPlayers;
 
+	// Map Stats
+	unsigned int		topScore;
+	char		topOwner[MAX_NETNAME + 1];
+
 	// Last Blood 
 	char		lastKiller[MAX_NETNAME + 1];
 	char		lastVictim[MAX_NETNAME + 1];
+
+	// Countdown	
+	qboolean	cnStarted;
+	int			cnPush;
+	int			cnNum;
+
+	// Round stats
+	int			statsNum;
+	int			statsPrint;
+	qboolean	statsStarted;
+
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -1242,6 +1291,7 @@ extern vmCvar_t		g_antilagVersion;
 extern vmCvar_t		sv_hostname;
 extern vmCvar_t		g_bypassPasswords;
 extern vmCvar_t		bannedMSG;
+extern vmCvar_t		mapAchiever;
 
 // General
 extern vmCvar_t		g_dropReload;
@@ -1249,6 +1299,8 @@ extern vmCvar_t		g_unlockWeapons;
 extern vmCvar_t		g_tapReports;
 extern vmCvar_t		g_gibReports;
 extern vmCvar_t		g_weaponOwnerLock;
+extern vmCvar_t		g_fastStabSound;
+extern vmCvar_t		g_showLifeStats;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
@@ -1507,7 +1559,10 @@ void GetIP(const char *strIP1, char *strIP2, char *strPort);
 void APSound(char *sound);
 void CPSound(gentity_t *ent, char *sound);
 void APRSound(gentity_t *ent, char *sound);
-
+char *parseNames(char *name);
+void Q_Tokenize(char *str, char **splitstr, char *delim);
+void ParseStr(const char *strInput, char *strCmd, char *strArgs);
+qboolean Q_FindToken(char *haystack, char *needle);
 
 //
 // g_files.c
@@ -1571,5 +1626,10 @@ void stats_RoundStats(void);
 #define CPS(x, y)	CPSound(x, y)								// Client sound only
 
 #define ARRAY_LEN(x)	(sizeof(x) / sizeof(*(x)))				// Saves some time..
+
+//
+// Include stuff
+//
+#include "g_stats.h"
 
 #endif // __SHARED_H

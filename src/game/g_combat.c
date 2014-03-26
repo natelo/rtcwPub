@@ -357,6 +357,25 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		obit = modNames[ meansOfDeath ];
 	}
 
+	// L0
+	// If person gets stabbed use custom sound from soundpack
+	// it's broadcasted to victim and heard only if standing near victim...
+	if (meansOfDeath == MOD_KNIFE_STEALTH && !OnSameTeam(self, attacker) && g_fastStabSound.integer) {
+		int r = rand() % 2;
+		char *snd;
+
+		if (r == 0)
+			snd = "stab.wav";
+		else
+			snd = "stab_alt.wav";
+
+		APRS(self, va("rtcwpub/sound/game/events/%s", ((g_fastStabSound.integer == 1) ? "stab.wav" :
+			((g_fastStabSound.integer == 2) ? "stab_alt.wav" : snd))));
+
+		attacker->client->pers.fastStabs++;
+		write_RoundStats(attacker->client->pers.netname, attacker->client->pers.fastStabs, ROUND_FASTSTABS);
+	}
+
 	// L0 - Don't bother in warmup etc..
 	if (g_gamestate.integer == GS_PLAYING)
 	{
@@ -367,6 +386,42 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 	// L0 - Death Sprees
 	stats_DeathSpree(self);
+
+	// L0 - Stats
+	if (attacker && attacker->client && g_gamestate.integer == GS_PLAYING) {
+		// Life kills & death spress
+		if (!OnSameTeam(attacker, self)) {
+			attacker->client->pers.kills++;
+			attacker->client->pers.lifeKills++;
+
+			write_RoundStats(attacker->client->pers.netname, attacker->client->pers.kills, ROUND_KILLS);
+			write_RoundStats(attacker->client->pers.netname, attacker->client->pers.lifeKills, ROUND_KILLPEAK);
+
+			if (g_mapStats.integer == 1)
+				write_MapStats(attacker, attacker->client->pers.kills, MAP_KILLER);
+			else if (g_mapStats.integer == 2)
+				write_MapStats(attacker, attacker->client->pers.kills, MAP_KILLING_SPREE);
+
+			// Count teamkill
+		}
+		else {
+			// Admin bot - teamKills
+			if (attacker != self)
+			{
+				write_RoundStats(attacker->client->pers.netname, attacker->client->pers.teamKills, ROUND_TEAMKILLS);
+			}
+		}
+	}
+
+	// L0 - Stats
+	if (attacker && attacker->client)
+	{
+		if (!OnSameTeam(attacker, self) && (attacker->client->pers.spreeDeaths > attacker->client->pers.lifeDeathsPeak))
+			attacker->client->pers.lifeDeathsPeak = attacker->client->pers.spreeDeaths;
+
+		if (!OnSameTeam(attacker, self))
+			attacker->client->pers.spreeDeaths = 0;
+	}
 
 	// L0 - (a hack) Only if it's not a custom mod
 	if (!isCustomMOD(meansOfDeath, self, attacker)) 
@@ -382,6 +437,18 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	self->enemy = attacker;
 
 	self->client->ps.persistant[PERS_KILLED]++;
+
+// L0 
+	self->client->pers.deaths++;
+	self->client->pers.spreeDeaths++;
+	write_RoundStats(self->client->pers.netname, self->client->pers.deaths, ROUND_DEATHS);
+	write_RoundStats(self->client->pers.netname, self->client->pers.spreeDeaths, ROUND_DEATHPEAK);
+
+	if (g_mapStats.integer == 3)
+		write_MapStats(self, self->client->pers.deaths, MAP_VICTIM);
+	else if (g_mapStats.integer == 4)
+		write_MapStats(self, self->client->pers.deaths, MAP_DEATH_SPREE);
+// End
 
 // JPW NERVE -- if player is holding ticking grenade, drop it
 	if (g_gametype.integer != GT_SINGLE_PLAYER)
@@ -1120,6 +1187,18 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 		// L0 - check for First Headshot
 		stats_FirstHeadshot(attacker, targ);
+
+		// L0 - Stats
+		if (!OnSameTeam(attacker, targ))
+		{
+			attacker->client->pers.headshots++;
+			attacker->client->pers.lifeHeadshots++;
+
+			write_RoundStats(attacker->client->pers.netname, attacker->client->pers.headshots, ROUND_HEADSHOTS);
+
+			if (g_mapStats.integer == 6)
+				write_MapStats(attacker, attacker->client->pers.deaths, MAP_HEADSHOTS);
+		}
 	}
 	
 	if ( g_debugDamage.integer ) {
@@ -1180,6 +1259,13 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 				if (g_gametype.integer >= GT_WOLF)
 					if ((targ->health < FORCE_LIMBO_HEALTH) && (targ->health > GIB_HEALTH) && (!(targ->client->ps.pm_flags & PMF_LIMBO)))
 					{
+						// L0 - Stats
+						if (!OnSameTeam(attacker, targ) && attacker->client)
+						{
+							attacker->client->pers.gibs++;
+							write_RoundStats(attacker->client->pers.netname, attacker->client->pers.gibs, ROUND_GIBS);
+						}
+
 						// L0 - Gib reports
 						if (!attacker->client && g_gibReports.integer)
 							AP(va("print \"%s ^7was gibbed\n\"", targ->client->pers.netname));

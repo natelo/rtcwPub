@@ -489,6 +489,10 @@ void Cmd_Kill_f( gentity_t *ent ) {
 	ent->flags &= ~FL_GODMODE;
 	ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
 	player_die (ent, ent, ent, 100000, MOD_SUICIDE);
+
+	// L0 - Stats
+	ent->client->pers.suicides++;
+	write_RoundStats(ent->client->pers.netname, ent->client->pers.suicides, ROUND_SUICIDES);
 }
 
 

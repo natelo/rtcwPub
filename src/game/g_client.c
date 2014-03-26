@@ -1691,6 +1691,13 @@ void ClientBegin( int clientNum ) {
 	client->pers.complaintClient = -1;
 	client->pers.complaintEndTime = -1;
 
+// L0
+	// Stats
+	client->pers.dmgGiven = 0;
+	client->pers.dmgReceived = 0;
+	client->pers.spreeDeaths = 0;
+// End
+
 	// locate ent at a spawn point
 	ClientSpawn( ent, qfalse );
 

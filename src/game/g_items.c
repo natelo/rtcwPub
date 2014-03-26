@@ -379,6 +379,14 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 							AddScore(ent->parent, WOLF_AMMO_UP);
 						ent->parent->client->PCSpecialPickedUpCount++;
 					}
+
+		// L0 - Stats
+		if ((ent->parent) && (ent->parent != other) && (OnSameTeam(ent->parent, other)))
+		{
+			ent->parent->client->pers.ammoPacks++;
+			write_RoundStats(ent->parent->client->pers.netname, ent->parent->client->pers.ammoPacks, ROUND_AMMOGIVEN);
+		}
+		
 // everybody likes grenades -- abuse weapon var as grenade type and i as max # grenades class can carry
 		switch (other->client->ps.stats[STAT_PLAYER_CLASS]) {
 		case PC_LT: // redundant but added for completeness/flexibility
@@ -505,7 +513,12 @@ int Pickup_Health (gentity_t *ent, gentity_t *other) {
 
 // jpw
 
-	
+	// L0 - Stats
+	if ((ent->parent) && (ent->parent != other) && (OnSameTeam(ent->parent, other)))
+	{
+		ent->parent->client->pers.medPacks++;
+		write_RoundStats(ent->parent->client->pers.netname, ent->parent->client->pers.medPacks, ROUND_MEDGIVEN);
+	}
 	
 	// small and mega healths will go over the max
 	if ( ent->item->quantity != 5 && ent->item->quantity != 100  ) {

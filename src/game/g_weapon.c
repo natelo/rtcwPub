@@ -336,6 +336,16 @@ void Weapon_Syringe(gentity_t *ent) {
 				traceEnt->client->ps.pm_time = 2100;
 
 				AddScore(ent, WOLF_MEDIC_BONUS); // JPW NERVE props to the medic for the swift and dexterous bit o healitude
+
+// L0 - Stats	
+				ent->client->pers.revives++;
+				ent->client->pers.lifeRevives++;
+
+				write_RoundStats(ent->client->pers.netname, ent->client->pers.revives, ROUND_REVIVES);
+
+				if (g_mapStats.integer == 5)
+					write_MapStats(ent, ent->client->pers.revives, MAP_REVIVES);
+// End
 			}
 		}
 	}
