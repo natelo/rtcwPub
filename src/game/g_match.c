@@ -85,8 +85,6 @@ void CountDown(void) {
 Chicken Run
 
 Originally from etPUB (i think)
-
-TODO: Once stats are ported make sure it counts as kill for attacker.
 =================
 */
 gentity_t *G_FearCheck(gentity_t *ent) {
@@ -170,7 +168,7 @@ void matchInfo(unsigned int type, char *msg) {
 		if (g_printMatchInfo.integer)
 			AP(va("print \"[%s] ^3%s \n\"", GetLevelTime(), msg));
 		else
-			AP(va("cp \"%s \n\"1", msg));
+			AP(va("cp \"%s \n\"", msg));
 	}
 }
 

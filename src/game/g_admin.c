@@ -344,8 +344,7 @@ Determine if admin level allows command
 ===========
 */
 qboolean canUse(gentity_t *ent, qboolean isCmd) {
-	char *permission = "";
-	char *token, *parse;
+	char *list = "";
 	char alt[128];
 	char cmd[128];
 
@@ -354,41 +353,28 @@ qboolean canUse(gentity_t *ent, qboolean isCmd) {
 		return qfalse;
 		break;
 	case ADM_1:
-		permission = a1_cmds.string;
+		list = a1_cmds.string;
 		break;
 	case ADM_2:
-		permission = a2_cmds.string;
+		list = a2_cmds.string;
 		break;
 	case ADM_3:
-		permission = a3_cmds.string;
+		list = a3_cmds.string;
 		break;
 	case ADM_4:
-		permission = a4_cmds.string;
+		list = a4_cmds.string;
 		break;
 	case ADM_5:
 		if (a5_allowAll.integer && isCmd) // Return true if allowAll is enabled and is command.
 			return qtrue;
 		else
-			permission = a5_cmds.string;  // Otherwise just loop thru string and see if there's a match.
+			list = a5_cmds.string;  // Otherwise just loop thru string and see if there's a match.
 		break;
 	}
 
 	admCmds(ent->client->pers.cmd1, alt, cmd, qfalse);
 
-	if (strlen(permission)) {
-		parse = permission;
-		while (1) {
-			token = COM_Parse(&parse);
-			if (!token || !token[0])
-				break;
-
-			if (!Q_stricmp(cmd, token))	{
-				return qtrue;
-			}
-		}
-		return qfalse;
-	}
-	return qfalse;
+	return Q_FindToken(list, ent->client->pers.cmd1);
 }
 
 /*
@@ -420,24 +406,7 @@ Basically we re-use existing stuff..
 ===========
 */
 qboolean bypassing(char *password) {
-
-	if (strlen(g_bypassPasswords.string))	{
-		char *token, *text;
-		text = g_bypassPasswords.string;
-
-		while (1)
-		{
-			token = COM_Parse(&text);
-			if (!token || !token[0])
-				break;
-
-			if (!Q_stricmp(password, token))
-				return qtrue;
-			else
-				return qfalse;
-		}
-	}
-	return qfalse;
+	return Q_FindToken(g_bypassPasswords.string, password);
 }
 
 /*
