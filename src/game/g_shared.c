@@ -288,20 +288,17 @@ See if there's a match
 */
 qboolean Q_FindToken(char *haystack, char *needle) {
 
-	if (strlen(haystack)) {
-		char *token, *list;
-		list = haystack;
-
+	if (strlen(haystack) && strlen(needle)) {
+		char *token;
+		
 		while (1)
 		{
-			token = COM_Parse(&list);
+			token = COM_Parse(&haystack);
 			if (!token || !token[0])
 				break;
 
 			if (!Q_stricmp(needle, token))
 				return qtrue;
-			else
-				return qfalse;
 		}
 	}
 	return qfalse;
