@@ -964,6 +964,7 @@ G_Say
 #define SAY_TEAM	1
 #define SAY_TELL	2
 #define SAY_LIMBO	3			// NERVE - SMF
+#define SAY_ADMIN	4			// L0 - Admin chat
 
 void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, const char *name, const char *message, qboolean localize ) { // removed static so it would link
 	if (!other) {
@@ -990,6 +991,12 @@ void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, const char 
 		&& ( ( ent->client->sess.sessionTeam == TEAM_FREE && other->client->sess.sessionTeam != TEAM_FREE ) ||
 		( ent->client->sess.sessionTeam == TEAM_SPECTATOR && other->client->sess.sessionTeam != TEAM_SPECTATOR ) ) ) {
 		return;
+	}
+
+	// L0 - Admin chat is visible only to admins..
+	if (mode == SAY_ADMIN) {
+		if (!ent->client->sess.admin != (other->client->sess.admin == ADM_NONE))
+			return;
 	}
 
 	// NERVE - SMF
@@ -1110,6 +1117,17 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		color = COLOR_GREEN;
 		break;
 	// -NERVE - SMF
+	// L0 - Admin chat
+	case SAY_ADMIN:
+		if (ent->client->sess.admin == ADM_NONE) {
+			CP("print \"^1Error: ^7Private chat is only for Admins, login if you wish to participate^1!\n\"");
+			return;
+		}
+		G_LogPrintf("say_admin: %s: %s\n", ent->client->pers.netname, chatText);
+		Com_sprintf(name, sizeof(name), "^3Admin Channel(^7%s^3): ", ent->client->pers.netname);
+		color = COLOR_WHITE;
+		break;
+	//  end	
 	}
 
 	Q_strncpyz( text, chatText, sizeof(text) );
@@ -2580,6 +2598,14 @@ void ClientCommand( int clientNum ) {
 		return;
 	}
 	// -NERVE - SMF
+
+	// L0 - admin chat
+	if ((Q_stricmp(cmd, "private") == 0) ||
+		(Q_stricmp(cmd, "admin") == 0) ||
+		(Q_stricmp(cmd, "say_admin") == 0)) {
+		Cmd_Say_f(ent, SAY_ADMIN, qfalse);
+		return;
+	}
 
 	if (Q_stricmp (cmd, "tell") == 0) {
 		Cmd_Tell_f ( ent );
