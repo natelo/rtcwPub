@@ -1314,6 +1314,7 @@ extern vmCvar_t		g_fastStabSound;
 extern vmCvar_t		g_showLifeStats;
 extern vmCvar_t		g_chicken;
 extern vmCvar_t		g_poison;
+extern vmCvar_t		g_hitsounds;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;

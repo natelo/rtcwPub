@@ -956,6 +956,56 @@ void G_ArmorDamage(gentity_t *targ) {
 }
 
 /*
+==============
+L0
+
+Hitsounds
+Note that it requires pack for it.
+TODO: Hook this under colors?
+==============
+*/
+void Hitsounds(gentity_t *targ, gentity_t *attacker, qboolean body) {
+
+	qboolean 	onSameTeam = OnSameTeam(targ, attacker);
+	gentity_t	*te;
+
+	if (g_hitsounds.integer) {
+
+		// if player is hurting him self don't give any sounds
+		if (targ->client == attacker->client) {
+			return;  // this happens at flaming your self... just return silence...			
+		}
+
+		// if team mate
+		if (targ->client && attacker->client && onSameTeam && targ->client == attacker->client) {
+
+			te = G_TempEntity(attacker->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND);
+			te->s.eventParm = G_SoundIndex("rtcwpub/sound/game/hitTeam.wav");
+			te->s.teamNum = attacker->s.clientNum;
+		}
+
+		// If enemy
+		else if (targ &&
+			targ->client &&
+			attacker &&
+			attacker->client &&
+			attacker->s.number != ENTITYNUM_NONE &&
+			attacker->s.number != ENTITYNUM_WORLD &&
+			attacker != targ &&
+			g_gamestate.integer == GS_PLAYING &&
+			!onSameTeam)
+		{
+			te = G_TempEntity(attacker->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND);
+			if (body)
+				te->s.eventParm = G_SoundIndex("rtcwpub/sound/game/hit.wav");
+			else
+				te->s.eventParm = G_SoundIndex("rtcwpub/sound/game/hitH.wav");
+			te->s.teamNum = attacker->s.clientNum;
+		}
+	}
+}
+
+/*
 ============
 T_Damage
 
@@ -1179,6 +1229,9 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 	take = damage;
 	save = 0;
 
+	// L0 - Hitsounds (body)
+	Hitsounds(targ, attacker, qtrue);
+
 	// save some from armor
 	asave = CheckArmor (targ, take, dflags);
 	take -= asave;
@@ -1194,6 +1247,9 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			G_AddEvent( targ, EV_LOSE_HAT, DirToByte(dir) );
 
 		targ->client->ps.eFlags |= EF_HEADSHOT;
+
+		// L0 - Hitsounds (head)
+		Hitsounds(targ, attacker, qfalse);
 
 		// L0 - check for First Headshot
 		stats_FirstHeadshot(attacker, targ);
