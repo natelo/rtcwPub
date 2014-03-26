@@ -1612,6 +1612,7 @@ gentity_t *G_FearCheck(gentity_t *ent);
 // g_players.c
 //
 void cmd_getstatus(gentity_t *ent);
+void Cmd_ThrowKnives(gentity_t *ent);
 
 //
 // g_stats.c
