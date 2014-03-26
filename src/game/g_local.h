@@ -1336,6 +1336,7 @@ extern vmCvar_t		g_bypassPasswords;
 extern vmCvar_t		bannedMSG;
 extern vmCvar_t		g_ignoreSpecs;
 extern vmCvar_t		g_inactivityToSpecs;
+extern vmCvar_t		g_autoShuffle;
 
 // Game
 extern vmCvar_t		g_dropReload;
@@ -1372,7 +1373,7 @@ extern vmCvar_t		g_roundStats;
 extern vmCvar_t		g_excludedRoundStats;
 
 // Static
-extern vmCvar_t		g_antilagVersion;
+extern vmCvar_t		shuffleTracking;
 
 // L0 - New Cvars end
 

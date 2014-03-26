@@ -166,6 +166,7 @@ vmCvar_t	g_inactivityToSpecs;// Puts inactive players in spectators instead of d
 vmCvar_t	g_mapConfigs;		// Essentials for custom map configs...
 vmCvar_t	g_autoSwap;			// Auto swaps teams 
 vmCvar_t	g_autoSwapRounds;	// How many rounds until it auto swaps
+vmCvar_t	g_autoShuffle;		// Auto shuffles teams after rounds set here | 0 = off
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -205,6 +206,7 @@ vmCvar_t	g_excludedRoundStats;	// List of excluded stats (not tracked and not pr
 // Static
 vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 vmCvar_t	g_swapCounter;		// Count times so it auto swaps once it reaches it..
+vmCvar_t	shuffleTracking;	// Tracks rounds for (auto) shuffle
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -379,6 +381,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_mapConfigs, "g_mapConfigs", "0", CVAR_LATCH, 0, qfalse },	
 	{ &g_autoSwap, "g_autoSwap", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_autoSwapRounds, "g_autoSwapRounds", "1", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_autoShuffle, "g_autoShuffle", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -416,6 +419,7 @@ cvarTable_t		gameCvarTable[] = {
 	// Static
 	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
 	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
+	{ &shuffleTracking, "shuffleTracking", "0", 0, 0, qfalse },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },
@@ -1932,6 +1936,10 @@ void BeginIntermission( void ) {
 
 		stats_MapStats();
 	}
+
+	// autoShuffle
+	if (g_autoShuffle.integer)
+		trap_Cvar_Set("shuffleTracking", va("%i", shuffleTracking.integer + 1));
 // End
 }
 

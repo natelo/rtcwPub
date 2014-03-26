@@ -61,6 +61,23 @@ void CountDown(void) {
 	}
 	else {
 		level.cnPush = level.time + 1000;
+
+		// Auto shuffle if enabled and treshhold is reached
+		if (g_autoShuffle.integer)
+		{
+			if (shuffleTracking.integer >= g_autoShuffle.integer)
+			{
+				trap_SendConsoleCommand(EXEC_APPEND, "shuffle @print\n");
+				trap_Cvar_Set("shuffleTracking", 0);
+				AP("chat \"console: Teams were ^3Auto shuffled^7!\n\"");
+			}
+			// Notify that shuffle will occur the next round..
+			else if ((g_autoShuffle.integer > 2) &&
+				(shuffleTracking.integer == (g_autoShuffle.integer - 1)))
+			{
+				AP(("chat \"^3Notice: ^7Teams will be ^3Auto Shuffled ^7the next round^3!\n\""));
+			}
+		}
 	}
 
 	// We're done.. restart the game
