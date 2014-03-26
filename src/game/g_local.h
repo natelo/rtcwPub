@@ -380,6 +380,7 @@ struct gentity_s {
 	qboolean	poisoned;					// Poison
 	int			poisonEnt;					// Poison
 	int			lastPoisonTime;				// Poison
+	int			thrownKnifeTime;			// Knife throwing
 };
 
 // Ridah
@@ -541,6 +542,9 @@ typedef struct {
 	// Map Stats
 	int			lifeKillsPeak;
 	int			lifeDeathsPeak;
+
+	// Throwing knives
+	int			throwingKnives;
 } clientPersistant_t;
 
 // L0 - antilag 
@@ -1315,6 +1319,7 @@ extern vmCvar_t		g_poison;
 extern vmCvar_t		g_dropHealth;
 extern vmCvar_t		g_dropNades;
 extern vmCvar_t		g_dropAmmo;
+extern vmCvar_t		g_throwKnives;
 
 // Stats
 extern vmCvar_t		g_doubleKills;

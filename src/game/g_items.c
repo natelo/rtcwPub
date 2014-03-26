@@ -411,6 +411,25 @@ int Pickup_Weapon (gentity_t *ent, gentity_t *other) {
 			other->client->ps.ammoclip[BG_FindClipForWeapon(weapon)]++;
 		COM_BitSet(other->client->ps.weapons,weapon);
 
+		// L0 - Give med's a syringe
+		if (other->client->ps.stats[STAT_PLAYER_CLASS] == PC_MEDIC)
+		{
+			if (other->client->ps.ammoclip[BG_FindAmmoForWeapon(WP_MEDIC_SYRINGE)] < 10)
+				other->client->ps.ammoclip[BG_FindAmmoForWeapon(WP_MEDIC_SYRINGE)]++;
+			COM_BitSet(other->client->ps.weapons, WP_MEDIC_SYRINGE);
+		}
+
+		// TTimo - add 8 pistol bullets
+		if (other->client->sess.sessionTeam == TEAM_RED)
+			weapon = WP_LUGER;
+		else
+			weapon = WP_COLT;
+
+		// L0 - Throw knives
+		if ((other->client->pers.throwingKnives < (g_throwKnives.integer + 5)) || (g_throwKnives.integer == 0)) {
+			other->client->pers.throwingKnives++;
+		} // End
+
 // and some two-handed ammo
 		for (i=0;i<MAX_WEAPS_IN_BANK_MP;i++) {
 			weapon = weapBanksMultiPlayer[3][i];

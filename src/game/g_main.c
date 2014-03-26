@@ -167,6 +167,7 @@ vmCvar_t	g_poison;			// Poison... anything above 0 is value that will be used
 vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
 vmCvar_t	g_dropNades;	// The number of grenades eng will drop when going to limbo
 vmCvar_t	g_dropAmmo;		// The number of ammo packs leut drops when going to limbo
+vmCvar_t	g_throwKnives;	// 0 = disabled, anything else is the value of knives player gets, alt -1 = unlimited.
 
 // Stats
 vmCvar_t	g_doubleKills;			// Double, tripple & quad kills
@@ -354,6 +355,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_dropNades, "g_dropNades", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_dropAmmo, "g_dropAmmo", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_throwKnives, "g_throwKnives", "0", CVAR_ARCHIVE, 0, qtrue },
 
 	// Stats
 	{ &g_doubleKills, "g_doubleKills", "0", CVAR_ARCHIVE, 0, qfalse },

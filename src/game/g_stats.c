@@ -48,11 +48,11 @@ void stats_DoubleKill(gentity_t *ent, int meansOfDeath) {
 	if (meansOfDeath == MOD_LUGER				// handgun
 		|| meansOfDeath == MOD_COLT				// handgun
 		|| meansOfDeath == MOD_KNIFE_STEALTH	// knife -- can be done :)
-		/*|| meansOfDeath == MOD_THROWKNIFE	*/	// Kill & a knive throw etc
+		|| meansOfDeath == MOD_THROWKNIFE		// Kill & a knive throw etc
 		|| meansOfDeath == MOD_THOMPSON			// Thompson
 		|| meansOfDeath == MOD_MP40				// MP40
 		|| meansOfDeath == MOD_STEN				// STEN 
-		/*|| meansOfDeath == MOD_POISONDMED*/	// Poison & kill etc
+		|| meansOfDeath == MOD_POISONDMED		// Poison & kill etc
 		) {
 
 		if ((level.time - ent->client->lastKillTime) > 1000) {
