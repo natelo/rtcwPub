@@ -397,9 +397,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_showFirstHeadshot, "g_showFirstHeadshot", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 	{ &g_showFirstBlood, "g_showFirstBlood", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 	{ &g_showLastBlood, "g_showLastBlood", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_mapStats, "g_mapStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
-	{ &g_mapStatsNotify, "g_mapStatsNotify", "1", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_mapStatsWarmupOnly, "g_mapStatsWarmupOnly", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_mapStats, "g_mapStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },		
 	{ &g_roundStats, "g_roundStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 	{ &g_excludedRoundStats, "g_excludedRoundStats", "", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 
