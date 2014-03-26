@@ -25,6 +25,7 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker)
 	{	
 		return qtrue;
 	}
+/*
 	else if (mod == MOD_SELFKILL)
 	{
 		int r = rand() % 2; // randomize messages
@@ -72,5 +73,6 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker)
 
 		write_RoundStats(attacker->client->pers.netname, attacker->client->pers.poison, ROUND_POISON);
 	}
+*/
 	return qfalse;
 }

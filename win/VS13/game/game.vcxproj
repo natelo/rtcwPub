@@ -190,6 +190,7 @@ echo Done - Garbage removed.</Command>
     <ClCompile Include="..\..\..\src\game\bg_slidemove.c" />
     <ClCompile Include="..\..\..\src\game\g_active.c" />
     <ClCompile Include="..\..\..\src\game\g_admin.c" />
+    <ClCompile Include="..\..\..\src\game\g_admin_bot.c" />
     <ClCompile Include="..\..\..\src\game\g_admin_cmds.c" />
     <ClCompile Include="..\..\..\src\game\g_alarm.c" />
     <ClCompile Include="..\..\..\src\game\g_antilag.c" />
@@ -214,6 +215,7 @@ echo Done - Garbage removed.</Command>
     <ClCompile Include="..\..\..\src\game\g_session.c" />
     <ClCompile Include="..\..\..\src\game\g_shared.c" />
     <ClCompile Include="..\..\..\src\game\g_spawn.c" />
+    <ClCompile Include="..\..\..\src\game\g_stats.c" />
     <ClCompile Include="..\..\..\src\game\g_svcmds.c" />
     <ClCompile Include="..\..\..\src\game\g_syscalls.c" />
     <ClCompile Include="..\..\..\src\game\g_target.c" />
@@ -254,6 +256,7 @@ echo Done - Garbage removed.</Command>
     <ClInclude Include="..\..\..\src\game\g_admin.h" />
     <ClInclude Include="..\..\..\src\game\g_local.h" />
     <ClInclude Include="..\..\..\src\game\g_public.h" />
+    <ClInclude Include="..\..\..\src\game\g_stats.h" />
     <ClInclude Include="..\..\..\src\game\g_team.h" />
     <ClInclude Include="..\..\..\src\game\q_shared.h" />
     <ClInclude Include="..\..\..\src\game\surfaceflags.h" />

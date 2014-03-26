@@ -2484,12 +2484,10 @@ void CheckWolfMP() {
 		return;
 	}
 
-	// if the warmup time has counted down, restart
-	if ( level.time > level.warmupTime ) {
-		level.warmupTime += 10000;
-		trap_Cvar_Set( "g_restarted", "1" );
-		trap_SendConsoleCommand( EXEC_APPEND, "map_restart 0\n" );
-		level.restarted = qtrue;
+	// L0 - Countdown
+	if (level.time > level.warmupTime - 7100 && !level.cnStarted) {
+		level.cnStarted = qtrue;
+		CountDown();
 		return;
 	}
 }

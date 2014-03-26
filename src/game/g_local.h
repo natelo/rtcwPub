@@ -1591,6 +1591,7 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
 //
 // g_match.c
 //
+void CountDown(void);
 
 // 
 // g_players.c
