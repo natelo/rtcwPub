@@ -426,7 +426,7 @@ char *mapStatsMsg(char *map, unsigned int score, char *player, char *date) {
 		return va("^1HALL OF SHAME(^7%s^1) ^7>> Most Deaths(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
 		map, score, player, ((date == NULL) ? "previous round" : date));
 	else if (g_mapStats.integer == 4)
-		return va("^1HALL OF SHAME(^7%s^1) ^7>> Highest Dead Spree(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
+		return va("^1HALL OF SHAME(^7%s^1) ^7>> Highest Death Spree(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
 		map, score, player, ((date == NULL) ? "previous round" : date));
 	else if (g_mapStats.integer == 5)
 		return va("^1HALL OF FAME(^7%s^1) ^7>> Most Revives(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
@@ -742,8 +742,10 @@ void sortWarmupTime(int start, int inBetween)
 		unsigned int gracetime = 3000; // Just to make sure..
 
 		for (i = 0; i < ROUND_LIMIT; i++)
-		if (roundStats[i].stats != 0)
-			k++;
+		{
+			if (roundStats[i].stats != 0)
+				k++;
+		}
 
 		v = ((countDown + start + gracetime) + (k * inBetween)) / 1000;
 

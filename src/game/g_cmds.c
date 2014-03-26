@@ -1605,15 +1605,6 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		return;
 	}
 
-	// L0 - Check if enough of time has passed before calling another vote (only non logged in players)
-	if ((level.lastVoteTime + 1000 * g_voteDelay.integer) > level.time && !ent->client->sess.admin
-		&& g_gamestate.integer == GS_PLAYING)
-	{
-		CP(va("cp \"Please wait ^3%d ^7seconds before calling a vote.\n\"2",
-			(int)((level.lastVoteTime + 1000 * g_voteDelay.integer) - level.time) / 1000));
-		return;
-	}
-
 	// make sure it is a valid command to vote on
 	trap_Argv( 1, arg1, sizeof( arg1 ) );
 	trap_Argv( 2, arg2, sizeof( arg2 ) );
@@ -1658,6 +1649,15 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	} else {
 		trap_SendServerCommand( ent-g_entities, "print \"Invalid vote string.\n\"" );
 		trap_SendServerCommand( ent-g_entities, "print \"Vote commands are: map_restart, nextmap, start_match, swap_teams, reset_match, map <mapname>, g_gametype <n>, kick <player>, clientkick <clientnum>, ? (poll), shuffle, ignore, unignore\n\"" );
+		return;
+	}
+
+	// L0 - Check if enough of time has passed before calling another vote (only non logged in players)
+	if ((level.lastVoteTime + 1000 * g_voteDelay.integer) > level.time && !ent->client->sess.admin
+		&& g_gamestate.integer == GS_PLAYING)
+	{
+		CP(va("cp \"Please wait ^3%d ^7seconds before calling a vote.\n\"2",
+			(int)((level.lastVoteTime + 1000 * g_voteDelay.integer) - level.time) / 1000));
 		return;
 	}
 
@@ -1805,10 +1805,21 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 		Com_sprintf( level.voteDisplayString, sizeof( level.voteDisplayString ), "%s", level.voteString );
 	}
 
-	trap_SendServerCommand( -1, va("print \"[lof]%s [lon]called a vote.\n\"", ent->client->pers.netname ) );
+// L0
+	// For verbosity print in console as well	
+	if (!Q_stricmp(arg1, "?")) {
+		AP(va("print \"%s ^7called a vote: ^3Poll\n\"", ent->client->pers.netname));
+	}
+	else if (!Q_stricmp(arg1, "g_gametype")) {
+		AP(va("print \"%s [lon]^7called a vote: ^3g_gametype\n\"", ent->client->pers.netname));
+	}
+	else {
+		AP(va("print \"%s ^7called a vote: ^3%s\n\"", ent->client->pers.netname, level.voteString));
+	}
 
-	// L0 - For verbosity print in console as well
-	AP(va("print \"^3Vote^7: %s \n\"", level.voteDisplayString));
+	// Add a sound
+	APS("rtcwpub/sound/scenaric/votes/voteCall.wav");
+// End
 
 	// start the voting, the caller autoamtically votes yes
 	level.voteTime = level.time;

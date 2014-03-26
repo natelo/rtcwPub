@@ -2585,12 +2585,16 @@ void CheckVote( void ) {
 	}
 	if ( level.time - level.voteTime >= VOTE_TIME ) {
 		trap_SendServerCommand( -1, "print \"Vote failed.\n\"" );
+		// L0 - Add a sound
+		APS("rtcwpub/sound/scenaric/votes/voteFail.wav");
 	} else {
 		if ( level.voteYes > level.numVotingClients/2 ) {
 			// execute the command, then remove the vote
 			trap_SendServerCommand( -1, "print \"Vote passed.\n\"" );
 			level.voteExecuteTime = level.time + 3000;
 			level.prevVoteExecuteTime = level.time + 4000;
+			// L0 - Add a sound
+			APS("rtcwpub/sound/scenaric/votes/votePass.wav");
 
 // JPW NERVE
 #ifndef PRE_RELEASE_DEMO
@@ -2624,6 +2628,8 @@ void CheckVote( void ) {
 		} else if ( level.voteNo >= level.numVotingClients/2 ) {
 			// same behavior as a timeout
 			trap_SendServerCommand( -1, "print \"Vote failed.\n\"" );
+			// L0 - Add a sound
+			APS("rtcwpub/sound/scenaric/votes/voteFail.wav");
 		} else {
 			// still waiting for a majority
 			return;
