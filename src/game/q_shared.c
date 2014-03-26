@@ -300,6 +300,7 @@ PARSING
 static	char	com_token[MAX_TOKEN_CHARS];
 static	char	com_parsename[MAX_TOKEN_CHARS];
 static	int		com_lines;
+static	int		com_tokenline;
 
 static	int		backup_lines;
 static	char	*backup_text;
@@ -307,6 +308,7 @@ static	char	*backup_text;
 void COM_BeginParseSession( const char *name )
 {
 	com_lines = 0;
+	com_tokenline = 0;
 	Com_sprintf(com_parsename, sizeof(com_parsename), "%s", name);
 }
 
@@ -329,6 +331,10 @@ void COM_SetCurrentParseLine( int line )
 
 int COM_GetCurrentParseLine( void )
 {
+	if (com_tokenline)
+	{
+		return com_tokenline;
+	}
 	return com_lines;
 }
 
@@ -451,28 +457,26 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks )
 	data = *data_p;
 	len = 0;
 	com_token[0] = 0;
+	com_tokenline = 0;
 
 	// make sure incoming data is valid
-	if ( !data )
-	{
+	if (!data) {
 		*data_p = NULL;
 		return com_token;
 	}
 
 	// RF, backup the session data so we can unget easily
-	COM_BackupParseSession( data_p );
+	COM_BackupParseSession(data_p);
 
-	while ( 1 )
+	while (1)
 	{
 		// skip whitespace
-		data = SkipWhitespace( data, &hasNewLines );
-		if ( !data )
-		{
+		data = SkipWhitespace(data, &hasNewLines);
+		if (!data) {
 			*data_p = NULL;
 			return com_token;
 		}
-		if ( hasNewLines && !allowLineBreaks )
-		{
+		if (hasNewLines && !allowLineBreaks) {
 			*data_p = data;
 			return com_token;
 		}
@@ -480,23 +484,24 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks )
 		c = *data;
 
 		// skip double slash comments
-		if ( c == '/' && data[1] == '/' )
-		{
+		if (c == '/' && data[1] == '/') {
 			data += 2;
 			while (*data && *data != '\n') {
 				data++;
 			}
 		}
 		// skip /* */ comments
-		else if ( c=='/' && data[1] == '*' ) 
-		{
+		else if (c == '/' && data[1] == '*') {
 			data += 2;
-			while ( *data && ( *data != '*' || data[1] != '/' ) ) 
+			while (*data && (*data != '*' || data[1] != '/'))
 			{
+				if (*data == '\n')
+				{
+					com_lines++;
+				}
 				data++;
 			}
-			if ( *data ) 
-			{
+			if (*data) {
 				data += 2;
 			}
 		}
@@ -506,21 +511,25 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks )
 		}
 	}
 
+	// token starts on this line
+	com_tokenline = com_lines;
+
 	// handle quoted strings
-	if (c == '\"')
-	{
+	if (c == '\"') {
 		data++;
 		while (1)
 		{
 			c = *data++;
-			if (c=='\"' || !c)
-			{
+			if (c == '\"' || !c) {
 				com_token[len] = 0;
-				*data_p = ( char * ) data;
+				*data_p = (char *)data;
 				return com_token;
 			}
-			if (len < MAX_TOKEN_CHARS)
+			if (c == '\n')
 			{
+				com_lines++;
+			}
+			if (len < MAX_TOKEN_CHARS - 1) {
 				com_token[len] = c;
 				len++;
 			}
@@ -530,25 +539,17 @@ char *COM_ParseExt( char **data_p, qboolean allowLineBreaks )
 	// parse a regular word
 	do
 	{
-		if (len < MAX_TOKEN_CHARS)
-		{
+		if (len < MAX_TOKEN_CHARS - 1) {
 			com_token[len] = c;
 			len++;
 		}
 		data++;
 		c = *data;
-		if ( c == '\n' )
-			com_lines++;
-	} while (c>32);
+	} while (c > 32);
 
-	if (len == MAX_TOKEN_CHARS)
-	{
-//		Com_Printf ("Token exceeded %i chars, discarded.\n", MAX_TOKEN_CHARS);
-		len = 0;
-	}
 	com_token[len] = 0;
 
-	*data_p = ( char * ) data;
+	*data_p = (char *)data;
 	return com_token;
 }
 
@@ -734,7 +735,16 @@ void Q_strncpyz( char *dest, const char *src, int destsize ) {
                  
 int Q_stricmpn (const char *s1, const char *s2, int n) {
 	int		c1, c2;
-	
+
+	if (s1 == NULL) {
+		if (s2 == NULL)
+			return 0;
+		else
+			return -1;
+	}
+	else if (s2 == NULL)
+		return 1;
+
 	do {
 		c1 = *s1++;
 		c2 = *s2++;
@@ -742,7 +752,7 @@ int Q_stricmpn (const char *s1, const char *s2, int n) {
 		if (!n--) {
 			return 0;		// strings are equal until end point
 		}
-		
+
 		if (c1 != c2) {
 			if (c1 >= 'a' && c1 <= 'z') {
 				c1 -= ('a' - 'A');
@@ -755,7 +765,7 @@ int Q_stricmpn (const char *s1, const char *s2, int n) {
 			}
 		}
 	} while (c1);
-	
+
 	return 0;		// strings are equal
 }
 
