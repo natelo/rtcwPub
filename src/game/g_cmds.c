@@ -984,7 +984,7 @@ void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, const char 
 		&& other->client->sess.sessionTeam == TEAM_FREE
 		&& ent->client->sess.sessionTeam != TEAM_FREE 
 		// L0 - Ignore only if ignoreSpecs is on and user is not logged in..
-		&& ent->client->sess.admin == ADM_NONE
+		&& !ent->client->sess.admin
 		&& g_ignoreSpecs.integer
 		// End
 	) {
@@ -992,9 +992,14 @@ void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, const char 
 	}
 
 	// NERVE - SMF - if spectator, no chatting to players in WolfMP
-	if ( g_gametype.integer >= GT_WOLF
-		&& ( ( ent->client->sess.sessionTeam == TEAM_FREE && other->client->sess.sessionTeam != TEAM_FREE ) ||
-		( ent->client->sess.sessionTeam == TEAM_SPECTATOR && other->client->sess.sessionTeam != TEAM_SPECTATOR ) ) ) {
+	if (g_gametype.integer >= GT_WOLF
+		&& ((ent->client->sess.sessionTeam == TEAM_FREE && other->client->sess.sessionTeam != TEAM_FREE) ||
+		(ent->client->sess.sessionTeam == TEAM_SPECTATOR && other->client->sess.sessionTeam != TEAM_SPECTATOR))
+		// L0 - Ignore only if ignoreSpecs is on and user is not logged in..
+		&& !ent->client->sess.admin
+		&& g_ignoreSpecs.integer
+		// End
+		) {
 		return;
 	}
 
@@ -1641,7 +1646,7 @@ void Cmd_CallVote_f( gentity_t *ent ) {
 	// L0 - disallow any votes defined in g_disallowedVotes cvar		
 	if (Q_FindToken(g_disallowedVotes.string, arg1))
 	{
-		CPx(ent - g_entities, va("print \"Voting for %s disabled on this server\n\"", arg1));
+		CPx(ent - g_entities, va("print \"Voting for %s is disabled on this server.\n\"", arg1));
 		return;
 	} 
 
