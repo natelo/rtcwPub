@@ -507,7 +507,17 @@ typedef struct {
 	char		cmd2[128];			// !command attribute
 	char		cmd3[128];			// !command attribute extra	
 
-	qboolean	nameLocked;	// Takes ability to rename from client..it's cleared next round, map load..
+	// Server Bot
+	int		sb_ping;
+	int		sb_maxPing;
+	int		sb_chatWarned;
+	int		sb_ignored;
+	int		sb_TKforgiven;
+	int		sb_TKkillTime;
+	qboolean sb_TKwarned;
+
+	// Takes ability to rename from client..it's cleared next round, map load..
+	qboolean	nameLocked;	
 
 	// Stats	
 	int			kills;
@@ -1294,6 +1304,18 @@ extern vmCvar_t		a5_cmds;
 extern vmCvar_t		a5_allowAll;
 extern vmCvar_t		adm_help;
 
+// Server Bot
+extern vmCvar_t		sb_system;
+extern vmCvar_t		sb_maxTKs;
+extern vmCvar_t		sb_makTKsTempbanMins;
+extern vmCvar_t		sb_maxTeamBleed;
+extern vmCvar_t		sb_maxTeamBleedTempbanMins;
+extern vmCvar_t		sb_minLowScore;
+extern vmCvar_t		sb_minLowScoreTempbanMins;
+extern vmCvar_t		sb_maxPingFlux;
+extern vmCvar_t		sb_maxPingHits;
+extern vmCvar_t		sb_autoIgnore;
+
 // System
 extern vmCvar_t		g_extendedLog;
 extern vmCvar_t		g_maxVotes;
@@ -1633,6 +1655,14 @@ void stats_MapStats(void);
 void write_RoundStats(char *player, unsigned int score, unsigned int stats);
 void add_RoundStats(void);
 void stats_RoundStats(void);
+
+//
+// g_admin_bot.c
+//
+void SB_maxTeamKill(gentity_t *ent);
+void SB_maxTeamBleed(gentity_t *ent);
+void SB_minLowScore(gentity_t *ent);
+void SB_maxPingFlux(gclient_t *client);
 
 // 
 // Macros

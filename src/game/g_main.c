@@ -142,6 +142,19 @@ vmCvar_t	a5_allowAll;	// Allows level 5 to execute all admin commands + any othe
 							// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
 vmCvar_t	adm_help;		// If enabled users can use !cmds to get list of commands for their level..
 
+// Server Bot
+vmCvar_t	sb_system;						// Controls all SB functionality
+vmCvar_t	sb_tempban;						// Tempbans
+vmCvar_t	sb_maxTKs;						// Max TK's before client gets kicked
+vmCvar_t	sb_makTKsTempbanMins;			// Minutes it bans for TK (0 = disabled)
+vmCvar_t	sb_maxTeamBleed;				// Max bleeding pts before client gets kicked (1 hit = 1 point)
+vmCvar_t	sb_maxTeamBleedTempbanMins;		// Minutes it bans for team bleeding (0 = disabled)
+vmCvar_t	sb_minLowScore;					// Minimum score allowed before client gets kicked for low score
+vmCvar_t	sb_minLowScoreTempbanMins;		// Minutes it bans for low score (0 = disabled)
+vmCvar_t	sb_maxPingFlux;					// Top limit ping can hit before client gets kicked
+vmCvar_t	sb_maxPingHits;					// How many seconds or times (1 time = 1 sec) can it peak above limit
+vmCvar_t	sb_autoIgnore;					// Auto ignores players (for the round) that reach spam check more than 3 times.
+
 // System
 vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
 vmCvar_t	g_maxVotes;			// Max votes client can call per round
@@ -332,6 +345,18 @@ cvarTable_t		gameCvarTable[] = {
 	{ &a5_cmds, "a5_cmds", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &a5_allowAll, "a5_allowAll", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &adm_help, "adm_help", "1", CVAR_ARCHIVE, 0, qfalse },
+
+	// ServerBot
+	{ &sb_system, "sb_system", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },	
+	{ &sb_maxTKs, "sb_maxTKs", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &sb_makTKsTempbanMins, "sb_makTKsTempbanMins", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &sb_maxTeamBleed, "sb_maxTeamBleed", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &sb_maxTeamBleedTempbanMins, "sb_maxTeamBleedTempbanMins", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &sb_minLowScore, "sb_minLowScore", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &sb_minLowScoreTempbanMins, "sb_minLowScoreTempbanMins", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &sb_maxPingFlux, "sb_maxPingFlux", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &sb_maxPingHits, "sb_maxPingHits", "30", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &sb_autoIgnore, "sb_autoIgnore", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// System
 	{ &g_extendedLog, "g_extendedLog", "1", CVAR_ARCHIVE, 0, qfalse },

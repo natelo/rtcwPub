@@ -345,10 +345,17 @@ void Weapon_Syringe(gentity_t *ent) {
 
 				if (g_mapStats.integer == 5)
 					write_MapStats(ent, ent->client->pers.revives, MAP_REVIVES);
+
+				// Admin bot
+				if (ent->client->pers.sb_TKkillTime > level.time && sb_system.integer && sb_maxTKs.integer)
+				{
+					CP(va("chat \"^3SB: ^7%s, ^7Your ^3TK ^7was forgiven^3!\n\"", ent->client->pers.netname));
+					ent->client->pers.sb_TKforgiven++;
+				}
 // End
 			}
 
-			// L0 - Poison
+// L0 - Poison
 			else if ((traceEnt->client->ps.stats[STAT_HEALTH] > 0) &&
 				(traceEnt->client->sess.sessionTeam != ent->client->sess.sessionTeam) &&
 				!(traceEnt->client->ps.powerups[PW_INVULNERABLE]) &&
@@ -359,7 +366,8 @@ void Weapon_Syringe(gentity_t *ent) {
 					traceEnt->poisoned = qtrue;
 					usedSyringe = qtrue;
 				}
-			} // end
+			} 
+// end
 		}
 	}
 

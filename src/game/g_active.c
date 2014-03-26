@@ -984,6 +984,9 @@ void ClientThink_real( gentity_t *ent ) {
   }
 // jpw
 
+	// L0 - Admin bot, ping fluxation
+	SB_maxPingFlux(client);
+
 	// check for inactivity timer, but never drop the local client of a non-dedicated server
 	if ( !ClientInactivityTimer( client ) ) {
 		return;
@@ -1290,6 +1293,27 @@ void ClientThink_real( gentity_t *ent ) {
 			// -NERVE - SMF
 		}
 		return;
+	}
+
+	// L0 - Max TKs - Drop player if over limit and time has expired..
+	if (sb_system.integer && sb_maxTKs.integer > 0)
+	{
+		int count = ent->client->pers.teamKills + 1 - ent->client->pers.sb_TKforgiven;
+
+		if (count > sb_maxTKs.integer)
+		{
+			if (ent->client->pers.sb_TKkillTime < level.time)
+			{
+				// Tempban
+				if (sb_makTKsTempbanMins.integer)
+				{				
+					trap_SendConsoleCommand(EXEC_APPEND, va("tempban %i %i", ent->client->ps.clientNum, sb_makTKsTempbanMins));
+				}
+
+				trap_DropClient(ent - g_entities, "Kicked \n^3For Team Killing.");
+				AP(va("chat \"^3SB^7: %s ^7got kicked for ^3Team Killing^7.\n\"", ent->client->pers.netname));
+			}
+		}
 	}
 
 	// perform once-a-second actions
