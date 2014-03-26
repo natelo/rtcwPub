@@ -165,6 +165,7 @@ vmCvar_t	g_bypassPasswords;	// Tokens separated by space for bypassing a ban
 vmCvar_t	bannedMSG;			// Meesage printed to banned clients
 vmCvar_t	mapAchiever;		// A static cvar for map achiever..
 vmCvar_t	g_ignoreSpecs;		// Ignores spectators - Admins can still bypass the ignore..
+vmCvar_t	g_inactivityToSpecs;// Puts inactive players in spectators instead of dropping them.
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -370,6 +371,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &bannedMSG, "bannedMSG", "^7You are ^1Banned^7 from this server^1!", CVAR_ARCHIVE, 0, qfalse},
 	{ &mapAchiever, "mapAchiever", "", 0, 0, qfalse },
 	{ &g_ignoreSpecs, "g_ignoreSpecs", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_inactivityToSpecs, "g_inactivityToSpecs", "1", CVAR_ARCHIVE, 0, qfalse },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },

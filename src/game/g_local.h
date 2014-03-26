@@ -1331,6 +1331,7 @@ extern vmCvar_t		g_bypassPasswords;
 extern vmCvar_t		bannedMSG;
 extern vmCvar_t		mapAchiever;
 extern vmCvar_t		g_ignoreSpecs;
+extern vmCvar_t		g_inactivityToSpecs;
 
 // Game
 extern vmCvar_t		g_dropReload;

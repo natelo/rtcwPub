@@ -446,26 +446,52 @@ Returns qfalse if the client is dropped
 =================
 */
 qboolean ClientInactivityTimer( gclient_t *client ) {
-	if ( ! g_inactivity.integer ) {
+	if (!g_inactivity.integer) {
 		// give everyone some time, so if the operator sets g_inactivity during
 		// gameplay, everyone isn't kicked
 		client->inactivityTime = level.time + 60 * 1000;
 		client->inactivityWarning = qfalse;
-	} else if ( client->pers.cmd.forwardmove || 
-		client->pers.cmd.rightmove || 
+	}
+	else if (client->pers.cmd.forwardmove ||
+		client->pers.cmd.rightmove ||
 		client->pers.cmd.upmove ||
 		(client->pers.cmd.wbuttons & WBUTTON_ATTACK2) ||
-		(client->pers.cmd.buttons & BUTTON_ATTACK) ) {
+		(client->pers.cmd.buttons & BUTTON_ATTACK) ||
+		(client->pers.cmd.wbuttons & WBUTTON_LEANLEFT) ||
+		(client->pers.cmd.wbuttons & WBUTTON_LEANRIGHT) ||
+		client->ps.pm_type == PM_DEAD) 
+	{
 		client->inactivityTime = level.time + g_inactivity.integer * 1000;
 		client->inactivityWarning = qfalse;
-	} else if ( !client->pers.localClient ) {
-		if ( level.time > client->inactivityTime ) {
-			trap_DropClient( client - level.clients, "Dropped due to inactivity" );
+	}
+	else if (!client->pers.localClient) {
+		if (level.time > client->inactivityTime) {
+			// L0 - if enabled move the to spec..
+			if (g_inactivityToSpecs.integer) {
+
+				client->sess.sessionTeam = TEAM_SPECTATOR;
+				client->sess.spectatorState = SPECTATOR_FREE;
+
+				AP(va("chat \"console: %s ^7was moved to Specators due inactivity.\n\"", client->pers.netname));
+
+				ClientUserinfoChanged(client - level.clients);
+
+				ClientBegin(client - level.clients);
+
+				return qfalse;
+			}
+			else // L0 - end
+				trap_DropClient(client - level.clients, "Dropped due to inactivity");
+
 			return qfalse;
 		}
-		if ( level.time > client->inactivityTime - 10000 && !client->inactivityWarning ) {
+		if (level.time > client->inactivityTime - 10000 && !client->inactivityWarning) {
 			client->inactivityWarning = qtrue;
-			trap_SendServerCommand( client - level.clients, "cp \"Ten seconds until inactivity drop!\n\"" );
+			if (g_inactivityToSpecs.integer) // L0 - patched				
+				CPx(client - level.clients, "cp \"Ten seconds until forcing you to spectators!\n\"2");
+			else
+				// L0 - end
+				CPx(client - level.clients, "cp \"^3Ten seconds until inactivity drop!\n\"2");
 		}
 	}
 	return qtrue;
