@@ -179,6 +179,7 @@ vmCvar_t	g_poison;			// Poison... anything above 0 is value that will be used
 vmCvar_t	g_hitsounds;		// Hitsounds - Requires soundpack
 vmCvar_t	g_screenShake;		// Screenshaking on explosions (4 = default, 2 = half.. etc)
 vmCvar_t	g_fixedphysics;		// Tries to keep things more fair..
+vmCvar_t	g_printMatchInfo;	// Prints events when they happen (retake, obj planted..)
 
 // Weapon
 vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
@@ -370,7 +371,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &mapAchiever, "mapAchiever", "", 0, 0, qfalse },
 	{ &g_ignoreSpecs, "g_ignoreSpecs", "0", CVAR_ARCHIVE, 0, qfalse },
 
-	// General
+	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_unlockWeapons, "g_unlockWeapons", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_tapReports, "g_tapReports", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -383,6 +384,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_hitsounds, "g_hitsounds", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_screenShake, "g_screenShake", "2", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_fixedphysics, "g_fixedphysics", "1", CVAR_ARCHIVE | CVAR_SERVERINFO },
+	{ &g_printMatchInfo, "g_printMatchInfo", "1", CVAR_ARCHIVE, 0, qfalse },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
@@ -1912,6 +1914,9 @@ void BeginIntermission( void ) {
 	// End stats	
 	stats_MatchInfo();
 
+	// Prints & stuff
+	matchInfo(MT_EI, NULL);
+
 	// Last killer (match stats/info)
 	stats_LastBloodMessage();
 
@@ -2088,7 +2093,7 @@ void LogExit( const char *string ) {
 			}
 			else {
 				// use remaining time as next timer
-				trap_Cvar_Set( "g_nextTimeLimit", va( "%f", (level.time - level.startTime) / 60000.f ) );
+				trap_Cvar_Set("g_nextTimeLimit", va("%f", (level.timeCurrent - level.startTime) / 60000.f));
 			}
 		}
 		else {
@@ -2266,7 +2271,7 @@ void CheckExitRules( void ) {
 	}
 
 	if ( g_timelimit.value && !level.warmupTime ) {
-		if ( level.time - level.startTime >= g_timelimit.value*60000 ) {
+		if (level.timeCurrent - level.startTime >= g_timelimit.value * 60000) {
 
 			// check for sudden death 
 			if ( g_gametype.integer != GT_CTF && ScoreIsTied() ) {
@@ -2713,6 +2718,9 @@ void G_RunFrame( int levelTime ) {
 	gentity_t	*ent;
 	int			msec;
 	int			worldspawnflags, gt;
+
+	// L0 - Match Info (& later maybe pause ^^)	
+	level.timeCurrent = levelTime - level.timeDelta;
 	
 	// L0 - Antilag
 	level.frameStartTime = trap_Milliseconds();

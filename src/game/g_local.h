@@ -697,6 +697,8 @@ typedef struct {
 	int         frameStartTime;         // L0 - antilag - actual time frame started
 
 	int			startTime;				// level.time the map was started
+	int			timeCurrent;			// L0 - Real game clock
+	int			timeDelta;				// L0 - Pause, match info..
 
 	int			teamScores[TEAM_NUM_TEAMS];
 	int			lastTeamLocationTime;		// last time of client team location update
@@ -1327,7 +1329,7 @@ extern vmCvar_t		bannedMSG;
 extern vmCvar_t		mapAchiever;
 extern vmCvar_t		g_ignoreSpecs;
 
-// General
+// Game
 extern vmCvar_t		g_dropReload;
 extern vmCvar_t		g_unlockWeapons;
 extern vmCvar_t		g_tapReports;
@@ -1340,6 +1342,7 @@ extern vmCvar_t		g_poison;
 extern vmCvar_t		g_hitsounds;
 extern vmCvar_t		g_screenShake;
 extern vmCvar_t		g_fixedphysics;
+extern vmCvar_t		g_printMatchInfo;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
@@ -1633,6 +1636,7 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
 //
 void CountDown(void);
 gentity_t *G_FearCheck(gentity_t *ent);
+void matchInfo(unsigned int type, char *msg);
 
 // 
 // g_players.c
@@ -1677,6 +1681,9 @@ void SB_maxPingFlux(gclient_t *client);
 #define CPS(x, y)	CPSound(x, y)								// Client sound only
 
 #define ARRAY_LEN(x)	(sizeof(x) / sizeof(*(x)))				// Saves some time..
+
+#define MT_EI	0												// Match Times - End info
+#define MT_ME	1												// Match Times - Match Event(s)
 
 //
 // Include stuff
