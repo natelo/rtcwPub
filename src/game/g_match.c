@@ -62,7 +62,7 @@ void CountDown(void) {
 	else {
 		level.cnPush = level.time + 1000;
 
-		// Auto shuffle if enabled and treshhold is reached
+		// Auto shuffle if enabled and threshold is reached
 		if (g_autoShuffle.integer)
 		{
 			if (shuffleTracking.integer >= g_autoShuffle.integer)
