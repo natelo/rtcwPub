@@ -403,6 +403,7 @@ void Team_DroppedFlagThink(gentity_t *ent)
 		{
 			trap_SendServerCommand(-1, "cp \"Axis have returned the objective!\" 2");
 			G_Script_ScriptEvent( gm, "trigger", "axis_object_returned" );
+			matchInfo(MT_ME, "Axis have returned the objective!"); // L0 - Some info
 		}
 	}
 	else if (ent->item->giTag == PW_BLUEFLAG) {
@@ -411,6 +412,7 @@ void Team_DroppedFlagThink(gentity_t *ent)
 		{
 			trap_SendServerCommand(-1, "cp \"Allies have returned the objective!\" 2");
 			G_Script_ScriptEvent( gm, "trigger", "allied_object_returned" );
+			matchInfo(MT_ME, "Allies have returned the objective!"); // L0 - Some info
 		}
 	}
 	// Reset Flag will delete this entity
@@ -446,12 +448,14 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 			if ( cl->sess.sessionTeam == TEAM_RED ) {
 				te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-objective_secure.wav" );
 				trap_SendServerCommand(-1, va("cp \"Axis have returned %s!\n\" 2", ent->message));
+				matchInfo(MT_ME, va("Axis have returned %s!", ent->message)); // L0 - Some info
 				if ( gm )
 					G_Script_ScriptEvent( gm, "trigger", "axis_object_returned" );
 			}
 			else {
 				te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-objective_secure.wav" );
 				trap_SendServerCommand(-1, va("cp \"Allies have returned %s!\n\" 2", ent->message));
+				matchInfo(MT_ME, va("Allies have returned %s!", ent->message)); // L0 - Some info
 				if ( gm )
 					G_Script_ScriptEvent( gm, "trigger", "allied_object_returned" );
 			}
@@ -575,12 +579,17 @@ int Team_TouchEnemyFlag( gentity_t *ent, gentity_t *other, int team ) {
 		if ( cl->sess.sessionTeam == TEAM_RED ) {
 			te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-objective_taken.wav" );
 			trap_SendServerCommand(-1, va("cp \"Axis have stolen %s!\n\" 2", ent->message));
+			// L0 - matchInfo
+			matchInfo(MT_ME, va("Axis have stolen %s!", ent->message));
+
 			if ( gm )
 				G_Script_ScriptEvent( gm, "trigger", "allied_object_stolen" );
 		}
 		else {
 			te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-objective_taken.wav" );
 			trap_SendServerCommand(-1, va("cp \"Allies have stolen %s!\n\" 2", ent->message));
+			// L0 - matchInfo
+			matchInfo(MT_ME, va("Allies have stolen %s!", ent->message));
 			if ( gm )
 				G_Script_ScriptEvent( gm, "trigger", "axis_object_stolen" );
 		}

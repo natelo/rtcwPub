@@ -809,6 +809,9 @@ typedef struct {
 	int			alliedPlayers;
 	int			axisPlayers;
 
+	// Time between prints (Players left etc)
+	int			leftCheck;			
+
 	// Map Stats
 	unsigned int		topScore;
 	char		topOwner[MAX_NETNAME + 1];

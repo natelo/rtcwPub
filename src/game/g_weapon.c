@@ -550,9 +550,9 @@ void Weapon_Engineer( gentity_t *ent ) {
 						if ( ((hit->spawnflags & AXIS_OBJECTIVE) && (ent->client->sess.sessionTeam == TEAM_BLUE)) || 
 							 ((hit->spawnflags & ALLIED_OBJECTIVE) && (ent->client->sess.sessionTeam == TEAM_RED)) ) {
 							if (hit->track)
-								trap_SendServerCommand(-1, va("cp \"%s\" 1", va("Dynamite planted near %s!", hit->track)));
+								matchInfo(MT_ME, va("Dynamite planted near %s!", hit->track)); // L0 - Some info
 							else
-								trap_SendServerCommand(-1, va("cp \"%s\" 1", va("Dynamite planted near objective #%d!", hit->count)));
+								matchInfo(MT_ME, va("Dynamite planted near objective #%d!", hit->count)); // L0 - Some info
 						}
 						i=num;
 	
@@ -618,6 +618,7 @@ void Weapon_Engineer( gentity_t *ent ) {
 								trap_SendServerCommand(-1, "cp \"Axis engineer disarmed the Dynamite!\n\"");
 								traceEnt->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-dynamite_defused.wav" );
 								traceEnt->s.teamNum = TEAM_RED;
+								matchInfo(MT_ME, "Axis disarmed the Dynamite!"); // L0 - Some info
 							}
 
 							else { // TEAM_BLUE
@@ -629,6 +630,7 @@ void Weapon_Engineer( gentity_t *ent ) {
 								trap_SendServerCommand(-1, "cp \"Allied engineer disarmed the Dynamite!\n\"");
 								traceEnt->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-dynamite_defused.wav" );
 								traceEnt->s.teamNum = TEAM_BLUE;
+								matchInfo(MT_ME, "Allies disarmed the Dynamite!"); // L0 - Some info
 							}
 						}
 					}
