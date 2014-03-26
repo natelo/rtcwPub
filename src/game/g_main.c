@@ -1,6 +1,3 @@
-
-
-
 #include "g_local.h"
 
 level_locals_t	level;
@@ -163,7 +160,6 @@ vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 vmCvar_t	sv_hostname;		// So it's more accessible
 vmCvar_t	g_bypassPasswords;	// Tokens separated by space for bypassing a ban
 vmCvar_t	bannedMSG;			// Meesage printed to banned clients
-vmCvar_t	mapAchiever;		// A static cvar for map achiever..
 vmCvar_t	g_ignoreSpecs;		// Ignores spectators - Admins can still bypass the ignore..
 vmCvar_t	g_inactivityToSpecs;// Puts inactive players in spectators instead of dropping them.
 
@@ -369,7 +365,6 @@ cvarTable_t		gameCvarTable[] = {
 	{ &sv_hostname, "sv_hostname", "", CVAR_SERVERINFO, 0, qfalse },
 	{ &g_bypassPasswords, "g_bypassPasswords", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &bannedMSG, "bannedMSG", "^7You are ^1Banned^7 from this server^1!", CVAR_ARCHIVE, 0, qfalse},
-	{ &mapAchiever, "mapAchiever", "", 0, 0, qfalse },
 	{ &g_ignoreSpecs, "g_ignoreSpecs", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_inactivityToSpecs, "g_inactivityToSpecs", "1", CVAR_ARCHIVE, 0, qfalse },
 
@@ -1348,13 +1343,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
 	G_RemapTeamShaders();
-
-	// L0 - Map Stats
-	if (g_mapStats.integer && !g_mapStatsWarmupOnly.integer)
-	{
-		if (mapAchiever.string)
-			AP(va("chat \"%s \n\"", mapAchiever.string));
-	}
 }
 
 
@@ -1394,14 +1382,6 @@ void G_ShutdownGame( int restart ) {
 	
 	// L0 - Tempban
 	clean_tempbans();
-
-	// L0 - Map Stats
-	if (g_mapStats.integer)
-	{
-		// Show only if warmup setting is enabled otherwise it prints twice (when enabled).
-		if (mapAchiever.string && g_mapStatsWarmupOnly.integer)
-			AP(va("chat \"%s \n\"", mapAchiever.string));
-	}
 
 	// L0 - Round Stats (creates stats)
 	if (g_roundStats.integer)
@@ -1924,7 +1904,12 @@ void BeginIntermission( void ) {
 
 	// Map Stats
 	if (g_mapStats.integer)
+	{
+		// So stats aren't printer as we only store them and check if there's a new record..
+		level.mapStatsPrinted = qtrue;
+
 		stats_MapStats();
+	}
 }
 
 
@@ -2929,6 +2914,14 @@ void G_RunFrame( int levelTime ) {
 		g_roundStats.integer)
 	{
 		stats_RoundStats();
+	}
+
+	// L0 - Map Stats
+	if (g_mapStats.integer && 
+		(g_gamestate.integer == GS_WARMUP_COUNTDOWN) && 
+		!level.mapStatsPrinted)
+	{
+		stats_MapStats();
 	}
 
 	if (g_listEntity.integer) {

@@ -813,8 +813,9 @@ typedef struct {
 	int			leftCheck;			
 
 	// Map Stats
-	unsigned int		topScore;
-	char		topOwner[MAX_NETNAME + 1];
+	unsigned int	topScore;
+	char			topOwner[MAX_NETNAME + 1];
+	qboolean		mapStatsPrinted;
 
 	// Last Blood 
 	char		lastKiller[MAX_NETNAME + 1];
@@ -1329,7 +1330,6 @@ extern vmCvar_t		g_antilagVersion;
 extern vmCvar_t		sv_hostname;
 extern vmCvar_t		g_bypassPasswords;
 extern vmCvar_t		bannedMSG;
-extern vmCvar_t		mapAchiever;
 extern vmCvar_t		g_ignoreSpecs;
 extern vmCvar_t		g_inactivityToSpecs;
 

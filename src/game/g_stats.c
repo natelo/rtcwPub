@@ -426,7 +426,7 @@ char *mapStatsMsg(char *map, unsigned int score, char *player, char *date) {
 		return va("^1HALL OF SHAME(^7%s^1) ^7>> Most Deaths(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
 		map, score, player, ((date == NULL) ? "previous round" : date));
 	else if (g_mapStats.integer == 4)
-		return va("^1HALL OF SHAME(^7%s^1) ^7>> Most Deaths in a row(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
+		return va("^1HALL OF SHAME(^7%s^1) ^7>> Highest Dead Spree(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
 		map, score, player, ((date == NULL) ? "previous round" : date));
 	else if (g_mapStats.integer == 5)
 		return va("^1HALL OF FAME(^7%s^1) ^7>> Most Revives(^1%d^7): %s ^7/ Achieved: ^1%s^7\n\"",
@@ -453,7 +453,8 @@ void add_MapStats(char *file) {
 
 // Set cvar
 void set_mapStats(char *map, unsigned int score, char *player, char *date) {
-	trap_Cvar_Set("mapAchiever", mapStatsMsg(map, score, player, date));
+	if (!level.mapStatsPrinted)
+		AP(va("chat \"%s\n\"", mapStatsMsg(map, score, player, date)));
 }
 
 // Check stats
@@ -464,9 +465,8 @@ void handle_MapStats(char *map, char *suffix) {
 	char	*token[512] = { NULL };
 
 	Com_sprintf(filename, 255, "%s%s_%s", STSPTH, map, suffix);
-
 	file = trap_FS_FOpenFile(filename, &statsFile, FS_READ);
-
+	
 	// Check|Write
 	if (file > 0)
 	{
@@ -493,7 +493,10 @@ void handle_MapStats(char *map, char *suffix) {
 		}
 	}
 	else
-	{
+	{	
+		// Close the pointer..
+		trap_FS_FCloseFile(statsFile);
+
 		// Create it if there's an entry for it..
 		if (level.topScore && level.topOwner)
 		{
@@ -503,10 +506,6 @@ void handle_MapStats(char *map, char *suffix) {
 			if (g_mapStatsNotify.integer)
 				AP(va("print \"^1New Map Record! ^7Be it good or bad, %s ^7has the stuff Legends are made of^1!\n\"",
 				level.topOwner));
-		}
-		else
-		{
-			trap_Cvar_Set("mapAchiever", "");
 		}
 	}
 }
@@ -529,7 +528,7 @@ void write_MapStats(gentity_t *ent, unsigned int score, int type) {
 void stats_MapStats(void) {
 	char mapName[64];
 	char *suffix = "killer";
-
+	
 	if (!g_mapStats.integer)
 		return;
 
@@ -538,32 +537,33 @@ void stats_MapStats(void) {
 	// NOTE: Add more if desired/needed and simply patch/add the storing call in appropriate places..
 	switch (g_mapStats.integer) {
 		// Top Killer (most overall kills)
-	case 1:
-		suffix = "killer";
+		case 1:
+			suffix = "killer";
 		break;
 		// Top Killer Spree (most kills in a row)
-	case 2:
-		suffix = "killingSpree";
+		case 2:
+			suffix = "killingSpree";
 		break;
 		// Top Victim (most overall deaths)
-	case 3:
-		suffix = "victim";
+		case 3:
+			suffix = "victim";
 		break;
 		// Top Death Spree (most deaths in a row)
-	case 4:
-		suffix = "deathSpree";
+		case 4:
+			suffix = "deathSpree";
 		break;
 		// Top Medic (most revives)
-	case 5:
-		suffix = "revives";
+		case 5:
+			suffix = "revives";
 		break;
-	case 6:
 		// Top Headshoter
-		suffix = "headshots";
+		case 6:
+			suffix = "headshots";
 		break;
 	}
 
 	handle_MapStats(mapName, suffix);
+	level.mapStatsPrinted = qtrue;
 }
 
 /*
