@@ -665,20 +665,13 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 			"cp \"You can't switch teams because you are out of lives.\n\" 3" );
 		return;	// ignore the request
 	}
-
-	// L0 - in warmup wait 2 sec before you allow team switch to fix the team switch nuke
-	// After warmup we have teamswitch cvar that will handle it..
-	if (g_gametype.integer >= GT_WOLF && team != oldTeam && !level.warmupTime == 0 && (level.time - client->pers.enterTime) < 2000 && !forced) {
-		trap_SendServerCommand(clientNum,
-			"cp \"Wait ^32 ^7sec before team switch^3!\n\" 3");
-		return;
-	}
-
+		
 	// DHM - Nerve :: Force players to wait 30 seconds before they can join a new team.
-	if ( g_gametype.integer >= GT_WOLF && team != oldTeam && level.warmupTime == 0 && !client->pers.initialSpawn
-		&& ( (level.time - client->pers.connectTime) > 10000 ) && ( (level.time - client->pers.enterTime) < 5000 ) && !forced ) {
+	// L0 - This will check now for 2 seconds in warmup and in game..
+	if ( g_gametype.integer >= GT_WOLF && team != oldTeam && !client->pers.initialSpawn
+		&& ( (level.time - client->pers.connectTime) > 10000 ) && ( (level.time - client->pers.enterTime) < 2000 ) && !forced ) {
 		trap_SendServerCommand( ent-g_entities, 
-			va( "cp \"You must wait ^3%i ^7seconds before joining a new team.\n\"3", (int)(5 - ((level.time - client->pers.enterTime)/1000))) );
+			va( "cp \"You must wait ^3%i ^7seconds before joining a new team.\n\"3", (int)(2 - ((level.time - client->pers.enterTime)/1000))) );
 		return;
 	}
 	// dhm
