@@ -752,6 +752,19 @@ void sortWarmupTime(int start, int inBetween)
 	}
 }
 
+// Check if there's any entry at all..
+qboolean RoundStatsAreEmpty(void) {
+	int i;
+	qboolean empty = qtrue;
+
+	for (i = 0; i < ROUND_LIMIT; i++)
+	{
+		if (roundStats[i].stats)
+			empty = qfalse;
+	}
+	return empty;
+}
+
 // Front end
 void stats_RoundStats(void) {
 	int statsStartup = 4000;
@@ -764,9 +777,17 @@ void stats_RoundStats(void) {
 	}
 	else if (level.statsNum == 1)
 	{
+		if (!RoundStatsAreEmpty())
+		{
+			AP(va("cp \"^2%s\n\"2", rSM[0].reward));
+			APS(va("rtcwpub/sound/scenaric/achievers/%s", rSM[0].snd));
+		}
+		else
+		{
+			AP("cp \"^2No stats for previous round^7!\n\"2");
+		}
 
-		AP(va("cp \"^2%s\n\"2", rSM[0].reward));
-		APS(va("rtcwpub/sound/scenaric/achievers/%s", rSM[0].snd));
+
 		level.statsStarted = qtrue;
 	}
 	else if (level.statsNum < ROUND_LIMIT)
