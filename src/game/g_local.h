@@ -497,12 +497,11 @@ typedef struct {
 
 // L0 
 	// Admins
-	char cmd1[128];			// !command
-	char cmd2[128];			// !command attribute
-	char cmd3[128];			// !command attribute extra	
+	char		cmd1[128];			// !command
+	char		cmd2[128];			// !command attribute
+	char		cmd3[128];			// !command attribute extra	
 
-	qboolean nameLocked;	// Takes ability to rename from client..it's cleared next round, map load..
-
+	qboolean	nameLocked;	// Takes ability to rename from client..it's cleared next round, map load..
 } clientPersistant_t;
 
 // L0 - antilag 
@@ -606,10 +605,14 @@ struct gclient_s {
 	int			PCSpecialPickedUpCount; // JPW NERVE used to count # of times somebody's picked up this LTs ammo (or medic health) (for scoring)
 	int			saved_persistant[MAX_PERSISTANT];	// DHM - Nerve :: Save ps->persistant here during Limbo
 
-	// L0 - antilag
+// L0 
+	// antilag
 	int              trailHead;
 	clientTrail_t    trail[NUM_CLIENT_TRAILS];
 	clientTrail_t    saved;    // used to restore after time shift
+
+	// Double kill
+	int			doublekill;		// (stats) Double+ Kills
 };
 
 
@@ -744,9 +747,14 @@ typedef struct {
 
 	qboolean	latchGametype;			// DHM - Nerve
 
-	// L0
-	int			alliedPlayers;			// Track active Allied players
-	int			axisPlayers;			// Track active Axis players
+// L0
+	// Active Players
+	int			alliedPlayers;
+	int			axisPlayers;
+
+	// Last Blood 
+	char		lastKiller[MAX_NETNAME + 1];
+	char		lastVictim[MAX_NETNAME + 1];
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -1243,9 +1251,22 @@ extern vmCvar_t		g_gibReports;
 extern vmCvar_t		g_weaponOwnerLock;
 
 // Weapon Stuff
-extern vmCvar_t g_dropHealth;
-extern vmCvar_t g_dropNades;
-extern vmCvar_t g_dropAmmo;
+extern vmCvar_t		g_dropHealth;
+extern vmCvar_t		g_dropNades;
+extern vmCvar_t		g_dropAmmo;
+
+// Stats
+extern vmCvar_t		g_doubleKills;
+extern vmCvar_t		g_killingSprees;
+extern vmCvar_t		g_deathSprees;
+extern vmCvar_t		g_killerSpree;
+extern vmCvar_t		g_showFirstHeadshot;
+extern vmCvar_t		g_showFirstBlood;
+extern vmCvar_t		g_showLastBlood;
+extern vmCvar_t		g_mapStats;
+extern vmCvar_t		g_mapStatsNotify;
+extern vmCvar_t		g_roundStats;
+extern vmCvar_t		g_excludedRoundStats;
 
 // L0 - New Cvars end
 
@@ -1475,14 +1496,6 @@ typedef enum
 	L0 - New stuff bellow
 ***************************/
 
-// Macros
-#define AP(x)		trap_SendServerCommand(-1, x)				// Print to all
-#define CP(x)		trap_SendServerCommand(ent-g_entities, x)	// Print to an ent
-#define CPx(x, y)	trap_SendServerCommand(x, y)				// Print to id = x
-#define TP(x,y,z)	G_SayToTeam(x, y, z)						// Prints to selected team
-
-#define ARRAY_LEN(x)	(sizeof(x) / sizeof(*(x)))				// Saves some time..
-
 //
 // g_shared.c
 //
@@ -1491,6 +1504,10 @@ char *getTime( void );
 int is_numeric(const char *p);
 void BreakIP(const char *IP, char *charip1, char* charip2, char* charip3, char* charip4);
 void GetIP(const char *strIP1, char *strIP2, char *strPort);
+void APSound(char *sound);
+void CPSound(gentity_t *ent, char *sound);
+void APRSound(gentity_t *ent, char *sound);
+
 
 //
 // g_files.c
@@ -1524,5 +1541,35 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
 // g_players.c
 //
 void cmd_getstatus(gentity_t *ent);
+
+//
+// g_stats.c
+//
+void stats_DoubleKill(gentity_t *ent, int meansOfDeath);
+void stats_FirstHeadshot(gentity_t *attacker, gentity_t *targ);
+void stats_FirstBlood(gentity_t *self, gentity_t *attacker);
+void stats_LastBloodMessage(void);
+void stats_KillingSprees(gentity_t *ent, int score);
+void stats_DeathSpree(gentity_t *ent);
+void stats_KillerSpree(gentity_t *ent, int score);
+void stats_MatchInfo(void);
+void write_MapStats(gentity_t *ent, unsigned int score, int type);
+void stats_MapStats(void);
+void write_RoundStats(char *player, unsigned int score, unsigned int stats);
+void add_RoundStats(void);
+void stats_RoundStats(void);
+
+// 
+// Macros
+//
+#define AP(x)		trap_SendServerCommand(-1, x)				// Print to all
+#define CP(x)		trap_SendServerCommand(ent-g_entities, x)	// Print to an ent
+#define CPx(x, y)	trap_SendServerCommand(x, y)				// Print to id = x
+#define TP(x,y,z)	G_SayToTeam(x, y, z)						// Prints to selected team
+#define APS(x)		APSound(x)									// Global sound 
+#define APRS(x, y)	APRSound(x, y)								// Global sound with limited (radius) range
+#define CPS(x, y)	CPSound(x, y)								// Client sound only
+
+#define ARRAY_LEN(x)	(sizeof(x) / sizeof(*(x)))				// Saves some time..
 
 #endif // __SHARED_H

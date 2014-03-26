@@ -357,9 +357,16 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		obit = modNames[ meansOfDeath ];
 	}
 
-	G_LogPrintf("Kill: %i %i %i: %s killed %s by %s\n", 
-		killer, self->s.number, meansOfDeath, killerName, 
-		self->client->pers.netname, obit );
+	// L0 - Don't bother in warmup etc..
+	if (g_gamestate.integer == GS_PLAYING)
+	{
+		G_LogPrintf("Kill: %i %i %i: %s killed %s by %s\n",
+			killer, self->s.number, meansOfDeath, killerName,
+			self->client->pers.netname, obit);
+	}
+
+	// L0 - Death Sprees
+	stats_DeathSpree(self);
 
 	// L0 - (a hack) Only if it's not a custom mod
 	if (!isCustomMOD(meansOfDeath, self, attacker)) 
@@ -415,12 +422,55 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		} else {
 			// JPW NERVE -- mostly added as conveneience so we can tweak from the #defines all in one place
 			if (g_gametype.integer >= GT_WOLF)
+			{
 				AddScore(attacker, WOLF_FRAG_BONUS);
+
+				// L0 - Stats
+				stats_DoubleKill(attacker, meansOfDeath);		// Double kills
+				stats_KillingSprees(attacker, 0);				// Overall killing sprees
+				stats_KillerSpree(attacker, 0);					// Most Kills per life
+			}
 			else
-			// jpw
-				AddScore( attacker, 1 );
+			{
+				// jpw
+				AddScore(attacker, 1);
+
+				// L0 - Stats
+				stats_DoubleKill(attacker, meansOfDeath);		// Double kills
+				stats_KillingSprees(attacker, 0);				// Overall killing sprees
+				stats_KillerSpree(attacker, 0);					// Most Kills per life
+			}
 
 			attacker->client->lastKillTime = level.time;
+
+			// L0 - Last blood
+			if (g_showLastBlood.integer)
+			{
+				Q_strncpyz(level.lastKiller, attacker->client->pers.netname, sizeof(level.lastKiller));
+				Q_strncpyz(level.lastVictim, self->client->pers.netname, sizeof(level.lastVictim));
+			}
+
+			// L0 - Life stats
+			if (g_showLifeStats.integer) {
+				float acc = 0.00f;
+
+				acc = (self->client->pers.lifeAcc_shots == 0) ?
+					0.00 : ((float)self->client->pers.lifeAcc_hits / (float)self->client->pers.lifeAcc_shots) * 100.00f;
+
+				// Class based..
+				if (self->client->ps.stats[PC_MEDIC])
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Rev:^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.lifeRevives, acc, attacker->client->pers.netname, attacker->health));
+				else if (self->client->ps.stats[PC_LT])
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7AmmoGiv:^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.ammoPacks, acc, attacker->client->pers.netname, attacker->health));
+				else if (self->client->ps.stats[PC_ENGINEER])
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Gibs: ^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.gibs, acc, attacker->client->pers.netname, attacker->health));
+				else
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Gibs: ^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.gibs, acc, attacker->client->pers.netname, attacker->health));
+			} // End
 		}
 	} else {
 		AddScore( self, -1 );
@@ -570,6 +620,9 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	if ( g_gametype.integer >= GT_WOLF && meansOfDeath == MOD_SUICIDE ) {
 		limbo( self, qtrue );
 	}
+
+	// L0 - show First Blood
+	stats_FirstBlood(self, attacker);
 }
 
 
@@ -1064,6 +1117,9 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 			G_AddEvent( targ, EV_LOSE_HAT, DirToByte(dir) );
 
 		targ->client->ps.eFlags |= EF_HEADSHOT;
+
+		// L0 - check for First Headshot
+		stats_FirstHeadshot(attacker, targ);
 	}
 	
 	if ( g_debugDamage.integer ) {

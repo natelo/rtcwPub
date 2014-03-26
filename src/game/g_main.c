@@ -156,12 +156,26 @@ vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
 vmCvar_t	g_unlockWeapons;	// Enable weapon dropping..
 vmCvar_t	g_tapReports;		// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
 vmCvar_t	g_gibReports;		// Prints Gib reports
-vmCvar_t	g_weaponOwnerLock;
+vmCvar_t	g_weaponOwnerLock;  // Disable weapon picking for anyone but owner of it
 
 // Weapon
-vmCvar_t g_dropHealth;	// The number od medpacks medic will drop when going to limbo
-vmCvar_t g_dropNades;	// The number of grenades eng will drop when going to limbo
-vmCvar_t g_dropAmmo;	// The number of ammo packs leut drops when going to limbo
+vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
+vmCvar_t	g_dropNades;	// The number of grenades eng will drop when going to limbo
+vmCvar_t	g_dropAmmo;		// The number of ammo packs leut drops when going to limbo
+
+// Stats
+vmCvar_t	g_doubleKills;			// Double, tripple & quad kills
+vmCvar_t	g_killingSprees;		// Killing sprees for each 5/10 kill..
+vmCvar_t	g_deathSprees;			// Death spress
+vmCvar_t	g_killerSpree;			// Killer sprees - per life.
+vmCvar_t	g_showFirstHeadshot;	// Show who done it
+vmCvar_t	g_showFirstBlood;		// Show who done it
+vmCvar_t	g_showLastBlood;		// Prints in console at the end of the match
+vmCvar_t	g_mapStats;				// Top records for each map.
+vmCvar_t	g_mapStatsNotify;		// Notifies when record gets broken (during intermission)
+vmCvar_t	g_mapStatsWarmupOnly;	// Shows only in warmup, otherwise every time game init's
+vmCvar_t	g_roundStats;			// Prints high achievers each round
+vmCvar_t	g_excludedRoundStats;	// List of excluded stats (not tracked and not printed)
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -330,6 +344,20 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_dropNades, "g_dropNades", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_dropAmmo, "g_dropAmmo", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+
+	// Stats
+	{ &g_doubleKills, "g_doubleKills", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_killingSprees, "g_killingSprees", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_deathSprees, "g_deathSprees", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_killerSpree, "g_killerSpree", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_showFirstHeadshot, "g_showFirstHeadshot", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_showFirstBlood, "g_showFirstBlood", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_showLastBlood, "g_showLastBlood", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_mapStats, "g_mapStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_mapStatsNotify, "g_mapStatsNotify", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_mapStatsWarmupOnly, "g_mapStatsWarmupOnly", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_roundStats, "g_roundStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_excludedRoundStats, "g_excludedRoundStats", "", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },
@@ -1311,6 +1339,20 @@ void G_ShutdownGame( int restart ) {
 	// L0 - Tempban
 	clean_tempbans();
 
+	// L0 - Map Stats
+	if (g_mapStats.integer)
+	{
+		// Show only if warmup setting is enabled otherwise it prints twice (when enabled).
+		if (mapAchiever.string && g_mapStatsWarmupOnly.integer)
+			AP(va("chat \"%s \n\"", mapAchiever.string));
+	}
+
+	// L0 - Round Stats (creates stats)
+	if (g_roundStats.integer)
+	{
+		add_RoundStats();
+	}
+
 	if ( trap_Cvar_VariableIntegerValue( "bot_enable" ) ) {
 		BotAIShutdown( restart );
 	}
@@ -1814,6 +1856,16 @@ void BeginIntermission( void ) {
 	// send the current scoring to all clients
 	SendScoreboardMessageToAllClients();
 
+// L0
+	// End stats	
+	stats_MatchInfo();
+
+	// Last killer (match stats/info)
+	stats_LastBloodMessage();
+
+	// Map Stats
+	if (g_mapStats.integer)
+		stats_MapStats();
 }
 
 
@@ -2794,6 +2846,20 @@ void G_RunFrame( int levelTime ) {
 
 	// for tracking changes
 	CheckCvars();
+
+	// L0 - Countdown
+	if ((level.time > level.cnPush) &&
+		(g_gamestate.integer == GS_WARMUP_COUNTDOWN)) {
+		CountDown();
+	}
+
+	// L0 - Round Stats
+	if ((level.time > level.statsPrint) &&
+		(g_gamestate.integer == GS_WARMUP_COUNTDOWN) &&
+		g_roundStats.integer)
+	{
+		stats_RoundStats();
+	}
 
 	if (g_listEntity.integer) {
 		for (i = 0; i < MAX_GENTITIES; i++) {

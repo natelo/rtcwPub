@@ -153,3 +153,44 @@ void GetIP(const char *strIP1, char *strIP2, char *strPort) {
 		strIP2[i] = 0;
 	strPort[j] = 0;
 }
+
+/*
+===========
+Global sound
+===========
+*/
+void APSound(char *sound) {
+	gentity_t *ent;
+	gentity_t *te;
+
+	ent = g_entities;
+
+	te = G_TempEntity(ent->s.pos.trBase, EV_GLOBAL_SOUND);
+	te->s.eventParm = G_SoundIndex(sound);
+	te->r.svFlags |= SVF_BROADCAST;
+}
+
+/*
+===========
+Client sound
+===========
+*/
+void CPSound(gentity_t *ent, char *sound) {
+	gentity_t *te;
+
+	te = G_TempEntity(ent->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND);
+	te->s.eventParm = G_SoundIndex(sound);
+	te->s.teamNum = ent->s.clientNum;
+}
+
+/*
+===========
+Global sound with limited range
+===========
+*/
+void APRSound(gentity_t *ent, char *sound) {
+	gentity_t   *te;
+
+	te = G_TempEntity(ent->r.currentOrigin, EV_GENERAL_SOUND);
+	te->s.eventParm = G_SoundIndex(sound);
+}
