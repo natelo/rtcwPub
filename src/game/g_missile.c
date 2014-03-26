@@ -1206,7 +1206,7 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir, int grenadeW
 		case WP_DYNAMITE2:
 
 			bolt->accuracy = 0; // JPW NERVE sets to score below if dynamite is in trigger_objective_info & it's an objective
-			trap_SendServerCommand( self-g_entities, "cp \"Dynamite is set, but NOT armed!\"");
+			trap_SendServerCommand( self-g_entities, "cp \"Dynamite is set, but ^1NOT ^7armed!\"");
 			// differentiate non-armed dynamite with non-pulsing dlight
 			bolt->s.teamNum = self->client->sess.sessionTeam + 4;
 			bolt->classname				= "dynamite";

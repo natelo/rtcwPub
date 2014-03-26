@@ -368,7 +368,7 @@ void Team_ReturnFlagSound(gentity_t *ent, int team)
 void Team_ReturnFlag(int team)
 {
 	Team_ReturnFlagSound(Team_ResetFlag(team), team);
-	PrintMsg(NULL, "The %s flag has returned!\n", TeamName(team));
+	matchInfo(MT_ME, va("The %s flag has returned!\n", (team == TEAM_RED ? "Axis" : "Allied"))); // L0 - Some info
 }
 
 void Team_FreeEntity(gentity_t *ent)
@@ -400,8 +400,7 @@ void Team_DroppedFlagThink(gentity_t *ent)
 	if (ent->item->giTag == PW_REDFLAG) {
 		Team_ReturnFlagSound(Team_ResetFlag(TEAM_RED), TEAM_RED);
 		if ( gm )
-		{
-			trap_SendServerCommand(-1, "cp \"Axis have returned the objective!\" 2");
+		{	
 			G_Script_ScriptEvent( gm, "trigger", "axis_object_returned" );
 			matchInfo(MT_ME, "Axis have returned the objective!"); // L0 - Some info
 		}
@@ -409,8 +408,7 @@ void Team_DroppedFlagThink(gentity_t *ent)
 	else if (ent->item->giTag == PW_BLUEFLAG) {
 		Team_ReturnFlagSound(Team_ResetFlag(TEAM_BLUE), TEAM_BLUE);
 		if ( gm )
-		{
-			trap_SendServerCommand(-1, "cp \"Allies have returned the objective!\" 2");
+		{	
 			G_Script_ScriptEvent( gm, "trigger", "allied_object_returned" );
 			matchInfo(MT_ME, "Allies have returned the objective!"); // L0 - Some info
 		}
@@ -446,15 +444,13 @@ int Team_TouchOurFlag( gentity_t *ent, gentity_t *other, int team ) {
 			gm = G_Find( NULL, FOFS(scriptName), "game_manager" );
 
 			if ( cl->sess.sessionTeam == TEAM_RED ) {
-				te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-objective_secure.wav" );
-				trap_SendServerCommand(-1, va("cp \"Axis have returned %s!\n\" 2", ent->message));
+				te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-objective_secure.wav" );				
 				matchInfo(MT_ME, va("Axis have returned %s!", ent->message)); // L0 - Some info
 				if ( gm )
 					G_Script_ScriptEvent( gm, "trigger", "axis_object_returned" );
 			}
 			else {
-				te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-objective_secure.wav" );
-				trap_SendServerCommand(-1, va("cp \"Allies have returned %s!\n\" 2", ent->message));
+				te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-objective_secure.wav" );				
 				matchInfo(MT_ME, va("Allies have returned %s!", ent->message)); // L0 - Some info
 				if ( gm )
 					G_Script_ScriptEvent( gm, "trigger", "allied_object_returned" );
@@ -577,8 +573,7 @@ int Team_TouchEnemyFlag( gentity_t *ent, gentity_t *other, int team ) {
 		gm = G_Find( NULL, FOFS(scriptName), "game_manager" );
 
 		if ( cl->sess.sessionTeam == TEAM_RED ) {
-			te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-objective_taken.wav" );
-			trap_SendServerCommand(-1, va("cp \"Axis have stolen %s!\n\" 2", ent->message));
+			te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-objective_taken.wav" );			
 			// L0 - matchInfo
 			matchInfo(MT_ME, va("Axis have stolen %s!", ent->message));
 
@@ -586,8 +581,7 @@ int Team_TouchEnemyFlag( gentity_t *ent, gentity_t *other, int team ) {
 				G_Script_ScriptEvent( gm, "trigger", "allied_object_stolen" );
 		}
 		else {
-			te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-objective_taken.wav" );
-			trap_SendServerCommand(-1, va("cp \"Allies have stolen %s!\n\" 2", ent->message));
+			te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-objective_taken.wav" );			
 			// L0 - matchInfo
 			matchInfo(MT_ME, va("Allies have stolen %s!", ent->message));
 			if ( gm )
@@ -1353,19 +1347,25 @@ void checkpoint_touch (gentity_t *self, gentity_t *other, trace_t *trace) {
 }
 
 // JPW NERVE -- if spawn flag is set, use this touch fn instead to turn on/off targeted spawnpoints
-void checkpoint_spawntouch (gentity_t *self, gentity_t *other, trace_t *trace) {
+void checkpoint_spawntouch(gentity_t *self, gentity_t *other, trace_t *trace) {
 	gentity_t	*ent = NULL;
 	qboolean	playsound = qtrue;
 	qboolean	firsttime = qfalse;
 
-	if ( self->count == other->client->sess.sessionTeam )
+	if (self->count == other->client->sess.sessionTeam)
 		return;
 
-// JPW NERVE
+	// JPW NERVE
 	if (self->s.frame == WCP_ANIM_NOFLAG)
+	{
 		AddScore(other, WOLF_SP_CAPTURE);
+		//matchInfo(MT_ME, va("%s captured the flag!\n", ((other->client->sess.sessionTeam == TEAM_RED) ? "Axis" : "Allies")) ); // L0 - Some info
+	}
 	else
+	{
 		AddScore(other, WOLF_SP_RECOVER);
+		//matchInfo(MT_ME, va("%s reclaimed the flag!\n", ((other->client->sess.sessionTeam == TEAM_RED) ? "Axis" : "Allies"))); // L0 - Some info
+	}
 // jpw
 
 	if ( self->count < 0 )

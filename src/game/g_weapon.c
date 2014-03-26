@@ -320,7 +320,8 @@ void Weapon_Syringe(gentity_t *ent) {
 				trap_LinkEntity( ent );
 
 				// DHM - Nerve :: Let the person being revived know about it
-				trap_SendServerCommand( traceEnt-g_entities, va("cp \"You have been revived by [lof]%s!\n\"", ent->client->pers.netname) );
+				CPx( traceEnt-g_entities, va("print \"You have been revived by %s!\n\"", ent->client->pers.netname) );
+				CPx( ent - g_entities, va("print \"You have revived player: %s\n\"", traceEnt->client->pers.netname)); // L0 - added this so player knows who he revived
 				traceEnt->props_frame_state = ent->s.number;
 
 				// DHM - Nerve :: Mark that the medicine was indeed dispensed
@@ -495,7 +496,7 @@ void Weapon_Engineer( gentity_t *ent ) {
 				traceEnt->s.effect1Time = level.time;
 
 				// ARM IT!
-				trap_SendServerCommand( ent-g_entities, "cp \"Dynamite is now armed with a 30 second timer!\" 1");
+				trap_SendServerCommand( ent-g_entities, "cp \"Dynamite is now armed with a ^330 ^7second timer!\" 1");
 				traceEnt->nextthink = level.time + 30000;
 				traceEnt->think = G_ExplodeMissile;
 
@@ -614,8 +615,7 @@ void Weapon_Engineer( gentity_t *ent ) {
 									AddScore(ent,WOLF_DYNAMITE_DIFFUSE); // FIXME add team info to *dynamite* so we don't get points for diffusing own team dynamite
 									scored++;
 									hit->spawnflags &= ~OBJECTIVE_DESTROYED; // "re-activate" objective since it wasn't destroyed.  kludgy, I know; see G_ExplodeMissile for the other half
-								}
-								trap_SendServerCommand(-1, "cp \"Axis engineer disarmed the Dynamite!\n\"");
+								}								
 								traceEnt->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-dynamite_defused.wav" );
 								traceEnt->s.teamNum = TEAM_RED;
 								matchInfo(MT_ME, "Axis disarmed the Dynamite!"); // L0 - Some info
@@ -626,8 +626,7 @@ void Weapon_Engineer( gentity_t *ent ) {
 									AddScore(ent,WOLF_DYNAMITE_DIFFUSE);
 									scored++; 
 									hit->spawnflags &= ~OBJECTIVE_DESTROYED; // "re-activate" objective since it wasn't destroyed
-								}
-								trap_SendServerCommand(-1, "cp \"Allied engineer disarmed the Dynamite!\n\"");
+								}								
 								traceEnt->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-dynamite_defused.wav" );
 								traceEnt->s.teamNum = TEAM_BLUE;
 								matchInfo(MT_ME, "Allies disarmed the Dynamite!"); // L0 - Some info
