@@ -1000,7 +1000,7 @@ void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, const char 
 
 	// L0 - Admin chat is visible only to admins..
 	if (mode == SAY_ADMIN) {
-		if (!ent->client->sess.admin != (other->client->sess.admin == ADM_NONE))
+		if (!ent->client->sess.admin || !other->client->sess.admin)
 			return;
 	}
 
@@ -1035,7 +1035,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 
 	// Admin commands
 	Q_strncpyz(text, chatText, sizeof(text));
-	if (!ent->client->sess.admin == ADM_NONE) {
+	if (ent->client->sess.admin != ADM_NONE) {
 		// Command
 		if ((text[0] == '?') || (text[0] == '!')) {
 			ParseAdmStr(text, cmd1, arg);
