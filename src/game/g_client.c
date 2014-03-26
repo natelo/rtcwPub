@@ -1985,7 +1985,9 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 	}
 
 	client->respawnTime = level.time;
-	client->inactivityTime = level.time + g_inactivity.integer * 1000;
+	// L0 - Sort spec's differently otherwise problems occur when inactivity is lower than spectator inactivity..
+	client->inactivityTime = level.time +
+		((ent->client->sess.sessionTeam != TEAM_SPECTATOR) ? g_inactivity.integer : g_spectatorInactivity.integer) * 1000;
 	client->latched_buttons = 0;
 	client->latched_wbuttons = 0;	//----(SA)	added
 

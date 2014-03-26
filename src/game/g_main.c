@@ -153,20 +153,22 @@ vmCvar_t	sb_maxPingHits;					// How many seconds or times (1 time = 1 sec) can i
 vmCvar_t	sb_autoIgnore;					// Auto ignores players (for the round) that reach spam check more than 3 times.
 
 // System
-vmCvar_t	g_extendedLog;		// Logs various Admin and other related actions
-vmCvar_t	g_maxVotes;			// Max votes client can call per round
-vmCvar_t	g_disallowedVotes;	// Disalloved votes separeted by space..
-vmCvar_t	g_voteDelay;		// Time that has to pass before another vote can be called
-vmCvar_t	g_antilag;			// Antilag
-vmCvar_t	sv_hostname;		// So it's more accessible
-vmCvar_t	g_bypassPasswords;	// Tokens separated by space for bypassing a ban
-vmCvar_t	bannedMSG;			// Meesage printed to banned clients
-vmCvar_t	g_ignoreSpecs;		// Ignores spectators - Admins can still bypass the ignore..
-vmCvar_t	g_inactivityToSpecs;// Puts inactive players in spectators instead of dropping them.
-vmCvar_t	g_mapConfigs;		// Essentials for custom map configs...
-vmCvar_t	g_autoSwap;			// Auto swaps teams 
-vmCvar_t	g_autoSwapRounds;	// How many rounds until it auto swaps
-vmCvar_t	g_autoShuffle;		// Auto shuffles teams after rounds set here | 0 = off
+vmCvar_t	g_extendedLog;			// Logs various Admin and other related actions
+vmCvar_t	g_maxVotes;				// Max votes client can call per round
+vmCvar_t	g_disallowedVotes;		// Disalloved votes separeted by space..
+vmCvar_t	g_voteDelay;			// Time that has to pass before another vote can be called
+vmCvar_t	g_antilag;				// Antilag
+vmCvar_t	sv_hostname;			// So it's more accessible
+vmCvar_t	g_bypassPasswords;		// Tokens separated by space for bypassing a ban
+vmCvar_t	bannedMSG;				// Meesage printed to banned clients
+vmCvar_t	g_ignoreSpecs;			// Ignores spectators - Admins can still bypass the ignore..
+vmCvar_t	g_inactivityToSpecs;	// Puts inactive players in spectators instead of dropping them.
+vmCvar_t	g_spectatorInactivity;	// Drop spectators after some time..
+vmCvar_t	g_spectatorAllowDemo;	// Basically ignores any client that's following other players when g_spectatorInactivity is set.
+vmCvar_t	g_mapConfigs;			// Essentials for custom map configs...
+vmCvar_t	g_autoSwap;				// Auto swaps teams 
+vmCvar_t	g_autoSwapRounds;		// How many rounds until it auto swaps
+vmCvar_t	g_autoShuffle;			// Auto shuffles teams after rounds set here | 0 = off
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -378,6 +380,8 @@ cvarTable_t		gameCvarTable[] = {
 	{ &bannedMSG, "bannedMSG", "^7You are ^1Banned^7 from this server^1!", CVAR_ARCHIVE, 0, qfalse},
 	{ &g_ignoreSpecs, "g_ignoreSpecs", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_inactivityToSpecs, "g_inactivityToSpecs", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_spectatorInactivity, "g_spectatorInactivity", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_spectatorAllowDemo, "g_spectatorAllowDemo", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_mapConfigs, "g_mapConfigs", "0", CVAR_LATCH, 0, qfalse },	
 	{ &g_autoSwap, "g_autoSwap", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_autoSwapRounds, "g_autoSwapRounds", "1", CVAR_ARCHIVE, 0, qtrue },

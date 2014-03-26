@@ -1336,6 +1336,8 @@ extern vmCvar_t		g_bypassPasswords;
 extern vmCvar_t		bannedMSG;
 extern vmCvar_t		g_ignoreSpecs;
 extern vmCvar_t		g_inactivityToSpecs;
+extern vmCvar_t		g_spectatorInactivity;
+extern vmCvar_t		g_spectatorAllowDemo;
 extern vmCvar_t		g_autoShuffle;
 
 // Game
