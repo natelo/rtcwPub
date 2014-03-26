@@ -174,11 +174,13 @@ void P_WorldEffects( gentity_t *ent ) {
 		}
 	}
 
+// L0 
+	// Flamer Bug fix
+
 	//
 	// check for burning from flamethrower
 	//
 	// JPW NERVE MP way
-	// L0 - Flamer bug fix
 	if (ent->s.onFireEnd && ent->client) {
 		//Martin 6/28/08 REDONE
 		if ((level.time - ent->client->lastBurnTime >= 1000) && (ent->health > 0)) {
@@ -198,8 +200,48 @@ void P_WorldEffects( gentity_t *ent ) {
 				G_Damage(ent, attacker->parent, attacker->parent, NULL, NULL, 5, DAMAGE_NO_KNOCKBACK, MOD_FLAMETHROWER);
 			}
 		}
-	}	// L0 - Flamer end
-	// jpw
+	}
+	
+	// Poison
+	if (ent->poisoned && ent->client)
+	{
+
+		// Check if person is under spawn protection before any damange can be done
+		if (ent->client->ps.powerups[PW_INVULNERABLE]) {
+			ent->poisoned = qfalse; // if he's under protecion reset poison or it kicks in once protection expires =X
+			return;
+		}
+
+		//if the guy isn't dead and it's been a second since the last time we did this
+		if ((level.time >= (ent->lastPoisonTime + 1000)) && (ent->health > 0))
+		{
+			int n = rand() % 4;
+			gentity_t *attacker = g_entities + ent->poisonEnt;	//the person who poisoned him
+			vec3_t angles;
+
+			if (n == 0)
+				G_Sound(ent, G_SoundIndex("sound/beast/gasp1.wav"));
+
+			else if (n == 1)
+				G_Sound(ent, G_SoundIndex("sound/player/bj2/gasp.wav"));
+
+			else if (n == 2)
+				G_Sound(ent, G_SoundIndex("sound/beast/gasp3.wav"));
+
+			else if (n == 3)
+				G_Sound(ent, G_SoundIndex("sound/player/bj2/pain50_1.wav"));
+
+			//make the poisoned guy's view go crazy
+			angles[YAW] = (crandom() * 80);
+			angles[PITCH] = (crandom() * 80);
+			angles[ROLL] = 0;
+			SetClientViewAngle(ent, angles);
+
+			G_Damage(ent, attacker, attacker, NULL, NULL, g_poison.integer, 0, MOD_POISONDMED);	//hurt him!
+			ent->lastPoisonTime = level.time;
+		}
+	} 
+// L0 - End
 }
 
 

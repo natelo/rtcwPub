@@ -347,6 +347,19 @@ void Weapon_Syringe(gentity_t *ent) {
 					write_MapStats(ent, ent->client->pers.revives, MAP_REVIVES);
 // End
 			}
+
+			// L0 - Poison
+			else if ((traceEnt->client->ps.stats[STAT_HEALTH] > 0) &&
+				(traceEnt->client->sess.sessionTeam != ent->client->sess.sessionTeam) &&
+				!(traceEnt->client->ps.powerups[PW_INVULNERABLE]) &&
+				g_poison.integer)
+			{
+				if (ent->client->ps.stats[STAT_PLAYER_CLASS] == PC_MEDIC) {
+					traceEnt->poisonEnt = ent->s.number;
+					traceEnt->poisoned = qtrue;
+					usedSyringe = qtrue;
+				}
+			} // end
 		}
 	}
 

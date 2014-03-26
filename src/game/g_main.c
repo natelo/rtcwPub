@@ -161,6 +161,7 @@ vmCvar_t	g_weaponOwnerLock;  // Disable weapon picking for anyone but owner of i
 vmCvar_t	g_fastStabSound;	// 0 = off, 1 = (OSP's) goat sound, 2 = humiliation sound, 3 = random between 1 or 2
 vmCvar_t	g_showLifeStats;	// If enabled it prints some life info to player when (s)he dies
 vmCvar_t	g_chicken;			// Check if player is 'laming' out of combat with self kill..
+vmCvar_t	g_poison;			// Poison... anything above 0 is value that will be used
 
 // Weapon
 vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
@@ -347,6 +348,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_fastStabSound, "g_fastStabSound", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_showLifeStats, "g_showLifeStats", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_chicken, "g_chicken", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_poison, "g_poison", "0", CVAR_ARCHIVE, 0, qtrue },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },

@@ -1892,6 +1892,23 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 	ent->waterlevel = 0;
 	ent->watertype = 0;
 	ent->flags = 0;
+
+// L0 - New stuff	
+	// Poison
+	ent->poisoned = qfalse;	
+	ent->lastPoisonTime = 0;
+
+	// Mapstats / Store Life kills Peak for map stats if enabled
+	if (ent->client->pers.lifeKills > ent->client->pers.lifeKillsPeak)
+		ent->client->pers.lifeKillsPeak = ent->client->pers.lifeKills;
+
+	// Life Stats
+	ent->client->pers.lifeKills = 0;
+	ent->client->pers.lifeRevives = 0;
+	ent->client->pers.lifeAcc_hits = 0;
+	ent->client->pers.lifeAcc_shots = 0;
+	ent->client->pers.lifeHeadshots = 0;
+// End
 	
 	VectorCopy (playerMins, ent->r.mins);
 	VectorCopy (playerMaxs, ent->r.maxs);

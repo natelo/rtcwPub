@@ -375,6 +375,11 @@ struct gentity_s {
 	int			voiceChatSquelch;			// DHM - Nerve
 	int			voiceChatPreviousTime;		// DHM - Nerve
 	int			lastBurnedFrameNumber;		// JPW - Nerve   : to fix FT instant-kill exploit
+
+// L0 
+	qboolean	poisoned;					// Poison
+	int			poisonEnt;					// Poison
+	int			lastPoisonTime;				// Poison
 };
 
 // Ridah
@@ -1304,6 +1309,7 @@ extern vmCvar_t		g_weaponOwnerLock;
 extern vmCvar_t		g_fastStabSound;
 extern vmCvar_t		g_showLifeStats;
 extern vmCvar_t		g_chicken;
+extern vmCvar_t		g_poison;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;

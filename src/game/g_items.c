@@ -519,6 +519,9 @@ int Pickup_Health (gentity_t *ent, gentity_t *other) {
 		ent->parent->client->pers.medPacks++;
 		write_RoundStats(ent->parent->client->pers.netname, ent->parent->client->pers.medPacks, ROUND_MEDGIVEN);
 	}
+
+	// L0 - reset poison
+	other->poisoned = qfalse;
 	
 	// small and mega healths will go over the max
 	if ( ent->item->quantity != 5 && ent->item->quantity != 100  ) {
