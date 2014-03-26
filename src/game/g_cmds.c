@@ -1257,6 +1257,21 @@ void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qbool
 		mode = SAY_ALL;
 	}
 
+	// Ignored 
+	if (ent->client->sess.ignored)
+	{
+		CP(va("print \"You are %s^7!\n\"",
+			(ent->client->sess.ignored == 2) ? "^1permanently ignored ^7on this server" : "^1ignored"));
+		return;
+	}
+
+	//  Nuke
+	if (strlen(id) >= 700) {
+		logEntry(SYSLOG, va("Nuking (G_Voice :: strlen >= 700): %s (IP: %s", ent->client->pers.netname, clientIP(ent, qtrue)));
+		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
+		return;
+	}
+
 	// DHM - Nerve :: Don't allow excessive spamming of voice chats
 	ent->voiceChatSquelch -= (level.time - ent->voiceChatPreviousTime);
 	ent->voiceChatPreviousTime = level.time;
@@ -1266,6 +1281,15 @@ void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qbool
 
 	if ( ent->voiceChatSquelch >= 30000 ) {
 		trap_SendServerCommand( ent-g_entities, "print \"^1Spam Protection^7: VoiceChat ignored\n\"" );
+
+		// L0 - Sab auto ignored..
+		if (sb_autoIgnore.integer && ent->client->pers.sb_ignored == 2)
+			CPx(ent - g_entities, "print \"^3Warning^7! Next time You will get ^3auto ignored ^7until the next round!\n\"2");
+
+		if (sb_system.integer && sb_autoIgnore.integer)
+			ent->client->pers.sb_ignored++;
+		// End
+
 		return;
 	}
 
