@@ -80,7 +80,7 @@ void cmd_ignore(gentity_t *ent) {
 		return;
 	}
 	else if (count > 1) {
-		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		CP(va("print \"Too many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
 		return;
 	}
 
@@ -95,7 +95,7 @@ void cmd_ignore(gentity_t *ent) {
 		AP(va("chat \"console: %s has ignored player %s^7!\n\"", tag, g_entities[nums[i]].client->pers.netname));
 
 		// Log it
-		log = va("Player %s (IP: %s) has Ignored user %s.",
+		log = va("Player %s (IP: %s) has ignored user %s.",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
 		logEntry(ADMACT, log);
 	}
@@ -121,19 +121,19 @@ void cmd_unignore(gentity_t *ent) {
 		return;
 	}
 	else if (count > 1){
-		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		CP(va("print \"Too many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
 		return;
 	}
 
 	for (i = 0; i < count; i++){
 		if (!g_entities[nums[i]].client->sess.ignored){
-			CP(va("print \"Player %s ^7is already Unignored^1!\n\"", g_entities[nums[i]].client->pers.netname));
+			CP(va("print \"Player %s ^7is already unignored^1!\n\"", g_entities[nums[i]].client->pers.netname));
 			return;
 		}
 		else
 			g_entities[nums[i]].client->sess.ignored = 0;
 
-		AP(va("chat \"console: %s has Unignored player %s^1!\n\"", tag, g_entities[nums[i]].client->pers.netname));
+		AP(va("chat \"console: %s has unignored player %s^1!\n\"", tag, g_entities[nums[i]].client->pers.netname));
 
 		// Log it
 		log = va("Player %s (IP: %s) has unignored user %s.",
@@ -229,7 +229,7 @@ void cmd_kick(gentity_t *ent) {
 		return;
 	}
 	else if (count > 1){
-		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		CP(va("print \"Too many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
 		return;
 	}
 
@@ -411,7 +411,7 @@ void cmd_specs(gentity_t *ent) {
 		return;
 	}
 	else if (count > 1) {
-		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		CP(va("print \"Too many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
 		return;
 	}
 
@@ -452,13 +452,13 @@ void cmd_axis(gentity_t *ent) {
 		return;
 	}
 	else if (count > 1) {
-		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		CP(va("print \"Too many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
 		return;
 	}
 
 	for (i = 0; i < count; i++) {
 		if (g_entities[nums[i]].client->sess.sessionTeam == TEAM_RED) {
-			CP(va("print \"Player %s ^7is already in ^1Axis ^7team!\n\"", g_entities[nums[i]].client->pers.netname));
+			CP(va("print \"Player %s ^7is already an ^1Axis ^7recruit!\n\"", g_entities[nums[i]].client->pers.netname));
 			return;
 		}
 		else
@@ -493,18 +493,18 @@ void cmd_allied(gentity_t *ent) {
 		return;
 	}
 	else if (count > 1) {
-		CP(va("print \"To many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
+		CP(va("print \"Too many people with ^1%s ^7in their name^1!\n\"", ent->client->pers.cmd2));
 		return;
 	}
 
 	for (i = 0; i < count; i++) {
 		if (g_entities[nums[i]].client->sess.sessionTeam == TEAM_BLUE) {
-			CP(va("print \"Player %s ^7is already in ^4Allied ^7team!\n\"", g_entities[nums[i]].client->pers.netname));
+			CP(va("print \"Player %s ^7is already an ^4Allied ^7recruit!\n\"", g_entities[nums[i]].client->pers.netname));
 			return;
 		}
 		else
 			SetTeam(&g_entities[nums[i]], "blue", qtrue);
-		AP(va("chat \"console: %s has forced player %s ^7into ^4Allied ^7team!\n\"", tag, g_entities[nums[i]].client->pers.netname));
+		AP(va("chat \"console: %s has forced player %s ^7to ^4Allied ^7team!\n\"", tag, g_entities[nums[i]].client->pers.netname));
 
 		// Log it
 		log = va("Player %s (IP: %s) has forced user %s into Axis team.",
@@ -528,7 +528,7 @@ void cmd_exec(gentity_t *ent) {
 	if (!strcmp(ent->client->pers.cmd3, "@"))
 		CP(va("print \"^3Info: ^7%s has been executed^3!\n\"", ent->client->pers.cmd2));
 	else
-		AP(va("print \"console: %s has executed ^3%s ^7config^3!\n\"", tag, ent->client->pers.cmd2));
+		AP(va("print \"console: %s has executed ^3%s^3!\n\"", tag, ent->client->pers.cmd2));
 
 	trap_SendConsoleCommand(EXEC_INSERT, va("exec \"%s\"", ent->client->pers.cmd2));
 
@@ -549,7 +549,7 @@ void cmd_nextmap(gentity_t *ent) {
 	char *tag, *log;
 
 	tag = sortTag(ent);
-	AP(va("chat \"console: %s has set ^3nextmap ^7in rotation^3!\n\"", tag));
+	AP(va("chat \"console: %s has set the ^3nextmap ^7in rotation^3!\n\"", tag));
 	trap_SendConsoleCommand(EXEC_APPEND, va("vstr nextmap"));
 
 	// Log it
@@ -570,7 +570,7 @@ void cmd_map(gentity_t *ent) {
 	char *tag, *log;
 
 	tag = sortTag(ent);
-	AP(va("chat \"console: %s has loaded ^3%s ^7map^3! \n\"", tag, ent->client->pers.cmd2));
+	AP(va("chat \"console: %s has loaded the map ^3%s^3! \n\"", tag, ent->client->pers.cmd2));
 	trap_SendConsoleCommand(EXEC_APPEND, va("map %s", ent->client->pers.cmd2));
 
 	// Log it
@@ -769,11 +769,11 @@ void cmd_restart(gentity_t *ent) {
 	char *tag, *log;
 
 	tag = sortTag(ent);
-	AP(va("chat \"console: %s has ^3restarted ^7map^3.\n\"", tag));
+	AP(va("chat \"console: %s has ^3restarted ^7the map^3.\n\"", tag));
 	trap_SendConsoleCommand(EXEC_APPEND, va("map_restart"));
 
 	// Log it
-	log = va("Player %s (IP: %s) has restarted map.",
+	log = va("Player %s (IP: %s) has restarted the map.",
 		ent->client->pers.netname, clientIP(ent, qtrue));
 
 	// Only log this if it is set to 2+
@@ -792,11 +792,11 @@ void cmd_resetmatch(gentity_t *ent) {
 	char *tag, *log;
 
 	tag = sortTag(ent);
-	AP(va("chat \"console: %s has ^3resetted ^7match^3.\n\"", tag));
+	AP(va("chat \"console: %s has ^3reset ^7match^3.\n\"", tag));
 	trap_SendConsoleCommand(EXEC_APPEND, va("reset_match"));
 
 	// Log it
-	log = va("Player %s (IP: %s) has resetted match.",
+	log = va("Player %s (IP: %s) has reset match.",
 		ent->client->pers.netname, clientIP(ent, qtrue));
 
 	// Only log this if it is set to 2+
@@ -878,11 +878,11 @@ void cmd_shuffle(gentity_t *ent) {
 		tmpCount--;
 	}
 
-	AP(va("print \"console: %s has ^3shuffled ^7teams^3.\n\"", tag));
+	AP(va("print \"console: %s has ^3shuffled ^7the teams^3.\n\"", tag));
 	trap_SendConsoleCommand(EXEC_APPEND, va("reset_match %i\n", GS_WARMUP));
 
 	// Log it
-	log = va("Player %s (IP: %s) has shuffled teams.",
+	log = va("Player %s (IP: %s) has shuffled the teams.",
 		ent->client->pers.netname, clientIP(ent, qtrue));
 
 	// Only log this if it is set to 2+
@@ -952,7 +952,7 @@ void cmd_revealCamper(gentity_t *ent) {
 	ent = g_entities + clientNum;
 
 	Team_GetLocationMsg(ent, location, sizeof(location), qtrue);
-	AP(va("chat \"console: %s has releaved that player %s ^7is hidding at ^3%s^7.\n\"", tag, ent->client->pers.netname, location));
+	AP(va("chat \"console: %s has releaved that player %s ^7is hiding at ^3%s^7.\n\"", tag, ent->client->pers.netname, location));
 
 	// Log it
 	log = va("%s has revealed %s location.", log2, ent->client->pers.netname);
@@ -1162,7 +1162,7 @@ void cmd_ban(gentity_t *ent) {
 		return;
 	}
 	else if (count > 1) {
-		CP(va("print \"To many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
+		CP(va("print \"Too many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
 		return;
 	}
 
