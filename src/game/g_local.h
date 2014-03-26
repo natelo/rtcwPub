@@ -1325,6 +1325,7 @@ extern vmCvar_t		sv_hostname;
 extern vmCvar_t		g_bypassPasswords;
 extern vmCvar_t		bannedMSG;
 extern vmCvar_t		mapAchiever;
+extern vmCvar_t		g_ignoreSpecs;
 
 // General
 extern vmCvar_t		g_dropReload;

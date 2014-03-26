@@ -982,7 +982,12 @@ void G_SayTo( gentity_t *ent, gentity_t *other, int mode, int color, const char 
 	// no chatting to players in tournements
 	if ( g_gametype.integer == GT_TOURNAMENT
 		&& other->client->sess.sessionTeam == TEAM_FREE
-		&& ent->client->sess.sessionTeam != TEAM_FREE ) {
+		&& ent->client->sess.sessionTeam != TEAM_FREE 
+		// L0 - Ignore only if ignoreSpecs is on and user is not logged in..
+		&& ent->client->sess.admin == ADM_NONE
+		&& g_ignoreSpecs.integer
+		// End
+	) {
 		return;
 	}
 
