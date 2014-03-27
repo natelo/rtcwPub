@@ -676,10 +676,13 @@ struct gclient_s {
 	// antilag
 	int              trailHead;
 	clientTrail_t    trail[NUM_CLIENT_TRAILS];
-	clientTrail_t    saved;    // used to restore after time shift
+	clientTrail_t    saved; 
 
 	// Double kill
-	int			doublekill;		// (stats) Double+ Kills
+	int			doublekill;	
+
+	// LT Info
+	int			infoTime;		
 };
 
 
@@ -1390,6 +1393,9 @@ extern vmCvar_t		g_bunnyJump;
 extern vmCvar_t		g_dragBodies;
 extern vmCvar_t		g_shove;
 extern vmCvar_t		g_dropObj;
+extern vmCvar_t		g_easyASBlock;
+extern vmCvar_t		g_LTinfoMsg;
+extern vmCvar_t		g_disableInv;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;

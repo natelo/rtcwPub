@@ -203,6 +203,9 @@ vmCvar_t	g_bunnyJump;		// Enable bunny jumps...
 vmCvar_t	g_dragBodies;		// If enabled player can drag bodies using salute or activate command
 vmCvar_t	g_shove;			// Enables or disables shove..(pushing of players..)
 vmCvar_t	g_dropObj;			// Drop Objective
+vmCvar_t	g_easyASBlock;		// If enabled it prints when AirStrike is blocked
+vmCvar_t	g_LTinfoMsg;		// Shows how much ammo client player is pointing at has
+vmCvar_t	g_disableInv;		// Disables (re)spawn/revive protection crap when one starts to shot..
 
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
@@ -454,6 +457,9 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_dragBodies, "g_dragBodies", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_shove, "g_shove", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_dropObj, "g_dropObj", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_easyASBlock, "g_easyASBlock", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_LTinfoMsg, "g_LTinfoMsg", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_disableInv, "g_disableInv", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
