@@ -866,6 +866,9 @@ typedef struct {
 
 	// MOTDs
 	int			motdTime;
+
+	// Flag retaking
+	int			flagTaken;			
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -1415,6 +1418,9 @@ extern vmCvar_t		g_alliedASdelay;
 extern vmCvar_t		g_alliedASdelayFFE;
 extern vmCvar_t		g_smokeGrenades;
 extern vmCvar_t		g_smokeGrenadesLmt;
+extern vmCvar_t		g_flagRetake;
+extern vmCvar_t		g_balanceFlagRetake;
+extern vmCvar_t		g_balanceFlagCanClaim;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
@@ -1739,6 +1745,7 @@ int isWeaponLimited(gclient_t *client, int weap);
 qboolean isWeaponBalanced(int weapon);
 void setDefaultWeapon(gclient_t *client, qboolean isSold);
 void setCustomMG(gentity_t* ent, int type);
+int FlagBalance(void);
 
 // 
 // g_players.c

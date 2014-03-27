@@ -184,39 +184,42 @@ vmCvar_t	g_logPMs;				// Logs PMs..totally not happy about this.
 vmCvar_t	g_serverMessage;		// Shows a center print each time when player switches teams.
 
 // Game 
-vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
-vmCvar_t	g_unlockWeapons;	// Enable weapon dropping..
-vmCvar_t	g_tapReports;		// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
-vmCvar_t	g_gibReports;		// Prints Gib reports
-vmCvar_t	g_weaponOwnerLock;  // Disable weapon picking for anyone but owner of it
-vmCvar_t	g_fastStabSound;	// 0 = off, 1 = (OSP's) goat sound, 2 = humiliation sound, 3 = random between 1 or 2
-vmCvar_t	g_showLifeStats;	// If enabled it prints some life info to player when (s)he dies
-vmCvar_t	g_chicken;			// Check if player is 'laming' out of combat with self kill..
-vmCvar_t	g_poison;			// Poison... anything above 0 is value that will be used
-vmCvar_t	g_hitsounds;		// Hitsounds - Requires soundpack
-vmCvar_t	g_screenShake;		// Screenshaking on explosions (4 = default, 2 = half.. etc)
-vmCvar_t	g_fixedphysics;		// Tries to keep things more fair..
-vmCvar_t	g_printMatchInfo;	// Prints events when they happen (retake, obj planted..)
-vmCvar_t	g_teamAutoBalance;	// Auto balances the teams..
-vmCvar_t	g_warmupDamage;		// Allows damage in warmup
-vmCvar_t	g_staminaBoost;		// If enabled it recharges stamina faster when player is crouching..
-vmCvar_t	g_bunnyJump;		// Enable bunny jumps...
-vmCvar_t	g_dragBodies;		// If enabled player can drag bodies using salute or activate command
-vmCvar_t	g_shove;			// Enables or disables shove..(pushing of players..)
-vmCvar_t	g_dropObj;			// Drop Objective
-vmCvar_t	g_easyASBlock;		// If enabled it prints when AirStrike is blocked
-vmCvar_t	g_LTinfoMsg;		// Shows how much ammo client player is pointing at has
-vmCvar_t	g_disableInv;		// Disables (re)spawn/revive protection crap when one starts to shot..
+vmCvar_t	g_dropReload;			// Enable / Disable Drop reload
+vmCvar_t	g_unlockWeapons;		// Enable weapon dropping..
+vmCvar_t	g_tapReports;			// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
+vmCvar_t	g_gibReports;			// Prints Gib reports
+vmCvar_t	g_weaponOwnerLock;		// Disable weapon picking for anyone but owner of it
+vmCvar_t	g_fastStabSound;		// 0 = off, 1 = (OSP's) goat sound, 2 = humiliation sound, 3 = random between 1 or 2
+vmCvar_t	g_showLifeStats;		// If enabled it prints some life info to player when (s)he dies
+vmCvar_t	g_chicken;				// Check if player is 'laming' out of combat with self kill..
+vmCvar_t	g_poison;				// Poison... anything above 0 is value that will be used
+vmCvar_t	g_hitsounds;			// Hitsounds - Requires soundpack
+vmCvar_t	g_screenShake;			// Screenshaking on explosions (4 = default, 2 = half.. etc)
+vmCvar_t	g_fixedphysics;			// Tries to keep things more fair..
+vmCvar_t	g_printMatchInfo;		// Prints events when they happen (retake, obj planted..)
+vmCvar_t	g_teamAutoBalance;		// Auto balances the teams..
+vmCvar_t	g_warmupDamage;			// Allows damage in warmup
+vmCvar_t	g_staminaBoost;			// If enabled it recharges stamina faster when player is crouching..
+vmCvar_t	g_bunnyJump;			// Enable bunny jumps...
+vmCvar_t	g_dragBodies;			// If enabled player can drag bodies using salute or activate command
+vmCvar_t	g_shove;				// Enables or disables shove..(pushing of players..)
+vmCvar_t	g_dropObj;				// Drop Objective
+vmCvar_t	g_easyASBlock;			// If enabled it prints when AirStrike is blocked
+vmCvar_t	g_LTinfoMsg;			// Shows how much ammo client player is pointing at has
+vmCvar_t	g_disableInv;			// Disables (re)spawn/revive protection crap when one starts to shot..
 vmCvar_t	g_axisSpawnProtectionTime;		// How long Axis player is invulrable when (s)he spawns.
 vmCvar_t	g_alliedSpawnProtectionTime;	// How long Allied player is invulrable when (s)he spawns.
-vmCvar_t	g_fastres;			// Xian's Fast (animation) restoring on revives
-vmCvar_t	g_fastResMsec;		// Xian's Fast (animation) restoring on revives
-vmCvar_t	g_axisASdelay;		// Limit for Axis Air strikes
-vmCvar_t	g_axisASdelayFFE;	// Limit for Allied Air strikes
-vmCvar_t	g_alliedASdelay;	// Limit for Axis Air strikes (Firing for effect)
-vmCvar_t	g_alliedASdelayFFE;	// Limit for Allied Air strikes (Firing for effect)
-vmCvar_t	g_smokeGrenades;	// Smoke Grenades for Leut
-vmCvar_t	g_smokeGrenadesLmt;	// Smoke Grenades limit per life
+vmCvar_t	g_fastres;				// Xian's Fast (animation) restoring on revives
+vmCvar_t	g_fastResMsec;			// Xian's Fast (animation) restoring on revives
+vmCvar_t	g_axisASdelay;			// Limit for Axis Air strikes
+vmCvar_t	g_axisASdelayFFE;		// Limit for Allied Air strikes
+vmCvar_t	g_alliedASdelay;		// Limit for Axis Air strikes (Firing for effect)
+vmCvar_t	g_alliedASdelayFFE;		// Limit for Allied Air strikes (Firing for effect)
+vmCvar_t	g_smokeGrenades;		// Smoke Grenades for Leut
+vmCvar_t	g_smokeGrenadesLmt;		// Smoke Grenades limit per life
+vmCvar_t	g_flagRetake;			// How many times flag can be retaken
+vmCvar_t	g_balanceFlagRetake;	// Checks if flag can be taken..it always allows team with less to claim it last and then locks till even.
+vmCvar_t	g_balanceFlagCanClaim;	// If enabled team will be able to claim (not reclaim!) the flag regardless if they're the team with more..
 
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
@@ -462,7 +465,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_noHardcodedCensor, "g_noHardcodedCensor", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_shortcuts, "g_shortcuts", "0", 0 },
 	{ &g_allowPMs, "g_allowPMs", "0", CVAR_ARCHIVE, 0, qfalse },
-	{ &g_logPMs , "g_logPMs", "0", CVAR_ARCHIVE, 0, qfalse},
+	{ &g_logPMs , "g_logPMs", "0", CVAR_ARCHIVE|CVAR_SERVERINFO, 0, qfalse},
 	{ &g_axisSpawnProtectionTime, "g_axisSpawnProtectionTime", "3000", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_alliedSpawnProtectionTime, "g_alliedSpawnProtectionTime", "3000", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_fastres, "g_fastres", "0", CVAR_ARCHIVE, 0, qtrue },
@@ -499,6 +502,9 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_disableInv, "g_disableInv", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 	{ &g_smokeGrenades, "g_smokeGrenades", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_smokeGrenadesLmt, "g_smokeGrenadesLmt", "4", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_flagRetake, "g_flagRetake", "-1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_balanceFlagRetake, "g_balanceFlagRetake", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_balanceFlagCanClaim, "g_balanceFlagCanClaim", "0", CVAR_ARCHIVE, 0, qtrue },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
