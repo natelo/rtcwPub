@@ -715,9 +715,6 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 		AP(va("print \"%s ^7joined the ^2Battle^7.\n\"", client->pers.netname));
 	}
 
-	// L0 - Advertising ^^
-	CP(va("print \"Server is powered by %s\n\"", GAMEVERSION));
-
 	// L0 - connect message
 	if (strlen(g_serverMessage.string))
 		CP(va("cp \"%s\n\"3", g_serverMessage.string));
@@ -734,6 +731,9 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 	// L0 - sync teams
 	if (g_teamAutoBalance.integer)
 		checkEvenTeams();
+
+	// L0 - A small price to pay..so keep it intact please.
+	CP(va("print \"^3Server is powered by ^7%s ^7\nType /about to view more..\n\"", project.string));
 }
 
 // DHM - Nerve
@@ -3003,6 +3003,8 @@ void ClientCommand( int clientNum ) {
 	else if ((Q_stricmp(cmd, "reload") == 0) ||
 		(Q_stricmp(cmd, "noreload") == 0))
 		cmd_noReload(ent);
+	else if (Q_stricmp(cmd, "about") == 0)
+		cmd_about(ent);
 // End
 	else if (Q_stricmp (cmd, "levelshot") == 0)
 		Cmd_LevelShot_f (ent);

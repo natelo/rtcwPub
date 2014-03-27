@@ -123,6 +123,12 @@ vmCvar_t	sv_screenshake;
 // jpw
 
 // L0 - New stuff
+
+// Mod - so others can get the code or info..if they want to.
+vmCvar_t	project;
+vmCvar_t	source_code;
+vmCvar_t	support_forums;
+
 // Admins
 vmCvar_t	a1_pass;		// Level 1 admin
 vmCvar_t	a2_pass;		// Level 2 admin
@@ -301,6 +307,7 @@ vmCvar_t	cl_timenudge;			// Yeah right...let them teleport in star trek not in r
 vmCvar_t	com_maxfps;				// Ppl keep saying they can't handle 125.. yeah well... it's 2009, they can play tetris then...
 vmCvar_t	cl_packetdup;			// The days of 56k modem are over...all should be able to use 1...
 vmCvar_t	cl_maxpackets;			// Again... no more warping and crap...
+
 // End
 
 cvarTable_t		gameCvarTable[] = {
@@ -415,7 +422,12 @@ cvarTable_t		gameCvarTable[] = {
 
 	{ &g_footstepAudibleRange, "g_footstepAudibleRange", "256", CVAR_CHEAT, 0, qfalse },
 
-	// L0 - New cvars
+// L0 - New cvars
+	// Mod (leave it intact please)
+	{ &project, "project", "rtcwPub", CVAR_ROM | CVAR_SERVERINFO, 0, qfalse },
+	{ &source_code, "source_code", "https://github.com/natelo/rtcwPub", CVAR_ROM | CVAR_SERVERINFO, 0, qfalse },
+	{ &support_forums, "support_forums", "http://rtcwx.com", CVAR_ROM | CVAR_SERVERINFO, 0, qfalse },
+
 	// Admins	
 	{ &a1_pass, "a1_pass", "none", CVAR_ARCHIVE, 0, qfalse },
 	{ &a2_pass, "a2_pass", "none", CVAR_ARCHIVE, 0, qfalse },
@@ -590,7 +602,6 @@ cvarTable_t		gameCvarTable[] = {
 	{ 0, "com_maxfps", "125", CVAR_SYSTEMINFO, qfalse },
 	{ 0, "cl_packetdup", "1", CVAR_SYSTEMINFO, qfalse },
 	{ 0, "cl_maxpackets", "100", CVAR_SYSTEMINFO, qfalse },
-
 // End
 
 	{&g_scriptName, "g_scriptName", "", CVAR_ROM, 0, qfalse},

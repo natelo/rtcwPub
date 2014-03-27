@@ -631,6 +631,31 @@ void cmd_noReload(gentity_t *ent) {
 	}
 }
 
+/*
+=================
+Project Advertising
+
+There's nothing stopping you (the reader) to remove this.
+But, before you do bare in mind that you had to get 
+the source as well..so it's only fair to leave it in 
+so others can get it as well. 
+
+Overall a small price to pay, considering you're getting 
+this out of my good will.
+=================
+*/
+void cmd_about(gentity_t *ent) {	
+	CP(va("print \"\n--------------------------\n"	\
+		"^3Powered by : ^7%s\n"						\
+		"^3Source Code: ^7%s\n"						\
+		"^3Forums     : ^7%s\n"						\
+		"^7--------------------------\n\n\"",
+		project.string,
+		source_code.string,
+		support_forums.string)
+		);
+}
+
 
 
 

@@ -1334,6 +1334,11 @@ extern vmCvar_t		g_swapteams;
 
 // L0 - New cvars
 
+// Mod
+extern vmCvar_t		project;
+extern vmCvar_t		source_code;
+extern vmCvar_t		support_forums;
+
 // Admins
 extern vmCvar_t		a1_pass;
 extern vmCvar_t		a2_pass;
@@ -1771,6 +1776,7 @@ void Cmd_dropObj(gentity_t *self);
 void Cmd_Stats(gentity_t *ent);
 void weapon_smokeGrenade(gentity_t *ent);
 void cmd_noReload(gentity_t *ent);
+void cmd_about(gentity_t *ent);
 
 //
 // g_stats.c
