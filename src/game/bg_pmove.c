@@ -475,15 +475,23 @@ PM_CheckJump
 =============
 */
 static qboolean PM_CheckJump( void ) {
+// L0 - Bunny Jump
+#if defined( GAMEDLL )
+	extern vmCvar_t g_bunnyJump;
+	int bunny = g_bunnyJump.integer;
+#else
+	int bunny = 0;
+#endif
+
 	// JPW NERVE -- jumping in multiplayer uses and requires sprint juice (to prevent turbo skating, sprint + jumps)
 	if (pm->gametype != GT_SINGLE_PLAYER) {
-		// don't allow jump accel
-		if (pm->cmd.serverTime - pm->ps->jumpTime < 850)
-			return qfalse;
 
-		// don't allow if player tired 
-//		if (pm->ps->sprintTime < 2500) // JPW pulled this per id request; made airborne jumpers wildly inaccurate with gunfire to compensate
-//			return qfalse;
+		// L0 - bunny jump
+		if (!bunny) {
+			// changed from 850 to 500 - let's see how it goes :)
+			if (pm->cmd.serverTime - pm->ps->jumpTime < 850)
+				return qfalse;
+		}
 	}
 	// jpw
 
@@ -3644,13 +3652,31 @@ void PM_Sprint( void ) {
 			pm->ps->sprintTime += 10;
 		else {
 			if (pm->gametype != GT_SINGLE_PLAYER) {
-				pm->ps->sprintTime += 500*pml.frametime;		// JPW NERVE adjusted for framerate independence
-				if (pm->ps->sprintTime > 5000)
-					pm->ps->sprintTime += 500*pml.frametime;	// JPW NERVE adjusted for framerate independence
+				// L0 - Stamina boost
+				extern vmCvar_t	g_staminaBoost;
+
+				if (g_staminaBoost.integer > 0) {
+					if (pm->ps->pm_flags & PMF_DUCKED) {
+						pm->ps->sprintTime += 3000 * pml.frametime;
+					}
+
+					// we still need this for when we are standing	
+					pm->ps->sprintTime += 500 * pml.frametime;
+
+					if (pm->ps->sprintTime > 5000)
+						pm->ps->sprintTime += 500 * pml.frametime;
+
+				}
+				else {
+					pm->ps->sprintTime += 500 * pml.frametime;		// JPW NERVE adjusted for framerate independence
+					if (pm->ps->sprintTime > 5000)
+						pm->ps->sprintTime += 500 * pml.frametime;	// JPW NERVE adjusted for framerate independence
+				}
 			}
-			else
+			else {
 				pm->ps->sprintTime += 5;
-			// jpw
+			}
+			// L0 end
 		}
 #endif // GAMEDLL
 		if (pm->ps->sprintTime > 20000)

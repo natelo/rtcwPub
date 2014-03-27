@@ -1372,6 +1372,8 @@ extern vmCvar_t		g_fixedphysics;
 extern vmCvar_t		g_printMatchInfo;
 extern vmCvar_t		g_teamAutoBalance;
 extern vmCvar_t		g_warmupDamage;
+extern vmCvar_t		g_staminaBoost;
+extern vmCvar_t		g_bunnyJump;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
