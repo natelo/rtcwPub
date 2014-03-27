@@ -722,6 +722,10 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 	ClientUserinfoChanged( clientNum );
 
 	ClientBegin( clientNum );
+
+	// L0 - sync teams
+	if (g_teamAutoBalance.integer)
+		checkEvenTeams();
 }
 
 // DHM - Nerve

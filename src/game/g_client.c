@@ -2160,6 +2160,10 @@ void ClientDisconnect( int clientNum ) {
 
 	CalculateRanks();
 
+	// L0 - sync teams
+	if (g_teamAutoBalance.integer)
+		checkEvenTeams();
+
 	if ( ent->r.svFlags & SVF_BOT ) {
 		BotAIShutdownClient( clientNum );
 	}

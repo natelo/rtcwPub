@@ -189,3 +189,94 @@ void matchInfo(unsigned int type, char *msg) {
 	}
 }
 
+/*
+=================
+AutoBalanceTeam
+
+Checks if any team needs balancing
+=================
+*/
+void checkEvenTeams(void) {
+	if (!g_teamAutoBalance.integer ||
+		(g_gamestate.integer != GS_PLAYING) ||
+		!g_teamForceBalance.integer ||
+		needsBalance.integer)
+		return;
+
+	sortedActivePlayers();
+
+	if ((level.alliedPlayers - level.axisPlayers) > 1) {
+		trap_Cvar_Set("needsBalance", "1");
+		AP("chat \"console: ^1Axis ^7team will be balanced in ^115^7 seconds.\n\"");
+		level.balanceTimer = level.time + 15000;
+	}
+
+	if ((level.axisPlayers - level.alliedPlayers) > 1) {
+		trap_Cvar_Set("needsBalance", "1");
+		AP("chat \"console: ^4Allied ^7team will be balanced in ^415^7 seconds.\n\"");
+		level.balanceTimer = level.time + 15000;
+	}
+}
+
+void balanceTeams(void) {
+	int lowScoreClient = -1;
+	int lowScore = 0;
+	int i;
+
+	while ( ((level.axisPlayers - level.alliedPlayers) > 1) ||
+		((level.alliedPlayers - level.axisPlayers) > 1)) {
+
+		sortedActivePlayers();
+
+		lowScoreClient = -1;
+		if ((level.axisPlayers - level.alliedPlayers) > 1) {
+
+			for (i = 0; i < level.maxclients; i++) {
+				if (level.clients[i].pers.connected != CON_CONNECTED)
+					continue;
+				if (level.clients[i].sess.sessionTeam != TEAM_RED)
+					continue;
+
+				if (lowScoreClient == -1) {
+					lowScoreClient = i;
+					lowScore = level.clients[i].ps.persistant[PERS_SCORE];
+
+				}
+				else if (level.clients[i].ps.persistant[PERS_SCORE] < lowScore) {
+					lowScoreClient = i;
+					lowScore = level.clients[i].ps.persistant[PERS_SCORE];
+				}
+			}
+
+			SetTeam(&g_entities[lowScoreClient], "b", qtrue);
+			AP(va("chat \"console: %s ^7was forced to ^4Allies ^7to balance the teams.\n\"",
+				level.clients[lowScoreClient].pers.netname));
+		}
+
+		if ((level.alliedPlayers - level.axisPlayers) > 1) {
+
+			for (i = 0; i < level.maxclients; i++) {
+				if (level.clients[i].pers.connected != CON_CONNECTED)
+					continue;
+				if (level.clients[i].sess.sessionTeam != TEAM_BLUE)
+					continue;
+
+				if (lowScoreClient == -1) {
+					lowScoreClient = i;
+					lowScore = level.clients[i].ps.persistant[PERS_SCORE];
+
+				}
+				else if (level.clients[i].ps.persistant[PERS_SCORE] < lowScore) {
+					lowScoreClient = i;
+					lowScore = level.clients[i].ps.persistant[PERS_SCORE];
+				}
+			}
+
+			SetTeam(&g_entities[lowScoreClient], "r", qtrue);
+			AP(va("chat \"console: %s ^7was forced to ^1Axis ^7to balance the teams.\n\"",
+				level.clients[lowScoreClient].pers.netname));
+		}
+	}
+	trap_Cvar_Set("needsBalance", "0");
+}
+

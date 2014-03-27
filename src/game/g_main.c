@@ -194,6 +194,7 @@ vmCvar_t	g_hitsounds;		// Hitsounds - Requires soundpack
 vmCvar_t	g_screenShake;		// Screenshaking on explosions (4 = default, 2 = half.. etc)
 vmCvar_t	g_fixedphysics;		// Tries to keep things more fair..
 vmCvar_t	g_printMatchInfo;	// Prints events when they happen (retake, obj planted..)
+vmCvar_t	g_teamAutoBalance;	// Auto balances the teams..
 
 // Weapon
 vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
@@ -219,6 +220,7 @@ vmCvar_t	g_excludedRoundStats;	// List of excluded stats (not tracked and not pr
 vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 vmCvar_t	g_swapCounter;		// Count times so it auto swaps once it reaches it..
 vmCvar_t	shuffleTracking;	// Tracks rounds for (auto) shuffle
+vmCvar_t	needsBalance;		// Flag for auto balance check
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -417,6 +419,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_screenShake, "g_screenShake", "2", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_fixedphysics, "g_fixedphysics", "1", CVAR_ARCHIVE | CVAR_SERVERINFO },
 	{ &g_printMatchInfo, "g_printMatchInfo", "1", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_teamAutoBalance, "g_teamAutoBalance", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
@@ -440,6 +443,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
 	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
 	{ &shuffleTracking, "shuffleTracking", "0", 0, 0, qfalse },
+	{ &needsBalance, "needsBalance", "0", CVAR_CHEAT, qfalse },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },
@@ -3004,6 +3008,12 @@ void G_RunFrame( int levelTime ) {
 
 	// cancel vote if timed out
 	CheckVote();
+
+	// L0 - Team Balance
+	if (needsBalance.integer) {
+		if (level.time >= level.balanceTimer)
+			balanceTeams();
+	}
 
 	// L0 - Playerst left
 	if ((g_gamestate.integer == GS_PLAYING) &&

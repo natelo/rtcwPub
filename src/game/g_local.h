@@ -839,6 +839,9 @@ typedef struct {
 	// Delay between votes..
 	int			lastVoteTime;		
 
+	// Auto balance teams timer
+	int			balanceTimer;		
+
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -1365,6 +1368,7 @@ extern vmCvar_t		g_hitsounds;
 extern vmCvar_t		g_screenShake;
 extern vmCvar_t		g_fixedphysics;
 extern vmCvar_t		g_printMatchInfo;
+extern vmCvar_t		g_teamAutoBalance;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
@@ -1387,6 +1391,7 @@ extern vmCvar_t		g_excludedRoundStats;
 
 // Static
 extern vmCvar_t		shuffleTracking;
+extern vmCvar_t		needsBalance;
 
 // L0 - New Cvars end
 
@@ -1663,6 +1668,8 @@ qboolean isCustomMOD(int mod, gentity_t *self, gentity_t *attacker);
 void CountDown(void);
 gentity_t *G_FearCheck(gentity_t *ent);
 void matchInfo(unsigned int type, char *msg);
+void checkEvenTeams(void);
+void balanceTeams(void);
 
 // 
 // g_players.c
