@@ -1394,6 +1394,12 @@ void ClientUserinfoChanged( int clientNum ) {
 	}
 
 	if ( client->pers.connected == CON_CONNECTED ) {
+		// L0 - disallowed names
+		if (g_disallowedNames.string[0]) {
+			// returns true if they're kicked
+			G_CensorName(client->pers.netname, userinfo, clientNum);
+		}
+
 		if ( strcmp( oldname, client->pers.netname ) ) {
 			trap_SendServerCommand( -1, va("print \"[lof]%s" S_COLOR_WHITE " [lon]renamed to[lof] %s\n\"", oldname, 
 				client->pers.netname) );
@@ -1523,8 +1529,7 @@ void ClientUserinfoChanged( int clientNum ) {
 		);
 	}
 
-	G_LogPrintf( "ClientUserinfoChanged: %i %s\n", clientNum, s );
-	G_DPrintf( "ClientUserinfoChanged: %i :: %s\n", clientNum, s );
+	G_LogPrintf( "ClientUserinfoChanged: slot\\%i\\%s\n", clientNum, s );
 }
 
 
@@ -1592,6 +1597,21 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		if ( g_password.string[0] && Q_stricmp( g_password.string, "none" ) &&
 			strcmp( g_password.string, value) != 0) {
 			return "Invalid password";
+		}
+	}
+
+	// L0 - disallowed names
+	if (g_disallowedNames.string[0]) {
+		char censoredName[MAX_NETNAME];
+		char *line;
+
+		value = Info_ValueForKey(userinfo, "name");
+		SanitizeString((char *)value, censoredName, qtrue);
+		if (G_CensorText(censoredName, &censorNamesDictionary)) {
+			Info_SetValueForKey(userinfo, "name", censoredName);
+			trap_SetUserinfo(clientNum, userinfo);
+			line = va("\n^7Name ^3%s ^7is not allowed^3!", value);
+			return va("%s\n", line);
 		}
 	}
 

@@ -197,6 +197,9 @@
     <ClCompile Include="..\..\..\src\game\g_admin_bot.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\game\g_censored.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\botai\ai_chat.h">

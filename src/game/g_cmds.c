@@ -473,6 +473,8 @@ void Cmd_LevelShot_f( gentity_t *ent ) {
 /*
 =================
 Cmd_Kill_f
+
+NOTE: This is now /gib
 =================
 */
 void Cmd_Kill_f( gentity_t *ent ) {
@@ -514,7 +516,7 @@ void Cmd_Kill_f( gentity_t *ent ) {
 
 /*
 =================
-L0 - Cmd_Kill_f
+L0 - Cmd_SoftKill_f
 
 Kills but doesn't gibs
 =================
@@ -1030,6 +1032,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	char cmd1[128];
 	char cmd2[128];
 	char cmd3[128];
+	char censoredText[MAX_SAY_TEXT];
 
 	// Admin commands
 	Q_strncpyz(text, chatText, sizeof(text));
@@ -1079,7 +1082,6 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		CP("cp \"You are ignored^1!\n\"2");		
 		return;
 	}
-
 // L0 - End
 
 	if ( g_gametype.integer < GT_TEAM && mode == SAY_TEAM ) {
@@ -1089,7 +1091,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	switch ( mode ) {
 	default:
 	case SAY_ALL:
-		G_LogPrintf( "say: %s: %s\n", ent->client->pers.netname, chatText );
+		G_LogPrintf( "say: %s%s: %s\n", ent->client->pers.netname, tag, chatText );
 		Com_sprintf(name, sizeof(name), "%s%s%c%c: ", ent->client->pers.netname, tag, Q_COLOR_ESCAPE, COLOR_WHITE);
 		color = COLOR_GREEN;
 		break;
@@ -1133,7 +1135,16 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 	//  end	
 	}
 
-	Q_strncpyz( text, chatText, sizeof(text) );
+	Q_strncpyz(text, chatText, sizeof(text));
+
+	// L0 - Censored text		
+	if (g_censorWords.string[0]) {
+		SanitizeString(text, censoredText, qtrue);
+		if (G_CensorText(censoredText, &censorDictionary)) {
+			Q_strncpyz(text, censoredText, sizeof(text));
+			SB_chatWarn(ent);
+		}
+	}
 
 	if ( target ) {
 		G_SayTo( ent, target, mode, color, name, text, localize );

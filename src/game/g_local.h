@@ -1324,6 +1324,8 @@ extern vmCvar_t		sb_minLowScoreTempbanMins;
 extern vmCvar_t		sb_maxPingFlux;
 extern vmCvar_t		sb_maxPingHits;
 extern vmCvar_t		sb_autoIgnore;
+extern vmCvar_t		sb_censorPenalty;
+extern vmCvar_t		sb_censorPentalityTempbanMin;
 
 // System
 extern vmCvar_t		g_extendedLog;
@@ -1339,6 +1341,9 @@ extern vmCvar_t		g_inactivityToSpecs;
 extern vmCvar_t		g_spectatorInactivity;
 extern vmCvar_t		g_spectatorAllowDemo;
 extern vmCvar_t		g_autoShuffle;
+extern vmCvar_t		g_censorWords;
+extern vmCvar_t		g_disallowedNames;
+extern vmCvar_t		g_noHardcodedCensor;
 
 // Game
 extern vmCvar_t		g_dropReload;
@@ -1682,6 +1687,20 @@ void SB_maxTeamKill(gentity_t *ent);
 void SB_maxTeamBleed(gentity_t *ent);
 void SB_minLowScore(gentity_t *ent);
 void SB_maxPingFlux(gclient_t *client);
+void SB_chatWarn(gentity_t *ent);
+
+//
+// g_censored.c
+//
+typedef struct {
+	int num_nulled_words;
+} wordDictionary;
+
+extern wordDictionary censorDictionary;
+extern wordDictionary censorNamesDictionary;
+
+qboolean G_CensorName(char *testname, char *userinfo, int clientNum);
+qboolean G_CensorText(char *text, wordDictionary *dictionary);
 
 // 
 // Macros

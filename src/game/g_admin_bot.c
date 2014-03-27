@@ -117,3 +117,78 @@ void SB_maxPingFlux(gclient_t *client) {
 	}
 	return;
 }
+
+/*
+===========
+Censoring penalty
+===========
+*/
+void SB_chatWarn(gentity_t *ent) {
+	int n = rand() % 4; // Randomize messages
+
+	if (!sb_system.integer || (sb_system.integer && !sb_censorPenalty.integer))
+		return;
+
+	// Only for non logged in users..
+	// Chat will still get censored they just wont get kicked or ignored for it..
+	if (ent->client->sess.admin != ADM_NONE)
+		return;
+
+	if (ent->client->pers.sb_chatWarned == 0) {
+		if (n == 0)
+			CP("chat \"^3Strike one! ^7You should really wash your mouth.\n\"");
+		else if (n == 1)
+			CP("chat \"^3Strike one! ^7You got warned for foul language..\n\"");
+		else if (n == 2)
+			CP("chat \"^3Strike one! ^7This is not your local pub..\n\"");
+		else
+			CP("chat \"^3Strike one! ^7Cursing is not allowed here.\n\"");
+	}
+	else if (ent->client->pers.sb_chatWarned == 1) {
+		if (n == 0)
+			CP("chat \"^3Strike two! ^7Don't push it..\n\"");
+		else if (n == 1)
+			CP("chat \"^3Strike two! ^7You where warned..\n\"");
+		else if (n == 2)
+			CP("chat \"^3Strike two! ^7Do you talk to your parents like this?\n\"");
+		else
+			CP("chat \"^3Strike two! ^7Foul language is not allowed here.\n\"");
+	}
+	else if (ent->client->pers.sb_chatWarned == 2) {
+		if (n == 0)
+			CP("chat \"^3Strike three! ^7Last warning!\n\"");
+		else if (n == 1)
+			CP("chat \"^3Strike three! ^7There wont be strike four..\n\"");
+		else if (n == 2)
+			CP("chat \"^3Strike three! ^7There's no more warnings after this one.\n\"");
+		else
+			CP("chat \"^3Strike three! ^7Care to see how strike four looks like?\n\"");
+	}
+	else {
+		if (sb_censorPenalty.integer == 1) {
+			ent->client->sess.ignored = 1;
+			AP(va("chat \"^3SB^7: %s ^7has been ignored due foul language^3!\n\"", ent->client->pers.netname));
+		}
+		else {
+
+			// Tempban
+			if (sb_censorPentalityTempbanMin.integer)
+			{	
+				trap_SendConsoleCommand(EXEC_APPEND, va("tempban %i %i", ent->client->ps.clientNum, sb_censorPentalityTempbanMin.integer));
+			}
+
+			AP(va("chat \"^3SB^7: %s ^7got kicked for foul language^3!\n\"", ent->client->pers.netname));
+			trap_DropClient(ent - g_entities, va("^3kicked for ^3Foul ^3Language!"));
+		}
+		return;
+	}
+
+	// Count it..
+	ent->client->pers.sb_chatWarned++;
+	// Use sound if they have sound pack..
+	CPS(ent, "rtcwpub/sound/client/warn.wav");
+
+	return;
+}
+
+
