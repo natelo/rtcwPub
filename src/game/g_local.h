@@ -858,6 +858,10 @@ typedef struct {
 	int			axisVenom, alliedVenom;
 	int			axisFlamer, alliedFlamer;
 
+	// Air Strike Restrictions
+	int			axisBomber, alliedBomber;
+	int			axisArty, alliedArty;
+
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -1398,8 +1402,12 @@ extern vmCvar_t		g_LTinfoMsg;
 extern vmCvar_t		g_disableInv;
 extern vmCvar_t		g_axisSpawnProtectionTime;
 extern vmCvar_t		g_alliedSpawnProtectionTime;
-extern	vmCvar_t	g_fastres;
-extern	vmCvar_t	g_fastResMsec;
+extern vmCvar_t		g_fastres;
+extern vmCvar_t		g_fastResMsec;
+extern vmCvar_t		g_axisASdelay;
+extern vmCvar_t		g_axisASdelayFFE;
+extern vmCvar_t		g_alliedASdelay;
+extern vmCvar_t		g_alliedASdelayFFE;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;

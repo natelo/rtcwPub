@@ -210,6 +210,10 @@ vmCvar_t	g_axisSpawnProtectionTime;		// How long Axis player is invulrable when 
 vmCvar_t	g_alliedSpawnProtectionTime;	// How long Allied player is invulrable when (s)he spawns.
 vmCvar_t	g_fastres;			// Xian's Fast (animation) restoring on revives
 vmCvar_t	g_fastResMsec;		// Xian's Fast (animation) restoring on revives
+vmCvar_t	g_axisASdelay;		// Limit for Axis Air strikes
+vmCvar_t	g_axisASdelayFFE;	// Limit for Allied Air strikes
+vmCvar_t	g_alliedASdelay;	// Limit for Axis Air strikes (Firing for effect)
+vmCvar_t	g_alliedASdelayFFE;	// Limit for Allied Air strikes (Firing for effect)
 
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
@@ -443,6 +447,10 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_alliedSpawnProtectionTime, "g_alliedSpawnProtectionTime", "3000", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_fastres, "g_fastres", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_fastResMsec, "g_fastResMsec", "1600", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_axisASdelay, "g_axisASdelay", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_axisASdelayFFE, "g_axisASdelayFFE", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_alliedASdelay, "g_alliedASdelay", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_alliedASdelayFFE, "g_alliedASdelayFFE", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
