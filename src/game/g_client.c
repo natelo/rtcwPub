@@ -1379,14 +1379,6 @@ void ClientUserinfoChanged( int clientNum ) {
 	s = Info_ValueForKey (userinfo, "name");
 	ClientCleanName( s, client->pers.netname, sizeof(client->pers.netname) );
 
-	// L0 - Name locking prevents name changes
-	// NOTE: It will rename..but simply wont show up till next round, map restart..
-	//       That should give enough of time to issue other 'name based' commands.
-	if (client->pers.nameLocked) {
-		ClientCleanName(oldname, client->pers.netname, sizeof(client->pers.netname));
-		CPx(client->ps.clientNum, "cp \"^1Denied! ^7Admin has revoked your ability to rename for this round^1!\n\"2");
-	}
-
 	if ( client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		if ( client->sess.spectatorState == SPECTATOR_SCOREBOARD ) {
 			Q_strncpyz( client->pers.netname, "scoreboard", sizeof(client->pers.netname) );
@@ -1399,10 +1391,34 @@ void ClientUserinfoChanged( int clientNum ) {
 			// returns true if they're kicked
 			G_CensorName(client->pers.netname, userinfo, clientNum);
 		}
-
+		
 		if ( strcmp( oldname, client->pers.netname ) ) {
-			trap_SendServerCommand( -1, va("print \"[lof]%s" S_COLOR_WHITE " [lon]renamed to[lof] %s\n\"", oldname, 
-				client->pers.netname) );
+
+			// L0 - Name locking prevents name changes			
+			if (client->pers.nameLocked) {
+				Q_strncpyz(client->pers.netname, oldname, sizeof(client->pers.netname));
+				Info_SetValueForKey(userinfo, "name", oldname);
+				trap_SetUserinfo(clientNum, userinfo);
+				CPx(client->ps.clientNum, "cp \"^1Denied! ^7Admin has revoked your ability to rename for this round^1!\n\"2");
+			}
+			// L0 
+			// Do not allow renaming in intermissions.
+			// Name animations for one; 
+			//	Generally suck,
+			// & two;
+			//	Push score table up which is annoying.
+			// Name change could simply be ignored but then in certain scenarios,
+			// it may be difficult for Admins to pinpoint a problematic player.
+			else if (level.intermissiontime) {		
+				Q_strncpyz(client->pers.netname, oldname, sizeof(client->pers.netname));
+				Info_SetValueForKey(userinfo, "name", oldname);
+				trap_SetUserinfo(clientNum, userinfo);
+				// It will only push score table up for them so they get taste of their own medicine..
+				CPx(client->ps.clientNum, "print \"^1Denied! ^7You cannot rename during intermission^1!\n\"");
+				return;
+			}
+			else
+				AP( va("print \"[lof]%s" S_COLOR_WHITE " [lon]renamed to[lof] %s\n\"", oldname, client->pers.netname) );
 		}
 	}
 
