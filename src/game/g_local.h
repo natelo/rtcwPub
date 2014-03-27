@@ -384,6 +384,8 @@ struct gentity_s {
 	int			lastDragTime;				// Drag bodies	
 	int			lastPushTime;				// Shove
 	qboolean	droppedObj;					// Objective dropping	
+	int			thrownSmoke;				// Smoke
+	int			selectedSmoke;				// Smoke	
 };
 
 // Ridah
@@ -1411,6 +1413,8 @@ extern vmCvar_t		g_axisASdelay;
 extern vmCvar_t		g_axisASdelayFFE;
 extern vmCvar_t		g_alliedASdelay;
 extern vmCvar_t		g_alliedASdelayFFE;
+extern vmCvar_t		g_smokeGrenades;
+extern vmCvar_t		g_smokeGrenadesLmt;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
@@ -1747,6 +1751,7 @@ void Cmd_Drag(gentity_t *ent);
 void Cmd_Push(gentity_t* ent);
 void Cmd_dropObj(gentity_t *self);
 void Cmd_Stats(gentity_t *ent);
+void weapon_smokeGrenade(gentity_t *ent);;
 
 //
 // g_stats.c

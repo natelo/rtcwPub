@@ -1965,13 +1965,22 @@ gentity_t *weapon_grenadelauncher_fire (gentity_t *ent, int grenType) {
 		if (ent->client->sess.sessionTeam == TEAM_RED) // store team so we can generate red or blue smoke
 			m->s.otherEntityNum2 = 1;
 		else
-			m->s.otherEntityNum2 = 0;
-		m->nextthink = level.time + 4000;
-		m->think = weapon_callAirStrike;
+			m->s.otherEntityNum2 = 0;	
 
-		te = G_TempEntity( m->s.pos.trBase, EV_GLOBAL_SOUND );
-		te->s.eventParm = G_SoundIndex( "sound/multiplayer/airstrike_01.wav");
-		te->r.svFlags |= SVF_BROADCAST | SVF_USE_CURRENT_ORIGIN;
+	// L0 - Smoke 
+		if (m->r.svFlags & SVF_SMOKEGRENADE) {
+			m->nextthink = level.time + 1000;
+			m->think = weapon_smokeGrenade;
+		}
+		else {
+			m->nextthink = level.time + 4000;
+			m->think = weapon_callAirStrike;
+
+			te = G_TempEntity(m->s.pos.trBase, EV_GLOBAL_SOUND);
+			te->s.eventParm = G_SoundIndex("sound/multiplayer/airstrike_01.wav");
+			te->r.svFlags |= SVF_BROADCAST | SVF_USE_CURRENT_ORIGIN;
+		}
+	// L0 - end
 	}
 	// jpw
 
@@ -2483,6 +2492,21 @@ void FireWeapon( gentity_t *ent ) {
 		Weapon_Engineer( ent );
 		break;
 	case WP_SMOKE_GRENADE:
+// L0 - smoke
+		if (g_smokeGrenades.integer && ent->client->ps.selectedSmoke)
+		{
+			if (level.time - ent->client->ps.classWeaponTime >= g_LTChargeTime.integer*0.25f)
+			{
+				if (level.time - ent->client->ps.classWeaponTime > g_LTChargeTime.integer)
+					ent->client->ps.classWeaponTime = level.time - g_LTChargeTime.integer;
+				ent->client->ps.classWeaponTime += g_LTChargeTime.integer*0.25;
+
+				weapon_grenadelauncher_fire(ent, WP_SMOKE_GRENADE);
+			}
+			break;
+		}
+// end
+
 		if (level.time - ent->client->ps.classWeaponTime >= g_LTChargeTime.integer*0.5f) {
 // L0 - AS limit
 			// I've put it here to prevent animation problems etc..

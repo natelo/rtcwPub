@@ -215,6 +215,8 @@ vmCvar_t	g_axisASdelay;		// Limit for Axis Air strikes
 vmCvar_t	g_axisASdelayFFE;	// Limit for Allied Air strikes
 vmCvar_t	g_alliedASdelay;	// Limit for Axis Air strikes (Firing for effect)
 vmCvar_t	g_alliedASdelayFFE;	// Limit for Allied Air strikes (Firing for effect)
+vmCvar_t	g_smokeGrenades;	// Smoke Grenades for Leut
+vmCvar_t	g_smokeGrenadesLmt;	// Smoke Grenades limit per life
 
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
@@ -495,6 +497,8 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_easyASBlock, "g_easyASBlock", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_LTinfoMsg, "g_LTinfoMsg", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_disableInv, "g_disableInv", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
+	{ &g_smokeGrenades, "g_smokeGrenades", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_smokeGrenadesLmt, "g_smokeGrenadesLmt", "4", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },

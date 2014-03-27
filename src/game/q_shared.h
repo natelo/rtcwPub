@@ -1047,8 +1047,6 @@ typedef struct playerState_s {
 									// lifetime when the attack button goes down, then when attack is released
 									// this is the amount of time left before the grenade goes off (or if it
 									// gets to 0 while in players hand, it explodes)
-
-
 	int			gravity;
 	float		leanf;			// amount of 'lean' when player is looking around corner //----(SA)	added
 	
@@ -1189,6 +1187,9 @@ typedef struct playerState_s {
 	aistateEnum_t	aiState;
 
 	int				identifyClient;			// NERVE - SMF
+
+	// L0 - New stuff
+	qboolean	selectedSmoke;			// Smoke	
 } playerState_t;
 
 

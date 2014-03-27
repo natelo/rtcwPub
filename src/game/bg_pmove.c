@@ -2679,6 +2679,20 @@ static void PM_Weapon( void ) {
 				return;
 		}
 		if (pm->ps->weapon == WP_SMOKE_GRENADE) {
+// L0 - Smoke
+#ifdef GAMEDLL
+			extern vmCvar_t g_smokeGrenades;
+			int smokeGrenades = g_smokeGrenades.integer;
+#else
+			int smokeGrenades = 0;
+#endif
+			if ((smokeGrenades) && (pm->ps->selectedSmoke))
+			{
+				if (pm->cmd.serverTime - pm->ps->classWeaponTime < (pm->ltChargeTime*0.25f))
+					return;
+			}
+			else
+// end
 			if (pm->cmd.serverTime - pm->ps->classWeaponTime < (pm->ltChargeTime*0.5f))
 				return;
 		}

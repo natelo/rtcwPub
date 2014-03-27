@@ -1200,6 +1200,13 @@ gentity_t *fire_grenade (gentity_t *self, vec3_t start, vec3_t dir, int grenadeW
 		case WP_SMOKE_GRENADE:
 			bolt->classname				= "grenade";
 			bolt->s.eFlags				= EF_BOUNCE_HALF | EF_BOUNCE;
+			// L0 - smoke
+			if ((g_smokeGrenades.integer) && (self->client->ps.stats[STAT_PLAYER_CLASS] == PC_LT) && (self->client->ps.selectedSmoke))
+			{
+				bolt->r.svFlags |= SVF_SMOKEGRENADE;
+				self->client->ps.selectedSmoke = qfalse;		//re-disable this (must be enabled each use)
+				self->thrownSmoke++;							//record that we've thrown another one
+			}	// end
 			break;
 // jpw
 		case WP_DYNAMITE:
