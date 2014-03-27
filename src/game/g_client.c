@@ -2098,6 +2098,26 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 				ClientUserinfoChanged( index );
 		}
 
+		// TTimo keep it isolated from spectator to be safe still
+		if (client->sess.sessionTeam != TEAM_SPECTATOR)
+		{
+			// Xian - Moved the invul. stuff out of SetWolfSpawnWeapons and put it here for clarity
+			if (g_fastres.integer == 1 && revived) {
+				client->ps.powerups[PW_INVULNERABLE] = level.time + g_fastResMsec.integer;
+			}
+			else {
+				// L0 - Spawn protection
+				if (client->sess.sessionTeam == TEAM_RED)
+					client->ps.powerups[PW_INVULNERABLE] = level.time + g_axisSpawnProtectionTime.integer;
+				else if (client->sess.sessionTeam == TEAM_BLUE)
+					client->ps.powerups[PW_INVULNERABLE] = level.time + g_alliedSpawnProtectionTime.integer;
+				// We don't know what team player is...default it
+				else
+					client->ps.powerups[PW_INVULNERABLE] = level.time + 3000;
+				// End
+			}
+		}
+
 		SetWolfSpawnWeapons( client ); // JPW NERVE -- increases stats[STAT_MAX_HEALTH] based on # of medics in game
 	}
 	// dhm - end

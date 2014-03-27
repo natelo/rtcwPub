@@ -206,6 +206,10 @@ vmCvar_t	g_dropObj;			// Drop Objective
 vmCvar_t	g_easyASBlock;		// If enabled it prints when AirStrike is blocked
 vmCvar_t	g_LTinfoMsg;		// Shows how much ammo client player is pointing at has
 vmCvar_t	g_disableInv;		// Disables (re)spawn/revive protection crap when one starts to shot..
+vmCvar_t	g_axisSpawnProtectionTime;		// How long Axis player is invulrable when (s)he spawns.
+vmCvar_t	g_alliedSpawnProtectionTime;	// How long Allied player is invulrable when (s)he spawns.
+vmCvar_t	g_fastres;			// Xian's Fast (animation) restoring on revives
+vmCvar_t	g_fastResMsec;		// Xian's Fast (animation) restoring on revives
 
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
@@ -435,6 +439,10 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_shortcuts, "g_shortcuts", "0", 0 },
 	{ &g_allowPMs, "g_allowPMs", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_logPMs , "g_logPMs", "0", CVAR_ARCHIVE, 0, qfalse},
+	{ &g_axisSpawnProtectionTime, "g_axisSpawnProtectionTime", "3000", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_alliedSpawnProtectionTime, "g_alliedSpawnProtectionTime", "3000", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_fastres, "g_fastres", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_fastResMsec, "g_fastResMsec", "1600", CVAR_ARCHIVE, 0, qtrue },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },

@@ -1396,6 +1396,10 @@ extern vmCvar_t		g_dropObj;
 extern vmCvar_t		g_easyASBlock;
 extern vmCvar_t		g_LTinfoMsg;
 extern vmCvar_t		g_disableInv;
+extern vmCvar_t		g_axisSpawnProtectionTime;
+extern vmCvar_t		g_alliedSpawnProtectionTime;
+extern	vmCvar_t	g_fastres;
+extern	vmCvar_t	g_fastResMsec;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
