@@ -18,6 +18,7 @@ Created: 24. Mar / 2014
 #define ADMACT		"./logs/adminActions.log"
 #define BYPASSLOG	"./logs/banBypass.log"
 #define SYSLOG		"./logs/systemEvents.log"
+#define PMLOG		"./logs/personalMessages.log"
 
 //
 // g_admin.c

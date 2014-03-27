@@ -1353,6 +1353,8 @@ extern vmCvar_t		g_censorWords;
 extern vmCvar_t		g_disallowedNames;
 extern vmCvar_t		g_noHardcodedCensor;
 extern vmCvar_t		g_shortcuts;
+extern vmCvar_t		g_allowPMs;
+extern vmCvar_t		g_logPMs;
 
 // Game
 extern vmCvar_t		g_dropReload;
@@ -1675,8 +1677,9 @@ void balanceTeams(void);
 // 
 // g_players.c
 //
-void cmd_getstatus(gentity_t *ent);
-void Cmd_ThrowKnives(gentity_t *ent);
+void Cmd_getStatus(gentity_t *ent);
+void Cmd_throwKnives(gentity_t *ent);
+void Cmd_pMsg(gentity_t *ent);
 
 //
 // g_stats.c

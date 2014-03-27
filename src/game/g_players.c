@@ -7,7 +7,7 @@ L0 / rtcwPub :: g_players.h
 Created: 25. Mar / 2014
 ===========================================================================
 */
-#include "g_local.h"
+#include "g_admin.h"
 
 /*
 ===========
@@ -16,7 +16,7 @@ Getstatus
 Prints IP's and some match info..
 ===========
 */
-void cmd_getstatus(gentity_t *ent) {
+void Cmd_getStatus(gentity_t *ent) {
 	gclient_t *cl;
 	int	j;
 	// uptime
@@ -195,7 +195,7 @@ void Touch_Knife(gentity_t *ent, gentity_t *other, trace_t *trace) {
 	ent->think = 0;
 }
 // Actual command
-void Cmd_ThrowKnives(gentity_t *ent) {
+void Cmd_throwKnives(gentity_t *ent) {
 	vec3_t velocity, angles, offset, org, mins, maxs;
 	trace_t tr;
 	gentity_t *ent2;
@@ -245,3 +245,87 @@ void Cmd_ThrowKnives(gentity_t *ent) {
 
 	ent->thrownKnifeTime = level.time;
 }
+
+/*
+================
+Private messages
+================
+*/
+void Cmd_pMsg(gentity_t *ent)
+{
+	char cmd[MAX_TOKEN_CHARS];
+	char name[MAX_STRING_CHARS];
+	char nameList[MAX_STRING_CHARS];
+	char *msg;
+	int matchList[MAX_CLIENTS];
+	int count, i;
+
+	if (!g_allowPMs.integer) {
+		CP("print \"Private messages are Disabled^1!\n\"");
+		return;
+	}
+
+	if (trap_Argc() < 3) {
+		trap_Argv(0, cmd, sizeof(cmd));
+		CP(va("print \"^3Usage:^7  %s <match> <message>\n\"", cmd));
+		return;
+	}
+
+	if (ent->client->sess.ignored) {		
+		CP("cp \"You are ignored^1!\n\"2");
+		return;
+	}
+
+	trap_Argv(1, name, sizeof(name));
+	if (strlen(name) < 2) {
+		CP("print \"You must match at least ^32 ^7characters of the name^3!\n\"");
+		return;
+	}
+
+	msg = ConcatArgs(2);
+	if (strlen(msg) >= 700) {
+		logEntry(SYSLOG, va("Nuking (Cmd_Pmsg :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
+		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
+		return;
+	}
+
+	count = ClientNumberFromNameMatch(name, matchList);
+	if (count == 0) {
+		CP("print \"No matching clients found^3!\n\"");
+		return;
+	}
+
+	Q_strncpyz(nameList, "", sizeof(nameList));
+	for (i = 0; i < count; i++)	{
+		strcat(nameList, g_entities[matchList[i]].client->pers.netname);
+		if (i != (count - 1))
+			strcat(nameList, "^7, ");
+
+		// Notify receiver(s)
+		CPx(matchList[i], va("chat \"^3Message from ^7%s^7!\n\"", ent->client->pers.netname));
+		CPx(matchList[i], va("cp \"^3New Private Message^7!\n\"2", ent->client->pers.netname));
+
+		// Print full message in console..
+		CPx(matchList[i], va("print \"^3Private Message from ^7%s^7: \n^3Message: ^7%.99s\n\"", ent->client->pers.netname, msg));
+
+		// Send sound to them as well (keep an eye on this!)
+		CPS(g_entities - matchList[i], "rtcwpub/sound/client/pm.wav");
+	}
+
+	// Let player know who received his message
+	CP(va("print \"^3Message was sent to: ^7%s \n^3Message: ^7%.99s\n\"", nameList, msg));
+
+	// It's unavoidable that others will add this at one point so I'll just save them some time.
+	// But for the record: I'm totally not happy about this as imho it defeats the purpose.
+	if (g_logPMs.integer)
+		logEntry(PMLOG, va(
+		"Sender: %s (IP: %s)\n"
+			": Receiver(s): %s\n"
+			": Message: %s\n"
+			"---------------------------", 
+		ent->client->pers.netname,
+		clientIP(ent, qtrue),
+		nameList,
+		msg));
+}
+

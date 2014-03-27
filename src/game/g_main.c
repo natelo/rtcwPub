@@ -179,6 +179,8 @@ vmCvar_t	g_censorWords;			// Censored words
 vmCvar_t	g_disallowedNames;		// Disallowed names
 vmCvar_t	g_noHardcodedCensor;	// Don't use hard coded censor..
 vmCvar_t	g_shortcuts;			// Enable shortcuts
+vmCvar_t	g_allowPMs;				// Allow private messages
+vmCvar_t	g_logPMs;				// Logs PMs..totally not happy about this.
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -405,6 +407,8 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_disallowedNames, "g_disallowedNames", "nazi, admin, console", 0 },
 	{ &g_noHardcodedCensor, "g_noHardcodedCensor", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_shortcuts, "g_shortcuts", "0", 0 },
+	{ &g_allowPMs, "g_allowPMs", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_logPMs , "g_logPMs", "0", CVAR_ARCHIVE, 0, qfalse},
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },

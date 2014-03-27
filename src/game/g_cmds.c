@@ -1252,7 +1252,7 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 
 	// Nuke
 	if (strlen(chatText) >= 700) {
-		logEntry(SYSLOG, va("Nuking (G_Say :: strlen >= 700): %s (IP: %s", ent->client->pers.netname, clientIP(ent, qtrue)));
+		logEntry(SYSLOG, va("Nuking (G_Say :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
 		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}
@@ -1432,7 +1432,7 @@ static void G_VoiceTo( gentity_t *ent, gentity_t *other, int mode, const char *i
 
 	//L0 - Nuke
 	if (strlen(id) >= 700) {
-		logEntry(SYSLOG, va("Nuking (G_VoiceTo :: strlen >= 700): %s (IP: %s", ent->client->pers.netname, clientIP(ent, qtrue)));
+		logEntry(SYSLOG, va("Nuking (G_VoiceTo :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
 		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}
@@ -1483,7 +1483,7 @@ void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qbool
 
 	//  Nuke
 	if (strlen(id) >= 700) {
-		logEntry(SYSLOG, va("Nuking (G_Voice :: strlen >= 700): %s (IP: %s", ent->client->pers.netname, clientIP(ent, qtrue)));
+		logEntry(SYSLOG, va("Nuking (G_Voice :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
 		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}
@@ -2944,7 +2944,7 @@ void ClientCommand( int clientNum ) {
 	}
 	if ((Q_stricmp(cmd, "getstatus") == 0 ) || 
 		(Q_stricmp(cmd, "listplayers") == 0)) {
-		cmd_getstatus(ent);
+		Cmd_getStatus(ent);
 		return;
 	}
 // End
@@ -2965,11 +2965,18 @@ void ClientCommand( int clientNum ) {
 		Cmd_Notarget_f (ent);
 	else if (Q_stricmp (cmd, "noclip") == 0)
 		Cmd_Noclip_f (ent);
+// L0
+	// Suicide - Straight to limbo
 	else if (Q_stricmp (cmd, "gib") == 0)
 		Cmd_Kill_f (ent);
-// L0
+	// Suicide
 	else if (Q_stricmp(cmd, "kill") == 0)
 		Cmd_SoftKill_f(ent);
+	// Private messages
+	else if ((Q_stricmp(cmd, "msg") == 0) ||
+		(Q_stricmp(cmd, "pm") == 0) ||
+		(Q_stricmp(cmd, "m") == 0))
+		Cmd_pMsg(ent);
 // End
 	else if (Q_stricmp (cmd, "levelshot") == 0)
 		Cmd_LevelShot_f (ent);
