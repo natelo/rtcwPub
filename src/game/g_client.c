@@ -1065,7 +1065,7 @@ void SetWolfSpawnWeapons( gclient_t *client ) {
 ClientCheckName
 
 L0 
-Replaced this with one in wolfX (ioRtcw Port).
+Replaced this with one from wolfX (ioRtcw Port).
 ============
 */
 static void ClientCleanName( const char *in, char *out, int outSize ) {
