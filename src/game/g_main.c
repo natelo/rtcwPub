@@ -202,10 +202,28 @@ vmCvar_t	g_staminaBoost;		// If enabled it recharges stamina faster when player 
 vmCvar_t	g_bunnyJump;		// Enable bunny jumps...
 
 // Weapon
-vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
-vmCvar_t	g_dropNades;	// The number of grenades eng will drop when going to limbo
-vmCvar_t	g_dropAmmo;		// The number of ammo packs leut drops when going to limbo
-vmCvar_t	g_throwKnives;	// 0 = disabled, anything else is the value of knives player gets, alt -1 = unlimited.
+vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
+vmCvar_t	g_dropNades;		// The number of grenades eng will drop when going to limbo
+vmCvar_t	g_dropAmmo;			// The number of ammo packs leut drops when going to limbo
+vmCvar_t	g_throwKnives;		// 0 = disabled, anything else is the value of knives player gets, alt -1 = unlimited.
+vmCvar_t	g_ltNades;			// Number of nades a lt starts with 
+vmCvar_t	g_medicNades;		// Number of nades a med starts with 
+vmCvar_t	g_soldNades;		// Number of nades sold starts with
+vmCvar_t	g_engNades;			// Number of nades eng starts with
+vmCvar_t	g_medicClips;		// Number of clips in weapon med starts with 
+vmCvar_t	g_engineerClips;	// Number of clips in weapon eng starts with
+vmCvar_t	g_soldierClips;		// Number of clips in weapon sold starts with
+vmCvar_t	g_leutClips;		// Number of clips in weapon leut starts with
+vmCvar_t	g_pistolClips;		// How many clips pistol gets
+vmCvar_t	g_maxTeamPF;		// Max Pf's per team
+vmCvar_t	g_maxTeamSniper;	// Max snipers per team
+vmCvar_t	g_maxTeamVenom;		// Max venoms per team
+vmCvar_t	g_maxTeamFlamer;	// Max flamers per team
+vmCvar_t	g_balancePF;		// Some basic weapon balancing
+vmCvar_t	g_balanceSniper;	// Some basic weapon balancing
+vmCvar_t	g_balanceVenom;		// Some basic weapon balancing
+vmCvar_t	g_balanceFlamer;	// Some basic weapon balancing
+vmCvar_t	g_customMGs;		// Allow custom mg's so player can chose with what weapon to spawn with.
 
 // Stats
 vmCvar_t	g_doubleKills;			// Double, tripple & quad kills
@@ -436,6 +454,24 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_dropNades, "g_dropNades", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_dropAmmo, "g_dropAmmo", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_throwKnives, "g_throwKnives", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_ltNades, "g_ltNades", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_medicNades, "g_medicNades", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_engNades, "g_engNades", "4", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_soldNades, "g_soldNades", "8", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_medicClips, "g_medicClips", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_engineerClips, "g_engineerClips", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_soldierClips, "g_soldierClips", "2", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_leutClips, "g_leutClips", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_pistolClips, "g_pistolClips", "8", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_maxTeamPF, "g_maxTeamPF", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_maxTeamSniper, "g_maxTeamSniper", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_maxTeamVenom, "g_maxTeamVenom", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_maxTeamFlamer, "g_maxTeamFlamer", "-1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
+	{ &g_balancePF, "g_balancePF", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_balanceSniper, "g_balanceSniper", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_balanceVenom, "g_balanceVenom", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_balanceFlamer, "g_balanceFlamer", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_customMGs, "g_customMGs", "0", CVAR_ARCHIVE, 0, qtrue },
 
 	// Stats
 	{ &g_doubleKills, "g_doubleKills", "0", CVAR_ARCHIVE, 0, qfalse },

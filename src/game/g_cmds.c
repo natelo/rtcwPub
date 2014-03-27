@@ -2977,6 +2977,12 @@ void ClientCommand( int clientNum ) {
 		(Q_stricmp(cmd, "pm") == 0) ||
 		(Q_stricmp(cmd, "m") == 0))
 		Cmd_pMsg(ent);
+	else if (Q_stricmp(cmd, "mp40") == 0)
+		setCustomMG(ent, 1);
+	else if (Q_stricmp(cmd, "thompson") == 0)
+		setCustomMG(ent, 2);
+	else if (Q_stricmp(cmd, "sten") == 0)
+		setCustomMG(ent, 3);
 // End
 	else if (Q_stricmp (cmd, "levelshot") == 0)
 		Cmd_LevelShot_f (ent);

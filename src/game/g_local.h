@@ -463,6 +463,7 @@ typedef struct {
 	unsigned char	ip[4];			// IPs
 	unsigned int	incognito;		// Incognito
 	unsigned int	ignored;		// If client is ignored or not
+	int			selectedWeapon;		// If enabled allows mp40, sten, thompson..
 } clientSession_t;
 
 //
@@ -562,6 +563,9 @@ typedef struct {
 
 	// Throwing knives
 	int			throwingKnives;
+
+	// Weapon restrictions
+	int		restrictedWeapon;
 } clientPersistant_t;
 
 // L0 - antilag 
@@ -840,7 +844,13 @@ typedef struct {
 	int			lastVoteTime;		
 
 	// Auto balance teams timer
-	int			balanceTimer;		
+	int			balanceTimer;	
+
+	// Weapons restrictions
+	int			axisSniper, alliedSniper;
+	int			axisPF, alliedPF;
+	int			axisVenom, alliedVenom;
+	int			axisFlamer, alliedFlamer;
 
 } level_locals_t;
 
@@ -1380,6 +1390,24 @@ extern vmCvar_t		g_dropHealth;
 extern vmCvar_t		g_dropNades;
 extern vmCvar_t		g_dropAmmo;
 extern vmCvar_t		g_throwKnives;
+extern vmCvar_t		g_ltNades;
+extern vmCvar_t		g_medicNades;
+extern vmCvar_t		g_soldNades;
+extern vmCvar_t		g_engNades;
+extern vmCvar_t		g_medicClips;
+extern vmCvar_t		g_engineerClips;
+extern vmCvar_t		g_soldierClips;
+extern vmCvar_t		g_leutClips;
+extern vmCvar_t		g_pistolClips;
+extern vmCvar_t		g_maxTeamPF;
+extern vmCvar_t		g_maxTeamSniper;
+extern vmCvar_t		g_maxTeamVenom;
+extern vmCvar_t		g_maxTeamFlamer;
+extern vmCvar_t		g_balancePF;
+extern vmCvar_t		g_balanceSniper;
+extern vmCvar_t		g_balanceVenom;
+extern vmCvar_t		g_balanceFlamer;
+extern vmCvar_t		g_customMGs;
 
 // Stats
 extern vmCvar_t		g_doubleKills;
@@ -1675,6 +1703,11 @@ gentity_t *G_FearCheck(gentity_t *ent);
 void matchInfo(unsigned int type, char *msg);
 void checkEvenTeams(void);
 void balanceTeams(void);
+void setCustomMG(gentity_t* ent, int type);
+int isWeaponLimited(gclient_t *client, int weap);
+qboolean isWeaponBalanced(int weapon);
+void setDefaultWeapon(gclient_t *client, qboolean isSold);
+void setCustomMG(gentity_t* ent, int type);
 
 // 
 // g_players.c
