@@ -334,6 +334,12 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 		return;
 	}
 
+	// L0 - Shortcuts	
+	if (attacker && attacker->client) {
+		self->client->pers.lastkiller_client = attacker->s.clientNum;
+		attacker->client->pers.lastkilled_client = self->s.clientNum;
+	}
+
 	self->client->ps.pm_type = PM_DEAD;
 
 	G_AddEvent( self, EV_STOPSTREAMINGSOUND, 0);

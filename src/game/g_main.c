@@ -177,7 +177,8 @@ vmCvar_t	g_autoSwapRounds;		// How many rounds until it auto swaps
 vmCvar_t	g_autoShuffle;			// Auto shuffles teams after rounds set here | 0 = off
 vmCvar_t	g_censorWords;			// Censored words
 vmCvar_t	g_disallowedNames;		// Disallowed names
-vmCvar_t	g_noHardcodedCensor;	// Don't use hardcoded censor..
+vmCvar_t	g_noHardcodedCensor;	// Don't use hard coded censor..
+vmCvar_t	g_shortcuts;			// Enable shortcuts
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -400,6 +401,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_censorWords, "g_censorWords", "fuuck", 0 },
 	{ &g_disallowedNames, "g_disallowedNames", "nazi, admin, console", 0 },
 	{ &g_noHardcodedCensor, "g_noHardcodedCensor", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_shortcuts, "g_shortcuts", "0", 0 },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },

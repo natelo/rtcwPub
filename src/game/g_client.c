@@ -1717,6 +1717,12 @@ void ClientBegin( int clientNum ) {
 	client->pers.complaintEndTime = -1;
 
 // L0
+	// Shortcuts
+	client->pers.lastkilled_client = -1;
+	client->pers.lastammo_client = -1;
+	client->pers.lasthealth_client = -1;
+	client->pers.lastrevive_client = -1;
+	client->pers.lastkiller_client = -1;
 	// Stats
 	client->pers.dmgGiven = 0;
 	client->pers.dmgReceived = 0;

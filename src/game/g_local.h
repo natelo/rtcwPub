@@ -516,6 +516,13 @@ typedef struct {
 	int		sb_TKkillTime;
 	qboolean sb_TKwarned;
 
+	// Shortcuts
+	int		lastkilled_client;
+	int		lastrevive_client;
+	int		lastkiller_client;
+	int		lastammo_client;
+	int		lasthealth_client;
+
 	// Takes ability to rename from client..it's cleared next round, map load..
 	qboolean	nameLocked;	
 
@@ -666,8 +673,6 @@ struct gclient_s {
 
 	// Double kill
 	int			doublekill;		// (stats) Double+ Kills
-
-
 };
 
 
@@ -1344,6 +1349,7 @@ extern vmCvar_t		g_autoShuffle;
 extern vmCvar_t		g_censorWords;
 extern vmCvar_t		g_disallowedNames;
 extern vmCvar_t		g_noHardcodedCensor;
+extern vmCvar_t		g_shortcuts;
 
 // Game
 extern vmCvar_t		g_dropReload;
@@ -1625,6 +1631,7 @@ char *parseNames(char *name);
 void Q_Tokenize(char *str, char **splitstr, char *delim);
 void ParseStr(const char *strInput, char *strCmd, char *strArgs);
 qboolean Q_FindToken(char *haystack, char *needle);
+char *Q_StrReplace(char *haystack, char *needle, char *newVal);
 
 //
 // g_files.c
