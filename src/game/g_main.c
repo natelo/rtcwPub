@@ -195,6 +195,7 @@ vmCvar_t	g_screenShake;		// Screenshaking on explosions (4 = default, 2 = half..
 vmCvar_t	g_fixedphysics;		// Tries to keep things more fair..
 vmCvar_t	g_printMatchInfo;	// Prints events when they happen (retake, obj planted..)
 vmCvar_t	g_teamAutoBalance;	// Auto balances the teams..
+vmCvar_t	g_warmupDamage;		// Allows damage in warmup
 
 // Weapon
 vmCvar_t	g_dropHealth;	// The number od medpacks medic will drop when going to limbo
@@ -420,6 +421,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_fixedphysics, "g_fixedphysics", "1", CVAR_ARCHIVE | CVAR_SERVERINFO },
 	{ &g_printMatchInfo, "g_printMatchInfo", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_teamAutoBalance, "g_teamAutoBalance", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_warmupDamage, "g_warmupDamage", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },

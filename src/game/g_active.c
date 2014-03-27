@@ -1449,15 +1449,29 @@ void SpectatorClientEndFrame( gentity_t *ent ) {
 		int		clientNum;
 
 		if (ent->client->sess.sessionTeam == TEAM_RED) {
-			testtime = level.time%g_redlimbotime.integer;
+			// L0 - If warmup damage is on respawn almost instantly 
+			// - due weapon nuke we can't do it instantly.
+			if (g_warmupDamage.integer && g_gamestate.integer != GS_PLAYING)
+				testtime = level.time % 2000;
+			else
+				testtime = level.time%g_redlimbotime.integer;
+
 			if (testtime < ent->client->pers.lastReinforceTime)
 				do_respawn=1;
+
 			ent->client->pers.lastReinforceTime = testtime;
 		}
 		else if (ent->client->sess.sessionTeam == TEAM_BLUE) {
-			testtime = level.time%g_bluelimbotime.integer;
+			// L0 - If warmup damage is on respawn almost instantly 
+			// - due weapon nuke we can't do it instantly.
+			if (g_warmupDamage.integer && g_gamestate.integer != GS_PLAYING)
+				testtime = level.time % 2000;
+			else
+				testtime = level.time%g_bluelimbotime.integer;
+
 			if (testtime < ent->client->pers.lastReinforceTime)
 				do_respawn=1;
+
 			ent->client->pers.lastReinforceTime = testtime;
 		}
 

@@ -438,12 +438,16 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 	// L0 - (a hack) Only if it's not a custom mod
 	if (!isCustomMOD(meansOfDeath, self, attacker)) 
 	{
-		// broadcast the death event to everyone
-		ent = G_TempEntity(self->r.currentOrigin, EV_OBITUARY);
-		ent->s.eventParm = meansOfDeath;
-		ent->s.otherEntityNum = self->s.number;
-		ent->s.otherEntityNum2 = killer;
-		ent->r.svFlags = SVF_BROADCAST;	// send to everyone
+		// L0 - Don't bother in warmup..
+		if (g_gamestate.integer == GS_PLAYING)
+		{
+			// broadcast the death event to everyone
+			ent = G_TempEntity(self->r.currentOrigin, EV_OBITUARY);
+			ent->s.eventParm = meansOfDeath;
+			ent->s.otherEntityNum = self->s.number;
+			ent->s.otherEntityNum2 = killer;
+			ent->r.svFlags = SVF_BROADCAST;	// send to everyone
+		}
 	}
 
 	self->enemy = attacker;
@@ -1055,8 +1059,10 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 
 	// the intermission has allready been qualified for, so don't
 	// allow any extra scoring
-	if ( level.intermissionQueued || g_gamestate.integer != GS_PLAYING ) {
-		return;
+	if ( level.intermissionQueued || g_gamestate.integer != GS_PLAYING ) {	
+		// L0 - warmup damage
+		if (!g_warmupDamage.integer)
+			return;
 	}
 
 	if ( !inflictor ) {
