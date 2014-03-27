@@ -1102,7 +1102,7 @@ void ClientThink_real( gentity_t *ent ) {
 				if (client->ps.weapon == WP_KNIFE) {
 					if (client->ps.stats[STAT_HEALTH] > 0) {
 						if (g_dropObj.integer > 0)
-							Cmd_DropObj(ent);
+							Cmd_dropObj(ent);
 						else
 							Cmd_throwKnives(ent);
 					}

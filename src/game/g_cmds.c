@@ -2950,6 +2950,10 @@ void ClientCommand( int clientNum ) {
 		Cmd_getStatus(ent);
 		return;
 	}
+	if (Q_stricmp(cmd, "stats") == 0) {
+		Cmd_Stats(ent);
+		return;
+	}
 // End
 
 	// ignore all other commands when at intermission

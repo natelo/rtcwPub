@@ -1745,7 +1745,8 @@ void Cmd_pMsg(gentity_t *ent);
 void Cmd_Time(gentity_t *ent);
 void Cmd_Drag(gentity_t *ent);
 void Cmd_Push(gentity_t* ent);
-void Cmd_DropObj(gentity_t *self);
+void Cmd_dropObj(gentity_t *self);
+void Cmd_Stats(gentity_t *ent);
 
 //
 // g_stats.c
