@@ -997,9 +997,12 @@ void ClientThink_real( gentity_t *ent ) {
 			if (!client->dropWeaponTime) {
 				client->dropWeaponTime = 1; // just latch it for now
 
-				// L0 - Throw knife
+				// L0 - Throw knife &| Toss objective
 				if (client->ps.weapon == WP_KNIFE) {
 					if (client->ps.stats[STAT_HEALTH] > 0) {
+						if (g_dropObj.integer > 0)
+							Cmd_DropObj(ent);
+						else
 							Cmd_throwKnives(ent);
 					}
 					return;
@@ -1301,6 +1304,13 @@ void ClientThink_real( gentity_t *ent ) {
 	if (client->latched_buttons & BUTTON_ACTIVATE)
 	{
 		Cmd_Activate_f (ent);
+		Cmd_Push(ent);	// L0 - Shove
+		Cmd_Drag(ent);	// L0 - Drag bodies	
+	}
+
+	// L0 - drag bodies (/+salute command)
+	if (client->buttons & BUTTON_GESTURE) {
+		Cmd_Drag(ent);
 	}
 
 	if (ent->flags & FL_NOFATIGUE)

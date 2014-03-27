@@ -329,3 +329,184 @@ void Cmd_pMsg(gentity_t *ent)
 		msg));
 }
 
+/*
+================
+Shows time
+================
+*/
+void Cmd_Time(gentity_t *ent) {
+	CP(va("chat \"%s^7 ^7current time is: ^3%s\n\"", getTime()));
+	CPS(ent, "sound/multiplayer/dynamite_01.wav");
+}
+
+/*
+===================
+Drag players
+
+Came from BOTW/S4NDMoD
+===================
+*/
+void Cmd_Drag(gentity_t *ent) {
+	gentity_t *target;
+	vec3_t start, dir, end;
+	trace_t tr;
+	target = NULL;
+
+	if (!g_dragBodies.integer)
+		return;
+
+	if (level.time < (ent->lastDragTime + 20))
+		return;
+
+	if (ent->client->ps.stats[STAT_HEALTH] <= 0)
+		return;
+
+	AngleVectors(ent->client->ps.viewangles, dir, NULL, NULL);
+
+	VectorCopy(ent->s.pos.trBase, start);
+	start[2] += ent->client->ps.viewheight;
+	VectorMA(start, 100, dir, end);
+
+
+	trap_Trace(&tr, start, NULL, NULL, end, ent->s.number, CONTENTS_CORPSE);
+
+	if (tr.entityNum >= MAX_CLIENTS)
+		return;
+
+	target = &(g_entities[tr.entityNum]);
+
+	if ((!target->inuse) || (!target->client))
+		return;
+
+	VectorCopy(target->r.currentOrigin, start);
+	VectorCopy(ent->r.currentOrigin, end);
+	VectorSubtract(end, start, dir);
+	VectorNormalize(dir);
+	VectorScale(dir, 100, target->client->ps.velocity);
+	VectorCopy(dir, target->movedir);
+
+	ent->lastDragTime = level.time;
+}
+
+/*
+=================
+L0 - Shove players away
+
+Ported from BOTW source.
+=================
+*/
+void Cmd_Push(gentity_t* ent)
+{
+	gentity_t *target;
+	trace_t tr;
+	vec3_t start, end, forward;
+	float shoveAmount;
+
+	if (!g_shove.integer)
+		return;
+
+	if (ent->client->ps.stats[STAT_HEALTH] <= 0)
+		return;
+
+	if (level.time < (ent->lastPushTime + 600))
+		return;
+
+	AngleVectors(ent->client->ps.viewangles, forward, NULL, NULL);
+
+	VectorCopy(ent->s.pos.trBase, start);
+	start[2] += ent->client->ps.viewheight;
+	VectorMA(start, 128, forward, end);
+
+	trap_Trace(&tr, start, NULL, NULL, end, ent->s.number, CONTENTS_BODY);
+
+	if (tr.entityNum >= MAX_CLIENTS)
+		return;
+
+	target = &(g_entities[tr.entityNum]);
+
+	if ((!target->inuse) || (!target->client))
+		return;
+
+	if (target->client->ps.stats[STAT_HEALTH] <= 0)
+		return;
+
+	// L0
+	// Push is meant to get rid of blockers...not to push enemy players..
+	// Most that use drop reload script, push players when they (drop)reload
+	// which is F annoying in a crowded server..
+	// If enemy is blocking you way, KILL HIM that's the F point.
+	if (ent->client->sess.sessionTeam != target->client->sess.sessionTeam)
+		return;
+
+	shoveAmount = 512 * .8;
+	VectorMA(target->client->ps.velocity, shoveAmount, forward, target->client->ps.velocity);
+
+	APRS(target, "sound/multiplayer/vo_revive.wav");
+
+	ent->lastPushTime = level.time;
+}
+
+/*
+=================
+Drop objective
+
+Port from NQ
+=================
+*/
+void Cmd_DropObj(gentity_t *self)
+{
+	gitem_t *item = NULL;
+
+	// drop flag regardless
+	if (self->client->ps.powerups[PW_REDFLAG]) {
+		item = BG_FindItem("Red Flag");
+		if (!item)
+			item = BG_FindItem("Objective");
+
+		self->client->ps.powerups[PW_REDFLAG] = 0;
+	}
+	if (self->client->ps.powerups[PW_BLUEFLAG]) {
+		item = BG_FindItem("Blue Flag");
+		if (!item)
+			item = BG_FindItem("Objective");
+
+		self->client->ps.powerups[PW_BLUEFLAG] = 0;
+	}
+
+	if (item) {
+		vec3_t launchvel = { 0, 0, 0 };
+		vec3_t forward;
+		vec3_t origin;
+		vec3_t angles;
+		gentity_t *flag;
+
+		VectorCopy(self->client->ps.origin, origin);
+		// tjw: if the player hasn't died, then assume he's
+		//      throwing objective per g_dropObj
+		if (self->health > 0) {
+			VectorCopy(self->client->ps.viewangles, angles);
+			if (angles[PITCH] > 0)
+				angles[PITCH] = 0;
+			AngleVectors(angles, forward, NULL, NULL);
+			VectorMA(self->client->ps.velocity,
+				96, forward, launchvel);
+			VectorMA(origin, 36, forward, origin);
+			origin[2] += self->client->ps.viewheight;
+		}
+
+		flag = LaunchItem(item, origin, launchvel, self->s.number);
+
+		flag->s.modelindex2 = self->s.otherEntityNum2;// JPW NERVE FIXME set player->otherentitynum2 with old modelindex2 from flag and restore here
+		flag->message = self->message;	// DHM - Nerve :: also restore item name
+		// Clear out player's temp copies
+		self->s.otherEntityNum2 = 0;
+		self->message = NULL;
+		self->droppedObj = qtrue;
+	}
+	else
+	{
+		Cmd_throwKnives(self);
+	}
+}
+
+

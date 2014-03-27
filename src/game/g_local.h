@@ -381,6 +381,9 @@ struct gentity_s {
 	int			poisonEnt;					// Poison
 	int			lastPoisonTime;				// Poison
 	int			thrownKnifeTime;			// Knife throwing
+	int			lastDragTime;				// Drag bodies	
+	int			lastPushTime;				// Shove
+	qboolean	droppedObj;					// Objective dropping	
 };
 
 // Ridah
@@ -1384,6 +1387,9 @@ extern vmCvar_t		g_teamAutoBalance;
 extern vmCvar_t		g_warmupDamage;
 extern vmCvar_t		g_staminaBoost;
 extern vmCvar_t		g_bunnyJump;
+extern vmCvar_t		g_dragBodies;
+extern vmCvar_t		g_shove;
+extern vmCvar_t		g_dropObj;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
@@ -1715,6 +1721,10 @@ void setCustomMG(gentity_t* ent, int type);
 void Cmd_getStatus(gentity_t *ent);
 void Cmd_throwKnives(gentity_t *ent);
 void Cmd_pMsg(gentity_t *ent);
+void Cmd_Time(gentity_t *ent);
+void Cmd_Drag(gentity_t *ent);
+void Cmd_Push(gentity_t* ent);
+void Cmd_DropObj(gentity_t *self);
 
 //
 // g_stats.c

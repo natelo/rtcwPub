@@ -561,29 +561,55 @@ int Team_TouchEnemyFlag( gentity_t *ent, gentity_t *other, int team ) {
 	gclient_t *cl = other->client;
 	gentity_t *te, *gm;
 
+// L0 - Fix crash
+	te = NULL;
+	gm = NULL;
+// End
+
 	// hey, its not our flag, pick it up
 	if ( g_gametype.integer >= GT_WOLF ) {
 // JPW NERVE
-		AddScore(other, WOLF_STEAL_OBJ_BONUS);
-		te = G_TempEntity( other->s.pos.trBase, EV_GLOBAL_SOUND );
-		te->r.svFlags |= SVF_BROADCAST;
-		te->s.teamNum = cl->sess.sessionTeam;
-
+		// L0 - Don't add score or announce if same client picks up dropped obj..
+		// NOTE :: That obj will only be announced after player dies to prevent
+		// tossing obj between two clients to gain score..
+		if (!other->droppedObj)
+		{
+			AddScore(other, WOLF_STEAL_OBJ_BONUS);
+			te = G_TempEntity(other->s.pos.trBase, EV_GLOBAL_SOUND);
+			te->r.svFlags |= SVF_BROADCAST;
+			te->s.teamNum = cl->sess.sessionTeam;
+		}
+		
 		// DHM - Nerve :: Call trigger function in the 'game_manager' entity script
 		gm = G_Find( NULL, FOFS(scriptName), "game_manager" );
 
 		if ( cl->sess.sessionTeam == TEAM_RED ) {
-			te->s.eventParm = G_SoundIndex( "sound/multiplayer/axis/g-objective_taken.wav" );			
-			// L0 - matchInfo
-			matchInfo(MT_ME, va("Axis have stolen %s!", ent->message));
-
+// L0 - Different prints for tossing obj..
+			if (te)
+			{
+				te->s.eventParm = G_SoundIndex("sound/multiplayer/axis/g-objective_taken.wav");
+				matchInfo(MT_ME, va("Axis have stolen %s!", ent->message));
+			}
+			else
+			{
+				AP(va("cp \"Axis have tossed %s ^7!\n\"1", ent->message));
+			}
+// End
 			if ( gm )
 				G_Script_ScriptEvent( gm, "trigger", "allied_object_stolen" );
 		}
 		else {
-			te->s.eventParm = G_SoundIndex( "sound/multiplayer/allies/a-objective_taken.wav" );			
-			// L0 - matchInfo
-			matchInfo(MT_ME, va("Allies have stolen %s!", ent->message));
+// L0 - Different prints for tossing obj..
+			if (te)
+			{
+				te->s.eventParm = G_SoundIndex("sound/multiplayer/allies/a-objective_taken.wav");
+				matchInfo(MT_ME, va("Allies have stolen %s!", ent->message));
+			}
+			else
+			{
+				AP(va("cp \"Allies have tossed %s^7!\n\"1", ent->message));
+			}
+// End
 			if ( gm )
 				G_Script_ScriptEvent( gm, "trigger", "axis_object_stolen" );
 		}

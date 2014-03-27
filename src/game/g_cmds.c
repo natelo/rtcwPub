@@ -2983,6 +2983,8 @@ void ClientCommand( int clientNum ) {
 		setCustomMG(ent, 2);
 	else if (Q_stricmp(cmd, "sten") == 0)
 		setCustomMG(ent, 3);
+	else if (Q_stricmp(cmd, "time") == 0)
+		Cmd_Time(ent);
 // End
 	else if (Q_stricmp (cmd, "levelshot") == 0)
 		Cmd_LevelShot_f (ent);

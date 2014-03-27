@@ -200,6 +200,9 @@ vmCvar_t	g_teamAutoBalance;	// Auto balances the teams..
 vmCvar_t	g_warmupDamage;		// Allows damage in warmup
 vmCvar_t	g_staminaBoost;		// If enabled it recharges stamina faster when player is crouching..
 vmCvar_t	g_bunnyJump;		// Enable bunny jumps...
+vmCvar_t	g_dragBodies;		// If enabled player can drag bodies using salute or activate command
+vmCvar_t	g_shove;			// Enables or disables shove..(pushing of players..)
+vmCvar_t	g_dropObj;			// Drop Objective
 
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
@@ -448,6 +451,9 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_warmupDamage, "g_warmupDamage", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_staminaBoost, "g_staminaBoost", "1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_bunnyJump, "g_bunnyJump", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_dragBodies, "g_dragBodies", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_shove, "g_shove", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_dropObj, "g_dropObj", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
