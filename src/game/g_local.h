@@ -1211,13 +1211,6 @@ void Cmd_Activate_f (gentity_t *ent);
 int Cmd_WolfKick_f (gentity_t *ent);
 // Ridah
 
-// g_save.c
-qboolean G_SaveGame(char *username);
-void G_LoadGame(char *username);
-qboolean G_SavePersistant(char *nextmap);
-void G_LoadPersistant(void);
-void G_UpdatePlayTime ( void );
-
 // g_script.c
 void G_Script_ScriptParse( gentity_t *ent );
 qboolean G_Script_ScriptRun( gentity_t *ent );

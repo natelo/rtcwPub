@@ -604,26 +604,6 @@ void SP_target_location( gentity_t *self ){
 	G_SetOrigin( self, self->s.origin );
 }
 
-
-
-
-
-
-
-//---- (SA) Wolf targets
-
-/*
-==============
-Use_Target_Autosave
-	save game for emergency backup or convienience
-==============
-*/
-void Use_Target_Autosave( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
-	G_SaveGame("autosave.svg");
-}
-
-
-
 /*
 ==============
 Use_Target_Counter
@@ -722,7 +702,7 @@ void SP_target_counter( gentity_t *ent ) {
 saves game to 'autosave.svg' when triggered then dies.
 */
 void SP_target_autosave( gentity_t *ent ) {
-	ent->use = Use_Target_Autosave;
+	G_FreeEntity(ent);
 }
 
 //==========================================================

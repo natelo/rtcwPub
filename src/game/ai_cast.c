@@ -709,8 +709,6 @@ void AICast_CheckLoadGame(void)
 			ready = qfalse;
 
 		if (ready) {
-			trap_Cvar_Set( "savegame_loading", "0" );	// in-case it aborts
-			G_LoadGame( NULL );		// always load the "current" savegame
 			trap_Cvar_Set( "cg_norender", "0" );
 			saveGamePending = qfalse;
 
@@ -733,8 +731,6 @@ void AICast_CheckLoadGame(void)
 
 		// not loading a game, we must be in a new level, so look for some persistant data to read in, then save the game
 		if (ready) {
-			G_LoadPersistant();		// make sure we save the game after we have brought across the items
-			G_SaveGame( NULL );
 			trap_Cvar_Set( "cg_norender", "0" );
 			saveGamePending = qfalse;
 

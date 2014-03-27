@@ -3,6 +3,9 @@
  *
  */
 
+// Arnout: removed for multiplayer
+#if 0
+
 #include "../game/g_local.h"
 #include "../game/q_shared.h"
 #include "../game/botlib.h"		//bot lib interface
@@ -1241,3 +1244,6 @@ void G_LoadPersistant(void)
 
 	trap_FS_FCloseFile( f );
 }
+
+#endif // 0
+

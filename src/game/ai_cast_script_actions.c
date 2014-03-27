@@ -1323,21 +1323,12 @@ AICast_ScriptAction_SaveGame
 */
 qboolean AICast_ScriptAction_SaveGame( cast_state_t *cs, char *params )
 {
-	char *pString, *saveName;
+	char *pString;
 	pString = params;
 
 	if (cs->bs) {
 		G_Error( "AI Scripting: savegame attempted on a non-player" );
 	}
-
-//----(SA)	check for parameter
-	saveName = COM_ParseExt( &pString, qfalse );
-	if (!saveName[0])
-		G_SaveGame( NULL );	// save the default "current" savegame
-	else
-		G_SaveGame( saveName );
-//----(SA)	end
-
 	return qtrue;
 }
 
@@ -1688,8 +1679,6 @@ qboolean AICast_ScriptAction_MissionSuccess( cast_state_t *cs, char *params )
 
 	G_Printf( "Mission Success!!!!\n" );	// todo
 
-	G_SaveGame( NULL );
-
 	return qtrue;
 }
 
@@ -1889,9 +1878,7 @@ AICast_ScriptAction_SavePersistant
   accidentally read in persistant data that was intended for a different map.
 ====================
 */
-qboolean AICast_ScriptAction_SavePersistant( cast_state_t *cs, char *params )
-{
-	G_SavePersistant( params );
+qboolean AICast_ScriptAction_SavePersistant( cast_state_t *cs, char *params ) {
 	return qtrue;
 }
 
@@ -1981,7 +1968,6 @@ qboolean AICast_ScriptAction_ChangeLevel( cast_state_t *cs, char *params )
 	if (pch) {
 		pch = strstr(newstr, " ");
 		*pch = '\0';
-		G_SavePersistant( newstr );
 	}
 
 	// make sure we strip any params after the mapname

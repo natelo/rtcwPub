@@ -56,9 +56,6 @@
     <ClCompile Include="..\..\..\src\game\g_props.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\game\g_save.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\game\g_script.c">
       <Filter>Source Files</Filter>
     </ClCompile>

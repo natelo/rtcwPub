@@ -634,8 +634,6 @@ qboolean G_ScriptAction_MissionSuccess( gentity_t *ent, char *params )
 
 	G_Printf( "Mission Success!!!!\n" );	// todo
 
-	G_SaveGame( NULL );
-
 	return qtrue;
 }
 

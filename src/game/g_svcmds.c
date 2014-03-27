@@ -405,28 +405,6 @@ qboolean	ConsoleCommand( void ) {
 
 	trap_Argv( 0, cmd, sizeof( cmd ) );
 
-	// Ridah, savegame
-	if (Q_stricmp (cmd, "savegame") == 0) {
-		trap_Argv( 1, cmd, sizeof( cmd ) );
-		if (strlen(cmd) > 0) {
-			// strip the extension if provided
-			if (strrchr(cmd, '.')) {
-				cmd[strrchr(cmd,'.')-cmd] = '\0';
-			}
-			if (G_SaveGame( cmd ))
-//				G_Printf( "Game saved.\n" );
-// (SA) change to cp
-				trap_SendServerCommand(-1, "cp \"Game Saved\n\"");
-			else
-				G_Printf( "Unable to save game.\n" );
-		} else {	// need a name
-			G_Printf( "syntax: savegame <name>\n" );
-		}
-
-		return qtrue;
-	}
-	// done.
-
 // L0 - New stuff
 	// Tempban (IP)
 	if ( Q_stricmp(cmd, "tempban") == 0 ) {
