@@ -1586,7 +1586,7 @@ void SpectatorClientEndFrame( gentity_t *ent ) {
 			ent->client->pers.lastReinforceTime = testtime;
 		}
 
-		if ( g_maxlives.integer > 0 && ent->client->ps.persistant[PERS_RESPAWNS_LEFT] == 0 ) {
+		if ((g_maxlives.integer > 0 || g_alliedmaxlives.integer > 0 || g_axismaxlives.integer > 0) && ent->client->ps.persistant[PERS_RESPAWNS_LEFT] == 0) {
 			do_respawn = 0;
 		}
 

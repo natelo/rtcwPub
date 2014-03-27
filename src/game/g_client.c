@@ -1823,10 +1823,20 @@ void ClientBegin( int clientNum ) {
 	ent->client->saved.leveltime = 0;
 // End
 
-	if ( g_maxlives.integer > 0 ) {
+	// Xian -- Changed below for team independant maxlives
+
+	if (g_maxlives.integer > 0)
 		ent->client->ps.persistant[PERS_RESPAWNS_LEFT] = (g_maxlives.integer - 1);
-	} else {
+	else
 		ent->client->ps.persistant[PERS_RESPAWNS_LEFT] = -1;
+
+	if (g_axismaxlives.integer > 0 || g_alliedmaxlives.integer > 0) {
+		if (client->sess.sessionTeam == TEAM_RED)
+			ent->client->ps.persistant[PERS_RESPAWNS_LEFT] = (g_axismaxlives.integer - 1);
+		else if (client->sess.sessionTeam == TEAM_BLUE)
+			ent->client->ps.persistant[PERS_RESPAWNS_LEFT] = (g_alliedmaxlives.integer - 1);
+		else
+			ent->client->ps.persistant[PERS_RESPAWNS_LEFT] = -1;
 	}
 
 	// DHM - Nerve :: Start players in limbo mode if they change teams during the match

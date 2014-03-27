@@ -1421,6 +1421,8 @@ extern vmCvar_t		g_smokeGrenadesLmt;
 extern vmCvar_t		g_flagRetake;
 extern vmCvar_t		g_balanceFlagRetake;
 extern vmCvar_t		g_balanceFlagCanClaim;
+extern vmCvar_t		g_alliedmaxlives;
+extern vmCvar_t		g_axismaxlives;
 
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;

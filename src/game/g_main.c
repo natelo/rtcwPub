@@ -220,6 +220,8 @@ vmCvar_t	g_smokeGrenadesLmt;		// Smoke Grenades limit per life
 vmCvar_t	g_flagRetake;			// How many times flag can be retaken
 vmCvar_t	g_balanceFlagRetake;	// Checks if flag can be taken..it always allows team with less to claim it last and then locks till even.
 vmCvar_t	g_balanceFlagCanClaim;	// If enabled team will be able to claim (not reclaim!) the flag regardless if they're the team with more..
+vmCvar_t	g_alliedmaxlives;		// Xian -> 1.4 port
+vmCvar_t	g_axismaxlives;			// Xian'-> 1.4 port
 
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
@@ -505,6 +507,8 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_flagRetake, "g_flagRetake", "-1", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_balanceFlagRetake, "g_balanceFlagRetake", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_balanceFlagCanClaim, "g_balanceFlagCanClaim", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_alliedmaxlives, "g_alliedmaxlives", "0", CVAR_LATCH | CVAR_SERVERINFO, 0, qtrue },
+	{ &g_axismaxlives, "g_axismaxlives", "0", CVAR_LATCH | CVAR_SERVERINFO, 0, qtrue },
 
 	// Weapon
 	{ &g_dropHealth, "g_dropHealth", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
@@ -2490,7 +2494,7 @@ void CheckExitRules( void ) {
 		return;
 	}
 
-	if ( g_gametype.integer >= GT_WOLF && g_maxlives.integer > 0 ) {
+	if (g_gametype.integer >= GT_WOLF && (g_maxlives.integer > 0 || g_axismaxlives.integer > 0 || g_alliedmaxlives.integer > 0)) {
 		if ( level.numFinalDead[0] >= level.numteamVotingClients[0] && level.numteamVotingClients[0] > 0 ) {
 			trap_GetConfigstring( CS_MULTI_MAPWINNER, cs, sizeof(cs) );
 			Info_SetValueForKey( cs, "winner", "1" );
@@ -3225,9 +3229,14 @@ void G_RunFrame( int levelTime ) {
 			balanceTeams();
 	}
 
-	// L0 - Playerst left
+	// L0 - Players left
 	if ((g_gamestate.integer == GS_PLAYING) &&
-		g_maxlives.integer &&
+		(
+			g_maxlives.integer ||
+			g_alliedmaxlives.integer ||
+			g_axismaxlives.integer
+		)
+		&&
 		level.time >= (level.leftCheck + 30000))
 	{
 		int axisLeft = level.numteamVotingClients[0] - level.numFinalDead[0];
