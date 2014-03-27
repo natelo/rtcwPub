@@ -2992,6 +2992,9 @@ void ClientCommand( int clientNum ) {
 		setCustomMG(ent, 3);
 	else if (Q_stricmp(cmd, "time") == 0)
 		Cmd_Time(ent);
+	else if ((Q_stricmp(cmd, "reload") == 0) ||
+		(Q_stricmp(cmd, "noreload") == 0))
+		cmd_noReload(ent);
 // End
 	else if (Q_stricmp (cmd, "levelshot") == 0)
 		Cmd_LevelShot_f (ent);

@@ -1189,7 +1189,8 @@ typedef struct playerState_s {
 	int				identifyClient;			// NERVE - SMF
 
 	// L0 - New stuff
-	qboolean	selectedSmoke;			// Smoke	
+	qboolean	selectedSmoke;	// Smoke	
+	qboolean	noReload;		// A no-reload hack
 } playerState_t;
 
 

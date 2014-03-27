@@ -2070,49 +2070,29 @@ void PM_CheckForReload(int weapon) {
 			break;
 	}
 
-
-/* JPW NERVE pulled this to allow reload in-scope per id request
-
-	// don't allow reloading for these weapons.  when the player hits 'reload' or 'fire'
-	// when the weapon is empty, it will switch away to the primary.  (so player can see results of 
-	// last shot through scope without it auto-switching away for the reload)
-	if (!pm->ps->aiChar) {	// RF, added this check since this confuses the AI
-		switch(weapon) {
-			case WP_SNOOPERSCOPE:
-			case WP_SNIPERRIFLE:
-			case WP_FG42SCOPE:
-				if(reloadRequested)
-//					PM_BeginWeaponChange(weapon, WP_GARAND);	// hmm, what an odd thing
-					PM_BeginWeaponChange(weapon, weapAlts[weapon]);
-				return;
-			default:
-				break;
-		}
+// L0 
+	// autoReload off
+	if (pm->ps->noReload == qtrue && !(pm->ps->ammoclip[BG_FindClipForWeapon(weapon)]) &&	// clip is empty...
+		pm->ps->ammo[BG_FindAmmoForWeapon(weapon)] && reloadRequested)
+	{
+		PM_BeginWeaponReload(weapon);
 	}
-*/
-//	if ( pm->ps->weaponTime <= 0) {
-
-		// clip is empty, but you have reserves.  (auto reload)
-		if (	!(pm->ps->ammoclip[BG_FindClipForWeapon(weapon)]) &&	// clip is empty...
-				pm->ps->ammo[BG_FindAmmoForWeapon(weapon)] )			// and you have reserves
-		{
+	// autoReload on
+	else if (pm->ps->noReload == qfalse && !(pm->ps->ammoclip[BG_FindClipForWeapon(weapon)]) &&	// clip is empty...
+		pm->ps->ammo[BG_FindAmmoForWeapon(weapon)])			// and you have reserves
+	{
+		PM_BeginWeaponReload(weapon);
+	} 
+// end
+	else if (reloadRequested)
+	{
+		// don't allow a force reload if it won't have any effect (no more ammo reserves or full clip)
+		if ( pm->ps->ammo[BG_FindAmmoForWeapon(weapon)] && pm->ps->ammoclip[BG_FindClipForWeapon(weapon)] < ammoTable[weapon].maxclip ) {
 			PM_BeginWeaponReload(weapon);
-
 		}
-		else if (reloadRequested)
-		{
-			// don't allow a force reload if it won't have any effect (no more ammo reserves or full clip)
-			if ( pm->ps->ammo[BG_FindAmmoForWeapon(weapon)] && pm->ps->ammoclip[BG_FindClipForWeapon(weapon)] < ammoTable[weapon].maxclip ) {
-				PM_BeginWeaponReload(weapon);
-			}
-		} else if(weapon == WP_AKIMBO) {	// also check colt for reload
-			PM_CheckForReload(WP_COLT);
-		}
-
-//	}
-
-		
-
+	} else if(weapon == WP_AKIMBO) {	// also check colt for reload
+		PM_CheckForReload(WP_COLT);
+	}
 }
 
 /*
@@ -2871,6 +2851,11 @@ static void PM_Weapon( void ) {
 		{
 			// you have ammo for this, just not in the clip
 			reloading = (qboolean)(ammoNeeded <= pm->ps->ammo[ BG_FindAmmoForWeapon(pm->ps->weapon)]);
+
+			// L0 - noReload
+			if ((pm->ps->noReload == qfalse) && !(pm->cmd.wbuttons & WBUTTON_RELOAD)) {
+				reloading = qfalse;
+			}
 
 			if(pm->ps->eFlags & EF_MELEE_ACTIVE)	// not going to be allowed to reload if holding a chair
 				reloading = qfalse;

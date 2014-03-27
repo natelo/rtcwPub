@@ -1576,6 +1576,14 @@ void ClientUserinfoChanged( int clientNum ) {
 	// colors
 	c1 = Info_ValueForKey( userinfo, "color" );
 
+	// L0 - no reload 
+	if (ent->client->sess.noReload == 1) {
+		ent->client->ps.noReload = qtrue;
+	}
+	else {
+		ent->client->ps.noReload = qfalse;
+	}
+
 	// send over a subset of the userinfo keys so other clients can
 	// print scoreboards, display models, and play custom sounds
 
@@ -1803,6 +1811,8 @@ void ClientBegin( int clientNum ) {
 	client->pers.complaintEndTime = -1;
 
 // L0
+	// No Reload hack
+	client->ps.noReload = client->pers.noReload; 
 	// Shortcuts
 	client->pers.lastkilled_client = -1;
 	client->pers.lastammo_client = -1;
@@ -2023,7 +2033,7 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 // L0 - New stuff	
 	// Poison
 	ent->poisoned = qfalse;	
-	ent->lastPoisonTime = 0;
+	ent->lastPoisonTime = 0;	
 
 	// Mapstats / Store Life kills Peak for map stats if enabled
 	if (ent->client->pers.lifeKills > ent->client->pers.lifeKillsPeak)
@@ -2035,9 +2045,12 @@ void ClientSpawn(gentity_t *ent, qboolean revived) {
 	ent->client->pers.lifeAcc_hits = 0;
 	ent->client->pers.lifeAcc_shots = 0;
 	ent->client->pers.lifeHeadshots = 0;
-
 	// Dropped objective
 	ent->droppedObj = qfalse;
+	// Smoke
+	ent->thrownSmoke = 0; 
+	// No reload
+	ent->client->ps.noReload = ent->client->pers.noReload;
 // End
 	
 	VectorCopy (playerMins, ent->r.mins);

@@ -182,6 +182,7 @@ vmCvar_t	g_shortcuts;			// Enable shortcuts
 vmCvar_t	g_allowPMs;				// Allow private messages
 vmCvar_t	g_logPMs;				// Logs PMs..totally not happy about this.
 vmCvar_t	g_serverMessage;		// Shows a center print each time when player switches teams.
+vmCvar_t	g_forceNoReload;		// Forces no reload to all..
 
 // Game 
 vmCvar_t	g_dropReload;			// Enable / Disable Drop reload
@@ -477,6 +478,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_alliedASdelay, "g_alliedASdelay", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_alliedASdelayFFE, "g_alliedASdelayFFE", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_serverMessage, "g_serverMessage", "", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_forceNoReload, "g_forceNoReload", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },

@@ -467,8 +467,10 @@ typedef struct {
 	admLvls_t		admin;			// Admins
 	unsigned char	ip[4];			// IPs
 	unsigned int	incognito;		// Incognito
+	// TODO:  Move this under one stucture..
 	unsigned int	ignored;		// If client is ignored or not
 	int			selectedWeapon;		// If enabled allows mp40, sten, thompson..
+	int			noReload;			// Don't reload if client is under noReload session
 } clientSession_t;
 
 //
@@ -571,6 +573,9 @@ typedef struct {
 
 	// Weapon restrictions
 	int		restrictedWeapon;
+
+	// (no)Auto Reload hack
+	qboolean	noReload;
 } clientPersistant_t;
 
 // L0 - antilag 
@@ -1383,6 +1388,7 @@ extern vmCvar_t		g_shortcuts;
 extern vmCvar_t		g_allowPMs;
 extern vmCvar_t		g_logPMs;
 extern vmCvar_t		g_serverMessage;
+extern vmCvar_t		g_forceNoReload;
 
 // Game
 extern vmCvar_t		g_dropReload;
@@ -1760,7 +1766,8 @@ void Cmd_Drag(gentity_t *ent);
 void Cmd_Push(gentity_t* ent);
 void Cmd_dropObj(gentity_t *self);
 void Cmd_Stats(gentity_t *ent);
-void weapon_smokeGrenade(gentity_t *ent);;
+void weapon_smokeGrenade(gentity_t *ent);
+void cmd_noReload(gentity_t *ent);
 
 //
 // g_stats.c

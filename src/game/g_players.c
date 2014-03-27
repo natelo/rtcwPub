@@ -606,5 +606,32 @@ void weapon_smokeGrenade(gentity_t *ent)
 	ent->think = G_ExplodeMissile;
 }
 
+/*
+=================
+Toggles auto reload
+
+XXX: Drop this and use colors..!?
+=================
+*/
+void cmd_noReload(gentity_t *ent) {
+
+	ent->client->ps.noReload = ent->client->pers.noReload;
+
+	if (!ent->client->sess.noReload) {		
+		CP("cp \"Your weapon will ^2not ^7autoReload^2!\n\"");
+		ent->client->sess.noReload = 1;
+		ent->client->ps.noReload = qtrue;
+		return;
+	}
+	else {
+		CP("cp \"Your weapon will autoReload^1!\n\"");
+		ent->client->sess.noReload = 0;
+		ent->client->ps.noReload = qfalse;
+		return;
+	}
+}
+
+
+
 
 
