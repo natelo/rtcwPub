@@ -715,6 +715,9 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 		AP(va("print \"%s ^7joined the ^2Battle^7.\n\"", client->pers.netname));
 	}
 
+	// L0 - connect message
+	CP(va("cp \"%s\n\"3", g_serverMessage.string));
+
 	// get and distribute relevent paramters
 	ClientUserinfoChanged( clientNum );
 

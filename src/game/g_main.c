@@ -181,6 +181,7 @@ vmCvar_t	g_noHardcodedCensor;	// Don't use hard coded censor..
 vmCvar_t	g_shortcuts;			// Enable shortcuts
 vmCvar_t	g_allowPMs;				// Allow private messages
 vmCvar_t	g_logPMs;				// Logs PMs..totally not happy about this.
+vmCvar_t	g_serverMessage;		// Shows a center print each time when player switches teams.
 
 // Game 
 vmCvar_t	g_dropReload;		// Enable / Disable Drop reload
@@ -253,11 +254,28 @@ vmCvar_t	g_mapStatsWarmupOnly;	// Shows only in warmup, otherwise every time gam
 vmCvar_t	g_roundStats;			// Prints high achievers each round
 vmCvar_t	g_excludedRoundStats;	// List of excluded stats (not tracked and not printed)
 
+// MOTD's
+vmCvar_t	g_showMOTD;			// Enable MOTD's (message of the day)
+vmCvar_t	g_motd1;			// MESSAGE 1
+vmCvar_t	g_motd2;			// MESSAGE 2
+vmCvar_t	g_motd3;			// MESSAGE 3
+vmCvar_t	g_motd4;			// MESSAGE 4
+vmCvar_t	g_motd5;			// MESSAGE 5
+vmCvar_t	g_motd6;			// MESSAGE 6
+vmCvar_t	g_motd7;			// MESSAGE 7
+vmCvar_t	g_motd8;			// MESSAGE 8
+vmCvar_t	g_motd9;			// MESSAGE 9
+vmCvar_t	g_motd10;			// MESSAGE 10
+vmCvar_t	g_motd11;			// MESSAGE 11
+vmCvar_t	g_motd12;			// MESSAGE 12
+vmCvar_t	g_motdTime;			// Time between each message
+
 // Static
 vmCvar_t	g_antilagVersion;	// Antilag version - read only variable....
 vmCvar_t	g_swapCounter;		// Count times so it auto swaps once it reaches it..
 vmCvar_t	shuffleTracking;	// Tracks rounds for (auto) shuffle
 vmCvar_t	needsBalance;		// Flag for auto balance check
+vmCvar_t	motdNum;			// To track motds..
 
 // Forced cvars
 vmCvar_t	cl_allowdownload;		// Map downloading 
@@ -451,6 +469,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_axisASdelayFFE, "g_axisASdelayFFE", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_alliedASdelay, "g_alliedASdelay", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_alliedASdelayFFE, "g_alliedASdelayFFE", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_serverMessage, "g_serverMessage", "", CVAR_ARCHIVE, 0, qfalse },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -513,11 +532,28 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_roundStats, "g_roundStats", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 	{ &g_excludedRoundStats, "g_excludedRoundStats", "", CVAR_ARCHIVE | CVAR_LATCH, 0, qfalse },
 
+	// MOTDs	
+	{ &g_showMOTD, "g_showMOTD", "0", 0, 0, qfalse },
+	{ &g_motd1, "g_motd1", "", 0, 0, qfalse },
+	{ &g_motd2, "g_motd2", "", 0, 0, qfalse },
+	{ &g_motd3, "g_motd3", "", 0, 0, qfalse },
+	{ &g_motd4, "g_motd4", "", 0, 0, qfalse },
+	{ &g_motd5, "g_motd5", "", 0, 0, qfalse },
+	{ &g_motd6, "g_motd6", "", 0, 0, qfalse },
+	{ &g_motd7, "g_motd7", "", 0, 0, qfalse },
+	{ &g_motd8, "g_motd8", "", 0, 0, qfalse },
+	{ &g_motd9, "g_motd9", "", 0, 0, qfalse },
+	{ &g_motd10, "g_motd10", "", 0, 0, qfalse },
+	{ &g_motd11, "g_motd11", "", 0, 0, qfalse },
+	{ &g_motd12, "g_motd12", "", 0, 0, qfalse },
+	{ &g_motdTime, "g_motdTime", "80", 0, 0, qtrue },
+
 	// Static
 	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
 	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
 	{ &shuffleTracking, "shuffleTracking", "0", 0, 0, qfalse },
 	{ &needsBalance, "needsBalance", "0", CVAR_CHEAT, qfalse },
+	{ &g_motdTime, "g_motdTime", "80", 0, 0, qtrue },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },
@@ -2796,6 +2832,90 @@ void InitCensorNamesStructure(void)
 		censorNamesDictionary.num_nulled_words++;
 }
 
+/*
+==================
+L0 - MOTD's
+==================
+*/
+void MOTD(void) {
+
+	if (!g_showMOTD.integer)
+		return;
+
+	// Works only first time around (when map is loaded for the 1st time..) but at least smth...
+	if (level.startTime < 2000)
+		return;
+
+	// Start with base, see if there's anything to print otherwise bail out.
+	//
+	// It will render first message blank on server spawn but it's not a problem for map changes
+	// as then it falls in the loop along the process.. :)
+	if (motdNum.integer == 0) {
+		level.motdTime = level.time;
+		(strlen(g_motd1.string) > 2) ? trap_Cvar_Set("motdNum", "1") : trap_Cvar_Set("motdNum", "0");
+	}
+	if (motdNum.integer == 1){
+		AP(va("chat \"console: ^7%s\n\"", g_motd1.string));
+		level.motdTime = level.time;
+		(strlen(g_motd2.string) > 2) ? trap_Cvar_Set("motdNum", "2") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 2){
+		AP(va("chat \"console: ^7%s\n\"", g_motd2.string));
+		level.motdTime = level.time;
+		(strlen(g_motd3.string) > 2) ? trap_Cvar_Set("motdNum", "3") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 3){
+		AP(va("chat \"console: ^7%s\n\"", g_motd3.string));
+		level.motdTime = level.time;
+		(strlen(g_motd4.string) > 2) ? trap_Cvar_Set("motdNum", "4") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 4){
+		AP(va("chat \"console: ^7%s\n\"", g_motd4.string));
+		level.motdTime = level.time;
+		(strlen(g_motd5.string) > 2) ? trap_Cvar_Set("motdNum", "5") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 5){
+		AP(va("chat \"console: ^7%s\n\"", g_motd5.string));
+		level.motdTime = level.time;
+		(strlen(g_motd6.string) > 2) ? trap_Cvar_Set("motdNum", "6") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 6){
+		AP(va("chat \"console: ^7%s\n\"", g_motd6.string));
+		level.motdTime = level.time;
+		(strlen(g_motd7.string) > 2) ? trap_Cvar_Set("motdNum", "7") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 7){
+		AP(va("chat \"console: ^7%s\n\"", g_motd7.string));
+		level.motdTime = level.time;
+		(strlen(g_motd8.string) > 2) ? trap_Cvar_Set("motdNum", "8") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 8){
+		AP(va("chat \"console: ^7%s\n\"", g_motd8.string));
+		level.motdTime = level.time;
+		(strlen(g_motd9.string) > 2) ? trap_Cvar_Set("motdNum", "9") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 9){
+		AP(va("chat \"console: ^7%s\n\"", g_motd9.string));
+		level.motdTime = level.time;
+		(strlen(g_motd10.string) > 2) ? trap_Cvar_Set("motdNum", "10") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 10){
+		AP(va("chat \"console: ^7%s\n\"", g_motd10.string));
+		level.motdTime = level.time;
+		(strlen(g_motd11.string) > 2) ? trap_Cvar_Set("motdNum", "11") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 11){
+		AP(va("chat \"console: ^7%s\n\"", g_motd11.string));
+		level.motdTime = level.time;
+		(strlen(g_motd12.string) > 2) ? trap_Cvar_Set("motdNum", "12") : trap_Cvar_Set("motdNum", "1");
+	}
+	if (motdNum.integer == 12){
+		AP(va("chat \"console: ^7%s\n\"", g_motd6.string));
+		level.motdTime = level.time;
+		trap_Cvar_Set("motdNum", "1");
+	}
+}
+
 
 /*
 ==================
@@ -3082,6 +3202,12 @@ void G_RunFrame( int levelTime ) {
 
 	// cancel vote if timed out
 	CheckVote();
+
+	// L0 - MOTDs
+	if (g_showMOTD.integer > 0 && level.startTime > 2000){
+		if (level.time >= (level.motdTime + g_motdTime.integer * 1000))
+			MOTD();
+	}
 
 	// L0 - Team Balance
 	if (needsBalance.integer) {

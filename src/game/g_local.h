@@ -862,6 +862,8 @@ typedef struct {
 	int			axisBomber, alliedBomber;
 	int			axisArty, alliedArty;
 
+	// MOTDs
+	int			motdTime;
 } level_locals_t;
 
 extern 	qboolean	reloading;				// loading up a savegame
@@ -1375,6 +1377,7 @@ extern vmCvar_t		g_noHardcodedCensor;
 extern vmCvar_t		g_shortcuts;
 extern vmCvar_t		g_allowPMs;
 extern vmCvar_t		g_logPMs;
+extern vmCvar_t		g_serverMessage;
 
 // Game
 extern vmCvar_t		g_dropReload;
