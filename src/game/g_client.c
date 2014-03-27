@@ -1523,13 +1523,17 @@ void ClientUserinfoChanged( int clientNum ) {
 		team = (client->sess.sessionTeam == TEAM_RED) ? "Axis" :
 			((client->sess.sessionTeam == TEAM_BLUE) ? "Allied" : "Spectator");
 
-		// Print essentials and skip garbage
-		s = va("name\\%s\\team\\%s\\IP\\%d.%d.%d.%d",
-			client->pers.netname, team, client->sess.ip[0], client->sess.ip[1], client->sess.ip[2], client->sess.ip[3]
+		// Print to log only essentials and skip garbage
+		s = va("slot\\%i\\name\\%s\\team\\%s\\IP\\%d.%d.%d.%d\\status\\%s",
+			clientNum, client->pers.netname, team, 
+			client->sess.ip[0], client->sess.ip[1], client->sess.ip[2], client->sess.ip[3],
+			(client->sess.admin ? va("Admin\\level\\%d", client->sess.admin) : 
+				(client->sess.ignored ? "ignored" : "none") 
+			)
 		);
 	}
 
-	G_LogPrintf( "ClientUserinfoChanged: slot\\%i\\%s\n", clientNum, s );
+	G_LogPrintf( "ClientUserinfoChanged: %s\n", s );
 }
 
 
