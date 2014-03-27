@@ -224,6 +224,9 @@ vmCvar_t	g_balanceFlagCanClaim;	// If enabled team will be able to claim (not re
 vmCvar_t	g_alliedmaxlives;		// Xian -> 1.4 port
 vmCvar_t	g_axismaxlives;			// Xian'-> 1.4 port
 
+// Modes
+vmCvar_t	g_deathMatch;			// Death Match
+
 // Weapon
 vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to limbo
 vmCvar_t	g_dropNades;		// The number of grenades eng will drop when going to limbo
@@ -479,6 +482,9 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_alliedASdelayFFE, "g_alliedASdelayFFE", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_serverMessage, "g_serverMessage", "", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_forceNoReload, "g_forceNoReload", "0", CVAR_ARCHIVE, 0, qfalse },
+
+	// Modes
+	{ &g_deathMatch, "g_deathMatch", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -1519,6 +1525,10 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
 	G_RemapTeamShaders();
+
+	// L0 - So there's no doubt..
+	if (g_deathMatch.integer)
+		AP("chat \"console: This server is running in DeathMatch mode^3! \n\"");
 }
 
 
@@ -2448,8 +2458,8 @@ void CheckExitRules( void ) {
 		}
 		return;
 	}
-
-	if ( g_timelimit.value && !level.warmupTime ) {
+												// L0 - Not in DM
+	if ( g_timelimit.value && !level.warmupTime && !g_deathMatch.integer) {
 		if (level.timeCurrent - level.startTime >= g_timelimit.value * 60000) {
 
 			// check for sudden death 

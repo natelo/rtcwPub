@@ -1513,10 +1513,17 @@ qboolean G_ScriptAction_SetRoundTimelimit( gentity_t *ent, char *params )
 		trap_Cvar_Set( "timelimit", va( "%f", nextTimeLimit ) );
 	}
 	else {
-		if ( g_userTimeLimit.integer )
-			trap_Cvar_Set( "timelimit", va( "%i", g_userTimeLimit.integer ) );
-		else
-			trap_Cvar_Set( "timelimit", token );
+		// L0 - No time limit in DM..
+		if (g_deathMatch.integer)
+		{
+			trap_Cvar_Set("timelimit", "0");
+		}
+		else {
+			if (g_userTimeLimit.integer)
+				trap_Cvar_Set("timelimit", va("%i", g_userTimeLimit.integer));
+			else
+				trap_Cvar_Set("timelimit", token);
+		}
 	}
 
 	return qtrue;

@@ -1422,7 +1422,10 @@ void checkpoint_spawntouch(gentity_t *self, gentity_t *other, trace_t *trace) {
 			}
 
 			if (self->s.frame == WCP_ANIM_NOFLAG) {
-				AddScore(other, WOLF_SP_CAPTURE);
+				// Flags can be used to intentionally give away position on custom (large) maps but no scoring for it..
+				if (!g_deathMatch.integer)
+					AddScore(other, WOLF_SP_CAPTURE);
+
 				//matchInfo(MT_ME, va("%s captured the flag!\n", ((other->client->sess.sessionTeam == TEAM_RED) ? "Axis" : "Allies")) ); // L0 - Some info
 			}
 			else {
@@ -1431,7 +1434,10 @@ void checkpoint_spawntouch(gentity_t *self, gentity_t *other, trace_t *trace) {
 					CPx(other->client->ps.clientNum, va("cp \"Flag Retake limit ^1%d ^7has been reached^1!\n\"2", g_flagRetake.integer));
 					return;
 				}
-				AddScore(other, WOLF_SP_RECOVER);
+				// Flags can be used to intentionally give away position on custom (large) maps but no scoring for it..
+				if (!g_deathMatch.integer)
+					AddScore(other, WOLF_SP_RECOVER);
+
 				//matchInfo(MT_ME, va("%s reclaimed the flag!\n", ((other->client->sess.sessionTeam == TEAM_RED) ? "Axis" : "Allies"))); // L0 - Some info
 				level.flagTaken++; // mark that flag was taken				
 			}

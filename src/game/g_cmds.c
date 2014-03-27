@@ -669,8 +669,8 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 	// L0 - This will check now for 2 seconds in warmup and in game..
 	if ( g_gametype.integer >= GT_WOLF && team != oldTeam && !client->pers.initialSpawn
 		&& ( (level.time - client->pers.connectTime) > 10000 ) && ( (level.time - client->pers.enterTime) < 2000 ) && !forced ) {
-		trap_SendServerCommand( ent-g_entities, 
-			va( "cp \"You must wait ^3%i ^7seconds before joining a new team.\n\"3", (int)(2 - ((level.time - client->pers.enterTime)/1000))) );
+		CPx( ent-g_entities, va( "cp \"You must wait ^3%i ^7seconds before joining a new team.\n\"3", 
+			(int)(2 - ((level.time - client->pers.enterTime)/1000))) );
 		return;
 	}
 	// dhm
@@ -715,8 +715,16 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 		AP(va("print \"%s ^7joined the ^2Battle^7.\n\"", client->pers.netname));
 	}
 
+	// L0 - Advertising ^^
+	CP(va("print \"Server is powered by %s\n\"", GAMEVERSION));
+
 	// L0 - connect message
-	CP(va("cp \"%s\n\"3", g_serverMessage.string));
+	if (strlen(g_serverMessage.string))
+		CP(va("cp \"%s\n\"3", g_serverMessage.string));
+
+	// L0 - Notify them it's DM
+	if (g_deathMatch.integer)
+		CPx(ent - g_entities, "chat \"console: This server is running in DeathMatch mode^3!\n\"");
 
 	// get and distribute relevent paramters
 	ClientUserinfoChanged( clientNum );

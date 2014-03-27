@@ -1430,6 +1430,9 @@ extern vmCvar_t		g_balanceFlagCanClaim;
 extern vmCvar_t		g_alliedmaxlives;
 extern vmCvar_t		g_axismaxlives;
 
+// Modes
+extern vmCvar_t		g_deathMatch;
+
 // Weapon Stuff
 extern vmCvar_t		g_dropHealth;
 extern vmCvar_t		g_dropNades;

@@ -1745,6 +1745,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 	if ( firstTime ) {
 		// L0 - Print always..
 		AP(va("print \"[lof]%s" S_COLOR_WHITE " [lon]connected\n\"", client->pers.netname));
+
+		if (g_deathMatch.integer)
+			CPx(clientNum, "chat \"console: This server is running in DeathMatch mode^3!\n\"");
 	}
 
 	// count current clients and rank for scoreboard

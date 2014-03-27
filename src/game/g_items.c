@@ -712,7 +712,8 @@ void Touch_Item (gentity_t *ent, gentity_t *other, trace_t *trace) {
 	}
 
 	// OSP - Don't let them pickup winning stuff in warmup
-	if (g_gamestate.integer != GS_PLAYING) {
+	// L0 - Patched for DM as well..
+	if (g_gamestate.integer != GS_PLAYING || g_deathMatch.integer) {
 		if (ent->item->giType != IT_WEAPON &&
 			ent->item->giType != IT_AMMO &&
 			ent->item->giType != IT_HEALTH) {
