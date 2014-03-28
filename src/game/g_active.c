@@ -1166,9 +1166,15 @@ void ClientThink_real( gentity_t *ent ) {
 								ent2->count = client->ps.ammoclip[BG_FindClipForWeapon(weapon)];					
 								ent2->item->quantity = client->ps.ammoclip[BG_FindClipForWeapon(weapon)];					
 								client->ps.ammoclip[BG_FindClipForWeapon(weapon)] = 0;
+								if (g_dropClips.integer)
+								{
+									ent2->count += client->ps.ammo[BG_FindAmmoForWeapon(weapon)];
+									ent2->item->quantity += client->ps.ammo[BG_FindAmmoForWeapon(weapon)];
+									client->ps.ammo[BG_FindAmmoForWeapon(weapon)] = 0;
 							}
 					}
 			}
+		}
 		}
 		else
 			client->dropWeaponTime = 0;

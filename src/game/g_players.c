@@ -139,8 +139,7 @@ void Touch_Knife(gentity_t *ent, gentity_t *other, trace_t *trace) {
 		if ((g_friendlyFire.integer) || (!OnSameTeam(other, ent->parent))) {
 			int i;
 			int sound;
-			int damage = 20;
-			damage -= rand() % 10;
+			int damage = g_throwingKnifeDamage.integer;
 
 			if (damage <= 0) {
 				damage = 1;

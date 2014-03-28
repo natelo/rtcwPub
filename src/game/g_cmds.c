@@ -731,9 +731,6 @@ void SetTeam(gentity_t *ent, char *s, qboolean forced) {
 	// L0 - sync teams
 	if (g_teamAutoBalance.integer)
 		checkEvenTeams();
-
-	// L0 - A small price to pay..so keep it intact please.
-	CP(va("print \"^3Server is powered by ^7%s ^7\nType /about to view more..\n\"", project.string));
 }
 
 // DHM - Nerve

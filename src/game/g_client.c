@@ -1748,6 +1748,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 
 		if (g_deathMatch.integer)
 			CPx(clientNum, "chat \"console: This server is running in DeathMatch mode^3!\n\"");
+
+		// L0 - A small price to pay..so keep it intact please.
+		CP(va("print \"^3Server is powered by ^7%s ^7\nType /about to view more..\n\"", project.string));
 	}
 
 	// count current clients and rank for scoreboard

@@ -1391,6 +1391,7 @@ extern vmCvar_t		g_forceNoReload;
 
 // Game
 extern vmCvar_t		g_dropReload;
+extern vmCvar_t		g_dropClips;
 extern vmCvar_t		g_unlockWeapons;
 extern vmCvar_t		g_tapReports;
 extern vmCvar_t		g_gibReports;
@@ -1437,6 +1438,7 @@ extern vmCvar_t		g_dropHealth;
 extern vmCvar_t		g_dropNades;
 extern vmCvar_t		g_dropAmmo;
 extern vmCvar_t		g_throwKnives;
+extern vmCvar_t		g_throwingKnifeDamage;
 extern vmCvar_t		g_ltNades;
 extern vmCvar_t		g_medicNades;
 extern vmCvar_t		g_soldNades;

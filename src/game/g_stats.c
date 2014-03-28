@@ -331,7 +331,7 @@ void stats_MatchInfo(void) {
 
 		AP(va("print \"%s ^7Team\n"
 			"^7-----------------------------------------------------------------------"
-			"\nPlayer          ^3Kll ^7Dth Sui TK ^5Eff Accrcy   ^2HS    DG    DR    TD  ^7Score\n"
+			"\nPlayer            ^3K   ^7D  /K  TK  ^5Eff   Acc   ^2HS   DG    DR    TD  ^7Score\n"
 			"^7-----------------------------------------------------------------------\n\"", (i == TEAM_RED) ? "^1Axis" : "^4Allied"));
 
 		for (j = 0; j < level.numPlayingClients; j++) {
@@ -366,7 +366,7 @@ void stats_MatchInfo(void) {
 			}
 
 			cnt++;
-			AP(va("print \"%s%-15s^3%4d^7%4d%4d%3d%s^5%4d %6.2f^2%5d%6d%6d%6d^7%7d\n\"",
+			AP(va("print \"%s%-15s^3%4d^7%4d%4d%4d%s^5%4d %6.2f^2%4d%6d%6d%6d^7%7d\n\"",
 				ref,
 				n2,
 				cl->pers.kills,
@@ -390,7 +390,7 @@ void stats_MatchInfo(void) {
 		tot_acc = ((tot_shots == 0) ? 0.00 : ((float)tot_hits / (float)tot_shots) * 100.00f);
 
 		AP(va("print \"^7-----------------------------------------------------------------------\n"
-			"%-19s^3%4d^7%4d%4d%3d^5%4d %6.2f^2%5d%6d%6d%6d^7%7d\n\n\"",
+			"%-19s^3%4d^7%4d%4d%4d^5%4d %6.2f^2%4d%6d%6d%6d^7%7d\n\n\"",
 			"^3Totals^7",
 			tot_kills,
 			tot_deaths,
@@ -802,7 +802,7 @@ void stats_RoundStats(void) {
 				if (roundStats[level.statsNum].stats)
 				{
 					char *score;
-					score = va("%s%s", roundStats[level.statsNum].out, rSM[level.statsNum - 1].label);
+					score = va("%s", roundStats[level.statsNum].out);
 
 					AP(va("cp \"^2%s: ^7%s\n^7%s \n\"2",
 						rSM[level.statsNum - 1].reward, score, roundStats[level.statsNum].player));

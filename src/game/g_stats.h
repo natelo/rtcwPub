@@ -98,31 +98,31 @@ static const killer_sprees_t killerSprees[] = {
 typedef struct {
 	char *reward;
 	char *snd;
-	char *label;
 } round_stats_t;
 
 static const round_stats_t rSM[] = {
-	{ "Results from last match are", "intro.wav", "" },
-	{ "Most kills", "blazeofglory.wav", "" },
-	{ "Born to Die", "yousuck.wav", "" },
-	{ "Headhunter", "headhunter.wav", "hs" },
-	{ "TeamKiller", "teamkiller.wav", "" },
-	{ "TeamBleeder", "teambleeder.wav", "hp" },
-	{ "Toxic Doctor", "toxic.wav", "" },
-	{ "Most Revives", "excellent.wav", "" },
-	{ "Most Ammo Given", "ammo.wav", "" },
-	{ "Most Med Given", "med.wav", "" },
-	{ "Corpse Expert", "ownage.wav", " gibs" },
-	{ "Most Depressed", "suicides.wav", " suicides" },
-	{ "Knife Juggler", "knife_juggler.wav", "" },
-	{ "Stealth Killer", "assasin.wav", "" },
-	{ "Coward", "chicken.wav", "" },
-	{ "Highest Killer Spree", "killingmachine.wav", "" },
-	{ "Highest Death Spree", "slaughter.wav", "" },
-	{ "Accuracy", "accuracy.wav", "" },
-	{ "Killer Ratio", "outstanding.wav", "" },
-	{ "Most Efficient player", "impressive.wav", "" },
-	{ NULL, NULL, NULL }
+	// The label looks bad..
+	{ "Match Results", "intro.wav" },
+	{ "Most Kills", "blazeofglory.wav" },
+	{ "Most Deaths", "yousuck.wav" },
+	{ "Most Headshots", "headhunter.wav" },
+	{ "Most Team Kills", "teamkiller.wav" },
+	{ "Most Team Bleeding", "teambleeder.wav" },
+	{ "Most Poisons", "toxic.wav" },
+	{ "Most Revives", "excellent.wav" },
+	{ "Most Ammo Given", "ammo.wav" },
+	{ "Most Med Given", "med.wav" },
+	{ "Most Gibs", "ownage.wav" },
+	{ "Most Suicides", "suicides.wav" },
+	{ "Knife Juggler", "knife_juggler.wav" },
+	{ "Stealth Kills", "assasin.wav" },
+	{ "Coward", "chicken.wav" },
+	{ "Highest Kill Spree", "killingmachine.wav" },
+	{ "Highest Death Spree", "slaughter.wav" },
+	{ "Highest Accuracy", "accuracy.wav" },
+	{ "Highest Kill Ratio", "outstanding.wav" },
+	{ "Most Efficient", "impressive.wav" },
+	{ NULL, NULL }
 };
 
 struct round_stats_structure_s {

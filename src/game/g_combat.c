@@ -85,6 +85,11 @@ void TossClientItems( gentity_t *self ) {
 			drop->count = self->client->ps.ammoclip[BG_FindClipForWeapon(weapon)];					
 			drop->item->quantity = self->client->ps.ammoclip[BG_FindClipForWeapon(weapon)];	
 			drop->s.clientNum = -1; // g_weaponOwnerLock - Allow anyone to pickup this weapon
+			if (g_dropClips.integer)
+			{
+				drop->count += self->client->ps.ammo[BG_FindAmmoForWeapon(weapon)];
+				drop->item->quantity += self->client->ps.ammo[BG_FindAmmoForWeapon(weapon)];
+			}
 			// jpw
 		}
 	}
@@ -542,16 +547,16 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 
 				// Class based..
 				if (self->client->ps.stats[PC_MEDIC])
-					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Rev:^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Rev: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
 					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.lifeRevives, acc, attacker->client->pers.netname, attacker->health));
 				else if (self->client->ps.stats[PC_LT])
-					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7AmmoGiv:^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7AmmoGiv: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
 					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.ammoPacks, acc, attacker->client->pers.netname, attacker->health));
 				else if (self->client->ps.stats[PC_ENGINEER])
-					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Gibs: ^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Gibs: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
 					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.gibs, acc, attacker->client->pers.netname, attacker->health));
 				else
-					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Gibs: ^3%d ^7Acc:^3%2.2f ^7Killer: %s^3(%ihp)\n\"",
+					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Gibs: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
 					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.gibs, acc, attacker->client->pers.netname, attacker->health));
 			} // End
 		}
@@ -994,9 +999,9 @@ void Hitsounds(gentity_t *targ, gentity_t *attacker, qboolean body) {
 
 		// if team mate
 		if (targ->client && attacker->client && onSameTeam && targ->client == attacker->client) {
-
 			te = G_TempEntity(attacker->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND);
-			te->s.eventParm = G_SoundIndex("rtcwpub/sound/game/hitTeam.wav");
+			// These need to be changed to match s4ndmod's.. Everyone still and will continue to use s4ndmod's..
+			te->s.eventParm = G_SoundIndex("sound/player/hitteam.wav");
 			te->s.teamNum = attacker->s.clientNum;
 		}
 
@@ -1013,9 +1018,9 @@ void Hitsounds(gentity_t *targ, gentity_t *attacker, qboolean body) {
 		{
 			te = G_TempEntity(attacker->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND);
 			if (body)
-				te->s.eventParm = G_SoundIndex("rtcwpub/sound/game/hit.wav");
+				te->s.eventParm = G_SoundIndex("sound/player/hit.wav");
 			else
-				te->s.eventParm = G_SoundIndex("rtcwpub/sound/game/hitH.wav");
+				te->s.eventParm = G_SoundIndex("sound/player/hithead.wav");
 			te->s.teamNum = attacker->s.clientNum;
 		}
 	}

@@ -192,6 +192,7 @@ vmCvar_t	g_forceNoReload;		// Forces no reload to all..
 
 // Game 
 vmCvar_t	g_dropReload;			// Enable / Disable Drop reload
+vmCvar_t	g_dropClips;			// Enable dropping extra clips with gun
 vmCvar_t	g_unlockWeapons;		// Enable weapon dropping..
 vmCvar_t	g_tapReports;			// Print tap outs / 0 = off, 1 = prints to everyone, 2 = prints to team only
 vmCvar_t	g_gibReports;			// Prints Gib reports
@@ -238,6 +239,7 @@ vmCvar_t	g_dropHealth;		// The number od medpacks medic will drop when going to 
 vmCvar_t	g_dropNades;		// The number of grenades eng will drop when going to limbo
 vmCvar_t	g_dropAmmo;			// The number of ammo packs leut drops when going to limbo
 vmCvar_t	g_throwKnives;		// 0 = disabled, anything else is the value of knives player gets, alt -1 = unlimited.
+vmCvar_t	g_throwingKnifeDamage;		// Damage throwing knives do
 vmCvar_t	g_ltNades;			// Number of nades a lt starts with 
 vmCvar_t	g_medicNades;		// Number of nades a med starts with 
 vmCvar_t	g_soldNades;		// Number of nades sold starts with
@@ -499,6 +501,7 @@ cvarTable_t		gameCvarTable[] = {
 
 	// Game
 	{ &g_dropReload, "g_dropReload", "0", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_dropClips, "g_dropClips", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_unlockWeapons, "g_unlockWeapons", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_tapReports, "g_tapReports", "0", CVAR_ARCHIVE, 0, qfalse },
 	{ &g_gibReports, "g_gibReports", "0", CVAR_ARCHIVE, 0, qfalse },
@@ -534,6 +537,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_dropNades, "g_dropNades", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_dropAmmo, "g_dropAmmo", "0", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_throwKnives, "g_throwKnives", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_throwingKnifeDamage, "g_throwingKnifeDamage", "20", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_ltNades, "g_ltNades", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_medicNades, "g_medicNades", "1", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
 	{ &g_engNades, "g_engNades", "4", CVAR_ARCHIVE | CVAR_LATCH, 0, qtrue },
@@ -586,7 +590,6 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
 	{ &shuffleTracking, "shuffleTracking", "0", 0, 0, qfalse },
 	{ &needsBalance, "needsBalance", "0", CVAR_CHEAT, qfalse },
-	{ &g_motdTime, "g_motdTime", "80", 0, 0, qtrue },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },
@@ -598,7 +601,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ 0, "r_mapoverbrightbits", "3", CVAR_SYSTEMINFO, qfalse },
 	{ 0, "r_depthbits", "24", CVAR_SYSTEMINFO, qfalse },
 	{ 0, "cl_timenudge", "0", CVAR_SYSTEMINFO, qfalse },
-	{ 0, "com_maxfps", "125", CVAR_SYSTEMINFO, qfalse },
+	//{ 0, "com_maxfps", "125", CVAR_SYSTEMINFO, qfalse }, Nobo - Forcing the fps causes it to default to 90...
 	{ 0, "cl_packetdup", "1", CVAR_SYSTEMINFO, qfalse },
 	{ 0, "cl_maxpackets", "100", CVAR_SYSTEMINFO, qfalse },
 // End
@@ -1535,10 +1538,6 @@ void G_InitGame( int levelTime, int randomSeed, int restart ) {
 	}
 
 	G_RemapTeamShaders();
-
-	// L0 - So there's no doubt..
-	if (g_deathMatch.integer)
-		AP("chat \"console: This server is running in DeathMatch mode^3! \n\"");
 }
 
 
