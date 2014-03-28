@@ -433,7 +433,15 @@ void SpectatorThink( gentity_t *ent, usercmd_t *ucmd ) {
 	// attack button cycles through spectators
 	if ( ( client->buttons & BUTTON_ATTACK ) && ! ( client->oldbuttons & BUTTON_ATTACK ) ) {
 		Cmd_FollowCycle_f( ent, 1 );
+	} else if (
+		(client->sess.sessionTeam == TEAM_SPECTATOR) && // don't let dead team players do free fly
+		(client->sess.spectatorState == SPECTATOR_FOLLOW) &&
+		(client->buttons & BUTTON_ACTIVATE) &&
+		!(client->oldbuttons & BUTTON_ACTIVATE)) {
+		// code moved to StopFollowing
+		StopFollowing(ent);
 	}
+
 }
 
 
@@ -1152,7 +1160,9 @@ void ClientThink_real( gentity_t *ent ) {
 								G_AddEvent( ent, EV_NOAMMO, 0 );
 	
 								i=MAX_WEAPS_IN_BANK_MP;
-								client->ps.weapon = 0;
+								if (client->ps.weapon == weapon) {
+									client->ps.weapon = 0;
+								}
 								ent2->count = client->ps.ammoclip[BG_FindClipForWeapon(weapon)];					
 								ent2->item->quantity = client->ps.ammoclip[BG_FindClipForWeapon(weapon)];					
 								client->ps.ammoclip[BG_FindClipForWeapon(weapon)] = 0;
@@ -1691,18 +1701,25 @@ qboolean StuckInClient( gentity_t *self ) {
 		VectorAdd( self->r.currentOrigin, self->r.mins, selfmin );
 		VectorAdd( self->r.currentOrigin, self->r.maxs, selfmax );
 
-		if (hitmin[0] > selfmax[0])
+		if ( hitmin[0] > selfmax[0] ) {
 			continue;
-		if (hitmax[0] < selfmin[0])
+		}
+		if ( hitmax[0] < selfmin[0] ) {
 			continue;
-		if (hitmin[1] > selfmax[1])
+		}
+		if ( hitmin[1] > selfmax[1] ) {
 			continue;
-		if (hitmax[1] < selfmin[1])
+		}
+		if ( hitmax[1] < selfmin[1] ) {
 			continue;
-		if (hitmin[2] > selfmax[2])
+		}
+		if ( hitmin[2] > selfmax[2] ) {
 			continue;
-		if (hitmax[2] < selfmin[2])
+		}
+		if ( hitmax[2] < selfmin[2] ) {
 			continue;
+		}
+
 
 		return qtrue;
 	}
@@ -1730,46 +1747,73 @@ void WolfRevivePushEnt( gentity_t *self, gentity_t *other ) {
 	push[2] = WR_PUSHAMOUNT/2;
 
 	VectorAdd( other->s.pos.trDelta, push, other->s.pos.trDelta );
-	VectorAdd( other->client->ps.velocity, push, other->client->ps.velocity );
+	//VectorAdd( other->client->ps.velocity, push, other->client->ps.velocity );
+	if (other->client) {
+		VectorAdd(other->client->ps.velocity, push, other->client->ps.velocity);
+	}
+
 }
 
 void WolfReviveBbox( gentity_t *self ) {
-	int			touch[MAX_GENTITIES];
-	int			num,i, touchnum=0;
-	gentity_t	*hit;
-	vec3_t		mins, maxs;
+	int touch[MAX_GENTITIES];
+	int num, i, touchnum = 0;
+	gentity_t   *hit = NULL;
+	vec3_t mins, maxs;
+	gentity_t   *capsulehit = NULL;
 
-	VectorAdd( self->r.currentOrigin, playerMins, mins );
-	VectorAdd( self->r.currentOrigin, playerMaxs, maxs );
+	VectorAdd(self->r.currentOrigin, playerMins, mins);
+	VectorAdd(self->r.currentOrigin, playerMaxs, maxs);
 
-	num = trap_EntitiesInBox( mins, maxs, touch, MAX_GENTITIES );
+	num = trap_EntitiesInBox(mins, maxs, touch, MAX_GENTITIES);
 
-	for (i=0 ; i<num ; i++) {
+	// Arnout, we really should be using capsules, do a quick, more refined test using mover collision
+	if (num) {
+		capsulehit = G_TestEntityPosition(self);
+	}
+
+	for (i = 0; i < num; i++) {
 		hit = &g_entities[touch[i]];
-		if ( hit->client && hit->health > 0 ) {
-			if ( hit->s.number != self->s.number ) {
-				WolfRevivePushEnt( hit, self );
+		if (hit->client) {
+			// ATVI Wolfenstein Misc #467
+			// don't look at yourself when counting the hits
+			if (hit->client->ps.persistant[PERS_HWEAPON_USE] && hit != self) {
 				touchnum++;
+				// Move corpse directly to the person who revived them
+				if (self->props_frame_state >= 0) {
+					trap_UnlinkEntity(self);
+					VectorCopy(g_entities[self->props_frame_state].client->ps.origin, self->client->ps.origin);
+					VectorCopy(self->client->ps.origin, self->r.currentOrigin);
+					trap_LinkEntity(self);
+
+					// Reset value so we don't continue to warp them
+					self->props_frame_state = -1;
+				}
+			}
+			else if (hit->health > 0) {
+				if (hit->s.number != self->s.number) {
+					WolfRevivePushEnt(hit, self);
+					touchnum++;
+				}
 			}
 		}
-		else if ( hit->r.contents & ( CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_PLAYERCLIP ) ) {
-			// Move corpse directly to the person who revived them
-			if ( self->props_frame_state >= 0 ) {
-				trap_UnlinkEntity( self );
-				VectorCopy( g_entities[self->props_frame_state].client->ps.origin, self->client->ps.origin );
-				VectorCopy( self->client->ps.origin, self->r.currentOrigin );
-				trap_LinkEntity( self );
-
-				// Reset value so we don't continue to warp them
-				self->props_frame_state = -1;
+		else if (hit->r.contents & (CONTENTS_SOLID | CONTENTS_BODY | CONTENTS_PLAYERCLIP))   {
+			// Arnout: if hit is a mover, use capsulehit (this will only work if we touch one mover at a time - situations where you hit two are
+			// really rare anyway though. The real fix is to move everything to capsule collision detection though
+			if (hit->s.eType == ET_MOVER) {
+				if (capsulehit && capsulehit != hit) {
+					continue;   // we collided with a mover, but we're not stuck in this one
+				}
+				else {
+					continue;   // we didn't collide with any movers
+				}
 			}
+
+			WolfRevivePushEnt(hit, self);
+			touchnum++;
 		}
 	}
 
-	G_DPrintf( "WolfReviveBbox: touchnum: %d\n", touchnum );
-
-	if ( touchnum == 0 ) {
-		G_DPrintf( "WolfReviveBbox:  Player is solid now!\n" );
+	if (touchnum == 0) {	
 		self->r.contents = CONTENTS_BODY;
 	}
 }

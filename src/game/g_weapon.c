@@ -696,6 +696,14 @@ void weapon_callAirStrike(gentity_t *ent) {
 	VectorCopy(ent->s.pos.trBase,bomboffset);
 	bomboffset[2] += 4096;
 
+	// cancel the airstrike if FF off and player joined spec
+	if (!g_friendlyFire.integer && ent->parent->client && ent->parent->client->sess.sessionTeam == TEAM_SPECTATOR) {
+		ent->splashDamage = 0; // no damage
+		ent->think = G_ExplodeMissile;
+		ent->nextthink = level.time + crandom() * 50;
+		return; // do nothing, don't hurt anyone
+	}
+
 	// turn off smoke grenade
 	ent->think = G_ExplodeMissile;
 	ent->nextthink = level.time + 950 + NUMBOMBS*100 + crandom()*50; // 3000 offset is for aircraft flyby
@@ -769,29 +777,6 @@ void weapon_callAirStrike(gentity_t *ent) {
 	VectorAdd(ent->s.pos.trBase, pos, pos); // first bomb position
 	VectorScale(bombaxis,BOMBSPREAD,bombaxis); // bomb drop direction offset
 
-// add an aircraft (looks suspiciously like a rocket right now) (but doesn't work)
-/*
-	bomb = G_Spawn();
-	bomb->nextthink = level.time + 26000;
-	bomb->think = G_ExplodeMissile;
-	bomb->s.eType		= ET_MISSILE;
-	bomb->r.svFlags		= SVF_USE_CURRENT_ORIGIN | SVF_BROADCAST;
-	bomb->s.weapon		= WP_GRENADE_LAUNCHER; // might wanna change this
-	bomb->r.ownerNum	= ent->s.number;
-	bomb->parent		= ent->parent;
-	bomb->damage		= 400; // maybe should un-hard-code these?
-	bomb->splashDamage  = 400;
-	bomb->classname		= "fighterbomber";
-	bomb->splashRadius			= 400;
-	bomb->methodOfDeath			= MOD_DYNAMITE; // FIXME add MOD for air strike
-	bomb->splashMethodOfDeath	= MOD_DYNAMITE_SPLASH;
-	bomb->clipmask = MASK_MISSILESHOT;
-	bomb->s.pos.trType = TR_STATIONARY; // TR_LINEAR; 
-	bomb->s.pos.trTime = level.time;
-	VectorCopy(ent->s.pos.trBase, bomb->s.pos.trBase);
-	bomb->s.pos.trBase[2] += 200;
-	bomb->s.modelindex = G_ModelIndex( "models/mapobjects/vehicles/m109.md3" );
-*/
 	for (i=0;i<NUMBOMBS;i++) {
 		bomb = G_Spawn();
 		bomb->nextthink = level.time + i*100+crandom()*50 + 1000; // 1000 for aircraft flyby, other term for tumble stagger

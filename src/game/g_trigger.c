@@ -917,6 +917,17 @@ void SP_trigger_objective_info( gentity_t *ent ) {
 	ent->accuracy = atof (scorestring);
 	// jpw
 
+	// Arnout: HACK HACK - someone at nerve forgot to add the score field to sub - have to
+	// hardcode it cause we don't want people to download the map again
+	{
+		char mapName[MAX_QPATH];
+		trap_Cvar_VariableStringBuffer("mapname", mapName, sizeof(mapName));
+		if (!Q_stricmp(mapName, "mp_sub") && !Q_stricmp(ent->track, "the Axis Submarine")) {
+			ent->accuracy = 15;
+		}
+	}
+
+
 	trap_SetConfigstring( CS_OID_TRIGGERS + level.numOidTriggers, ent->track );
 	ent->s.teamNum = level.numOidTriggers;
 

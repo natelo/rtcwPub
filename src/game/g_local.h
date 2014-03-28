@@ -1030,6 +1030,7 @@ gentity_t *fire_flamebarrel (gentity_t *self, vec3_t start, vec3_t dir);
 //
 // g_mover.c
 //
+gentity_t *G_TestEntityPosition(gentity_t *ent);
 void G_RunMover( gentity_t *ent );
 void Use_BinaryMover( gentity_t *ent, gentity_t *other, gentity_t *activator );
 void G_Activate( gentity_t *ent, gentity_t *activator );

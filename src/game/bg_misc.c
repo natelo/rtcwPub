@@ -3993,6 +3993,13 @@ void BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s
 	s->torsoAnim = ps->torsoAnim;
 	s->clientNum = ps->clientNum;		// ET_PLAYER looks here instead of at number
 										// so corpses can also reference the proper config
+	if (ps->persistant[PERS_HWEAPON_USE]) {
+		ps->eFlags |= EF_MG42_ACTIVE;
+	}
+	else {
+		ps->eFlags &= ~EF_MG42_ACTIVE;
+	}
+
 	s->eFlags = ps->eFlags;
 	if ( ps->stats[STAT_HEALTH] <= 0 ) {
 		s->eFlags |= EF_DEAD;

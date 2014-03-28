@@ -20,6 +20,7 @@ void Shaker_think(gentity_t *ent) {
 	gentity_t	*player;
 	float		len, radius=ent->splashDamage, bounceamt;
 	int i;
+	char cmd[64];       //DAJ
 /* JPW NERVE used for trigger_concussive_dust, currently not working
 	vec3_t		mins, maxs; // JPW NERVE
 	static vec3_t	range; // JPW NERVE
@@ -90,7 +91,11 @@ void Shaker_think(gentity_t *ent) {
 		bounceamt = 1.0f - (len/radius);
 
 		// NERVE - SMF - client side camera shake
-		trap_SendServerCommand( player->s.clientNum, va( "shake %f", min( 1.f, bounceamt)));
+		//DAJ BUGFIX va() not doing %f's correctly
+		bounceamt = min(1.0f, 1.0f - (len / radius));
+		sprintf(cmd, "shake %.4f", bounceamt);   //DAJ
+		trap_SendServerCommand(player->s.clientNum, cmd);
+		//DAJ BUGFIX		trap_SendServerCommand( player->s.clientNum, va( "shake %f", &bounceamt));
 	}
 }
 // jpw
@@ -127,21 +132,16 @@ void G_BounceMissile( gentity_t *ent, trace_t *trace ) {
 	float	dot;
 	int		hitTime;
 
-		// Ridah, if we are a grenade, and we have hit an AI that is waiting to catch us, give them a grenade, and delete ourselves
-	if ((ent->splashMethodOfDeath == MOD_GRENADE_SPLASH) && (g_entities[trace->entityNum].flags & FL_AI_GRENADE_KICK) &&
-		(trace->endpos[2] > g_entities[trace->entityNum].r.currentOrigin[2])) {
-		g_entities[trace->entityNum].grenadeExplodeTime = ent->nextthink;
-		g_entities[trace->entityNum].flags &= ~FL_AI_GRENADE_KICK;
-		Add_Ammo( &g_entities[trace->entityNum], WP_GRENADE_LAUNCHER, 1, qfalse );	//----(SA)	modified
-		G_FreeEntity( ent );
-		return;
-	}
-
 	// reflect the velocity on the trace plane
 	hitTime = level.previousTime + ( level.time - level.previousTime ) * trace->fraction;
 	BG_EvaluateTrajectoryDelta( &ent->s.pos, hitTime, velocity );
 	dot = DotProduct( velocity, trace->plane.normal );
 	VectorMA( velocity, -2*dot, trace->plane.normal, ent->s.pos.trDelta );
+
+	// RF, record this for mover pushing
+	if (trace->plane.normal[2] > 0.2 /*&& VectorLength( ent->s.pos.trDelta ) < 40*/) {
+		ent->s.groundEntityNum = trace->entityNum;
+	}
 
 	if ( ent->s.eFlags & EF_BOUNCE_HALF ) {
 		if(ent->s.eFlags & EF_BOUNCE) {		// both flags marked, do a third type of bounce
@@ -387,47 +387,48 @@ return;
 
 }
 
-
-
 /*
 ==============
 M_think
 ==============
 */
-void M_think (gentity_t *ent)
-{
+void M_think(gentity_t *ent) {
 	gentity_t *tent;
-	
-	ent->count ++;
 
-//	if (ent->count == 1)
-//		Concussive_fx (ent);	//----(SA)	moved to G_ExplodeMissile()
+	ent->count++;
 
-	if (ent->count == ent->health)
+	//	if (ent->count == 1)
+	//		Concussive_fx (ent);	//----(SA)	moved to G_ExplodeMissile()
+
+	if (ent->count == ent->health) {
 		ent->think = G_FreeEntity;
+	}
 
-	tent = G_TempEntity (ent->s.origin, EV_SMOKE);
-	VectorCopy (ent->s.origin, tent->s.origin);
-	if (ent->s.density == 1)
-		tent->s.origin[2]+=16;
-	else
+	tent = G_TempEntity(ent->s.origin, EV_SMOKE);
+	VectorCopy(ent->s.origin, tent->s.origin);
+	if (ent->s.density == 1) {
+		tent->s.origin[2] += 16;
+	}
+	else {
 		// tent->s.origin[2]+=32;
 		// Note to self Maxx said to lower the spawn loc for the smoke 16 units
-		tent->s.origin[2]+=16;
+		tent->s.origin[2] += 16;
+	}
 
 	tent->s.time = 3000;
 	tent->s.time2 = 100;
 	tent->s.density = 0;
-	if (ent->s.density == 1)
+	if (ent->s.density == 1) {
 		tent->s.angles2[0] = 16;
-	else
+	}
+	else {
 		// Note to self Maxx changed this to 24
 		tent->s.angles2[0] = 24;
+	}
 	tent->s.angles2[1] = 96;
 	tent->s.angles2[2] = 50;
 
 	ent->nextthink = level.time + FRAMETIME;
-
 }
 
 /*

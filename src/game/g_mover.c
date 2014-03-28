@@ -70,13 +70,17 @@ void Use_Func_Rotate ( gentity_t * ent , gentity_t * other , gentity_t * activat
 void Blocked_Door( gentity_t *ent, gentity_t *other );
 void Blocked_DoorRotate( gentity_t *ent, gentity_t *other );
 
+#define PUSH_STACK_DEPTH 3
+int pushedStackDepth = 0;
+
 typedef struct {
-	gentity_t	*ent;
-	vec3_t	origin;
-	vec3_t	angles;
-	float	deltayaw;
+	gentity_t   *ent;
+	vec3_t origin;
+	vec3_t angles;
+	float deltayaw;
 } pushed_t;
-pushed_t	pushed[MAX_GENTITIES], *pushed_p;
+pushed_t pushed[MAX_GENTITIES * PUSH_STACK_DEPTH], *pushed_p;       // Arnout *PUSH_STACK_DEPTH to prevent overflows
+
 
 
 /*
@@ -220,91 +224,160 @@ Returns qfalse if the move is blocked
 ==================
 */
 qboolean	G_TryPushingEntity( gentity_t *check, gentity_t *pusher, vec3_t move, vec3_t amove ) {
-	vec3_t		org, org2, move2;
-	gentity_t	*block;
-	vec3_t		matrix[3], transpose[3];
+	vec3_t org, org2, move2;
+	gentity_t   *block;
+	vec3_t matrix[3], transpose[3];
+	float x, fx, y, fy, z, fz;
+#define JITTER_INC  4
+#define JITTER_MAX  ( check->r.maxs[0] / 2.0 )
 
 	// EF_MOVER_STOP will just stop when contacting another entity
 	// instead of pushing it, but entities can still ride on top of it
-	if ( ( pusher->s.eFlags & EF_MOVER_STOP ) && 
-		check->s.groundEntityNum != pusher->s.number ) {
-		pusher->s.eFlags |= EF_MOVER_BLOCKED;
+	if ((pusher->s.eFlags & EF_MOVER_STOP) &&
+		check->s.groundEntityNum != pusher->s.number) {
+		//pusher->s.eFlags |= EF_MOVER_BLOCKED;
 		return qfalse;
 	}
 
 	// save off the old position
-	if (pushed_p > &pushed[MAX_GENTITIES]) {
-		G_Error( "pushed_p > &pushed[MAX_GENTITIES]" );
+	if (pushed_p > &pushed[MAX_GENTITIES * PUSH_STACK_DEPTH]) {
+		G_Error("pushed_p > &pushed[MAX_GENTITIES*PUSH_STACK_DEPTH]");
 	}
 	pushed_p->ent = check;
-	VectorCopy (check->s.pos.trBase, pushed_p->origin);
-	VectorCopy (check->s.apos.trBase, pushed_p->angles);
-	if ( check->client ) {
+	VectorCopy(check->s.pos.trBase, pushed_p->origin);
+	VectorCopy(check->s.apos.trBase, pushed_p->angles);
+	if (check->client) {
 		pushed_p->deltayaw = check->client->ps.delta_angles[YAW];
-		VectorCopy (check->client->ps.origin, pushed_p->origin);
+		VectorCopy(check->client->ps.origin, pushed_p->origin);
 	}
 	pushed_p++;
 
-	// try moving the contacted entity 
-	VectorAdd (check->s.pos.trBase, move, check->s.pos.trBase);
+	// try moving the contacted entity
+	VectorAdd(check->s.pos.trBase, move, check->s.pos.trBase);
 	if (check->client) {
 		// make sure the client's view rotates when on a rotating mover
 		// RF, this is done client-side now
 		check->client->ps.delta_angles[YAW] += ANGLE2SHORT(amove[YAW]);
 		//
 		// RF, AI's need their ideal angle adjusted instead
-		if (check->aiCharacter)
-			AICast_AdjustIdealYawForMover( check->s.number, ANGLE2SHORT(amove[YAW]) );
+		if (check->aiCharacter) {
+			AICast_AdjustIdealYawForMover(check->s.number, ANGLE2SHORT(amove[YAW]));
+		}
 	}
 
 	// figure movement due to the pusher's amove
-	G_CreateRotationMatrix( amove, transpose );
-	G_TransposeMatrix( (const vec3_t *)transpose, matrix );
-	VectorSubtract (check->s.pos.trBase, pusher->r.currentOrigin, org);
-	if ( check->client ) {
-		VectorSubtract (check->client->ps.origin, pusher->r.currentOrigin, org);
+	G_CreateRotationMatrix(amove, transpose);
+	G_TransposeMatrix((const vec3_t *)transpose, matrix);
+	VectorSubtract(check->s.pos.trBase, pusher->r.currentOrigin, org);
+	if (check->client) {
+		VectorSubtract(check->client->ps.origin, pusher->r.currentOrigin, org);
 	}
-	VectorCopy( org, org2 );
-	G_RotatePoint( org2, (const vec3_t *)matrix );
-	VectorSubtract (org2, org, move2);
-	VectorAdd (check->s.pos.trBase, move2, check->s.pos.trBase);
-	if ( check->client ) {
-		VectorAdd (check->client->ps.origin, move, check->client->ps.origin);
-		VectorAdd (check->client->ps.origin, move2, check->client->ps.origin);
+	VectorCopy(org, org2);
+	G_RotatePoint(org2, (const vec3_t *)matrix);
+	VectorSubtract(org2, org, move2);
+	VectorAdd(check->s.pos.trBase, move2, check->s.pos.trBase);
+	if (check->client) {
+		VectorAdd(check->client->ps.origin, move, check->client->ps.origin);
+		VectorAdd(check->client->ps.origin, move2, check->client->ps.origin);
 	}
 
 	// may have pushed them off an edge
-	if ( check->s.groundEntityNum != pusher->s.number ) {
+	if (check->s.groundEntityNum != pusher->s.number) {
 		check->s.groundEntityNum = -1;
 	}
 
-	block = G_TestEntityPosition( check );
+	block = G_TestEntityPosition(check);
 	if (!block) {
 		// pushed ok
-		if ( check->client ) {
-			VectorCopy( check->client->ps.origin, check->r.currentOrigin );
-		} else {
-			VectorCopy( check->s.pos.trBase, check->r.currentOrigin );
+		if (check->client) {
+			VectorCopy(check->client->ps.origin, check->r.currentOrigin);
+		}
+		else {
+			VectorCopy(check->s.pos.trBase, check->r.currentOrigin);
 		}
 		return qtrue;
+	}
+
+	// TESTTEST
+	// Arnout, if blocking entity is a player, try to move this player first.
+	if (block->client) {
+		pushedStackDepth++;
+		if (pushedStackDepth < PUSH_STACK_DEPTH && G_TryPushingEntity(block, pusher, move, amove)) {
+			// pushed ok
+			if (check->client) {
+				VectorCopy(check->client->ps.origin, check->r.currentOrigin);
+			}
+			else {
+				VectorCopy(check->s.pos.trBase, check->r.currentOrigin);
+			}
+			return qtrue;
+		}
+		pushedStackDepth--;
+	}
+	// TESTTEST
+
+	// RF, if still not valid, move them around to see if we can find a good spot
+	if (JITTER_MAX > JITTER_INC) {
+		VectorCopy(check->s.pos.trBase, org);
+		if (check->client) {
+			VectorCopy(check->client->ps.origin, org);
+		}
+		for (z = 0; z < JITTER_MAX; z += JITTER_INC)
+		for (fz = -z; fz <= z; fz += 2 * z) {
+			for (x = JITTER_INC; x < JITTER_MAX; x += JITTER_INC)
+			for (fx = -x; fx <= x; fx += 2 * x) {
+				for (y = JITTER_INC; y < JITTER_MAX; y += JITTER_INC)
+				for (fy = -y; fy <= y; fy += 2 * y) {
+					VectorSet(move2, fx, fy, fz);
+					VectorAdd(org, move2, org2);
+					VectorCopy(org2, check->s.pos.trBase);
+					if (check->client) {
+						VectorCopy(org2, check->client->ps.origin);
+					}
+
+					//
+					// do the test
+					block = G_TestEntityPosition(check);
+					if (!block) {
+						// pushed ok
+						if (check->client) {
+							VectorCopy(check->client->ps.origin, check->r.currentOrigin);
+						}
+						else {
+							VectorCopy(check->s.pos.trBase, check->r.currentOrigin);
+						}
+						return qtrue;
+					}
+				}
+			}
+			if (!fz) {
+				break;
+			}
+		}
+		// didnt work, so set the position back
+		VectorCopy(org, check->s.pos.trBase);
+		if (check->client) {
+			VectorCopy(org, check->client->ps.origin);
+		}
 	}
 
 	// if it is ok to leave in the old position, do it
 	// this is only relevent for riding entities, not pushed
 	// Sliding trapdoors can cause this.
-	VectorCopy( (pushed_p-1)->origin, check->s.pos.trBase);
-	if ( check->client ) {
-		VectorCopy( (pushed_p-1)->origin, check->client->ps.origin);
+	VectorCopy((pushed_p - 1)->origin, check->s.pos.trBase);
+	if (check->client) {
+		VectorCopy((pushed_p - 1)->origin, check->client->ps.origin);
 	}
-	VectorCopy( (pushed_p-1)->angles, check->s.apos.trBase );
-	block = G_TestEntityPosition (check);
-	if ( !block ) {
+	VectorCopy((pushed_p - 1)->angles, check->s.apos.trBase);
+	block = G_TestEntityPosition(check);
+	if (!block) {
 		check->s.groundEntityNum = -1;
 		pushed_p--;
 		return qtrue;
 	}
 	// blocked
 	return qfalse;
+
 }
 
 
@@ -318,92 +391,100 @@ If qfalse is returned, *obstacle will be the blocking entity
 ============
 */
 qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **obstacle ) {
-	int			i, e;
-	gentity_t	*check;
-	vec3_t		mins, maxs;
-	pushed_t	*p;
-	int			entityList[MAX_GENTITIES];
-	int			moveList[MAX_GENTITIES];
-	int			listedEntities, moveEntities;
-	vec3_t		totalMins, totalMaxs;
+	int i, e;
+	gentity_t   *check;
+	vec3_t mins, maxs;
+	pushed_t    *p;
+	int entityList[MAX_GENTITIES];
+	int moveList[MAX_GENTITIES];
+	int listedEntities, moveEntities;
+	vec3_t totalMins, totalMaxs;
 
 	*obstacle = NULL;
 
 
 	// mins/maxs are the bounds at the destination
 	// totalMins / totalMaxs are the bounds for the entire move
-	if ( pusher->r.currentAngles[0] || pusher->r.currentAngles[1] || pusher->r.currentAngles[2]
-		|| amove[0] || amove[1] || amove[2] ) {
-		float		radius;
+	if (pusher->r.currentAngles[0] || pusher->r.currentAngles[1] || pusher->r.currentAngles[2]
+		|| amove[0] || amove[1] || amove[2]) {
+		float radius;
 
-		radius = RadiusFromBounds( pusher->r.mins, pusher->r.maxs );
-		for ( i = 0 ; i < 3 ; i++ ) {
-			mins[i] = pusher->r.currentOrigin[i] + move[i] - radius;
-			maxs[i] = pusher->r.currentOrigin[i] + move[i] + radius;
-			totalMins[i] = mins[i] - move[i];
-			totalMaxs[i] = maxs[i] - move[i];
+		radius = RadiusFromBounds(pusher->r.mins, pusher->r.maxs);
+		for (i = 0; i < 3; i++) {
+			mins[i] = pusher->r.currentOrigin[i] - radius + move[i];
+			maxs[i] = pusher->r.currentOrigin[i] + radius + move[i];
+			totalMins[i] = pusher->r.currentOrigin[i] - radius;
+			totalMaxs[i] = pusher->r.currentOrigin[i] + radius;
 		}
-	} else {
-		for (i=0 ; i<3 ; i++) {
+	}
+	else {
+		for (i = 0; i < 3; i++) {
 			mins[i] = pusher->r.absmin[i] + move[i];
 			maxs[i] = pusher->r.absmax[i] + move[i];
 		}
 
-		VectorCopy( pusher->r.absmin, totalMins );
-		VectorCopy( pusher->r.absmax, totalMaxs );
-		for (i=0 ; i<3 ; i++) {
-			if ( move[i] > 0 ) {
-				totalMaxs[i] += move[i];
-			} else {
-				totalMins[i] += move[i];
-			}
+		VectorCopy(pusher->r.absmin, totalMins);
+		VectorCopy(pusher->r.absmax, totalMaxs);
+	}
+	for (i = 0; i < 3; i++) {
+		if (move[i] > 0) {
+			totalMaxs[i] += move[i];
+		}
+		else {
+			totalMins[i] += move[i];
 		}
 	}
 
 	// unlink the pusher so we don't get it in the entityList
-	trap_UnlinkEntity( pusher );
+	trap_UnlinkEntity(pusher);
 
-	listedEntities = trap_EntitiesInBox( totalMins, totalMaxs, entityList, MAX_GENTITIES );
+	listedEntities = trap_EntitiesInBox(totalMins, totalMaxs, entityList, MAX_GENTITIES);
 
 	// move the pusher to it's final position
-	VectorAdd( pusher->r.currentOrigin, move, pusher->r.currentOrigin );
-	VectorAdd( pusher->r.currentAngles, amove, pusher->r.currentAngles );
-	trap_LinkEntity( pusher );
+	VectorAdd(pusher->r.currentOrigin, move, pusher->r.currentOrigin);
+	VectorAdd(pusher->r.currentAngles, amove, pusher->r.currentAngles);
+	trap_LinkEntity(pusher);
 
 	moveEntities = 0;
 	// see if any solid entities are inside the final position
-	for ( e = 0 ; e < listedEntities ; e++ ) {
-		check = &g_entities[ entityList[ e ] ];
+	for (e = 0; e < listedEntities; e++) {
+		check = &g_entities[entityList[e]];
 
-		if(check->s.eType == ET_ALARMBOX)
+		if (check->s.eType == ET_ALARMBOX) {
 			continue;
+		}
 
-		if ( check->isProp && check->s.eType == ET_PROP )
+		if (check->isProp && check->s.eType == ET_PROP) {
 			continue;
+		}
 
 		// only push items and players
-		if ( check->s.eType != ET_ITEM && check->s.eType != ET_PLAYER && !check->physicsObject ) {
+		if (check->s.eType != ET_MISSILE && check->s.eType != ET_ITEM && check->s.eType != ET_PLAYER && !check->physicsObject) {
 			continue;
 		}
 
-		if ( check->s.eType == ET_ITEM && check->item->giType == IT_CLIPBOARD && (check->spawnflags & 1) ) {
+		if (check->s.eType == ET_ITEM && check->item->giType == IT_CLIPBOARD && (check->spawnflags & 1)) {
 			continue;
 		}
+
+		//if ( check->s.eType == ET_MISSILE && VectorLength( check->s.pos.trDelta ) ) {
+		//	continue;	// it's moving
+		//}
 
 		// if the entity is standing on the pusher, it will definitely be moved
-		if ( check->s.groundEntityNum != pusher->s.number ) {
+		if (check->s.groundEntityNum != pusher->s.number) {
 			// see if the ent needs to be tested
-			if ( check->r.absmin[0] >= maxs[0]
-			|| check->r.absmin[1] >= maxs[1]
-			|| check->r.absmin[2] >= maxs[2]
-			|| check->r.absmax[0] <= mins[0]
-			|| check->r.absmax[1] <= mins[1]
-			|| check->r.absmax[2] <= mins[2] ) {
+			if (check->r.absmin[0] >= maxs[0]
+				|| check->r.absmin[1] >= maxs[1]
+				|| check->r.absmin[2] >= maxs[2]
+				|| check->r.absmax[0] <= mins[0]
+				|| check->r.absmax[1] <= mins[1]
+				|| check->r.absmax[2] <= mins[2]) {
 				continue;
 			}
 			// see if the ent's bbox is inside the pusher's final position
 			// this does allow a fast moving object to pass through a thin entity...
-			if (!G_TestEntityPosition (check)) {
+			if (G_TestEntityPosition(check) != pusher) {
 				continue;
 			}
 		}
@@ -412,60 +493,64 @@ qboolean G_MoverPush( gentity_t *pusher, vec3_t move, vec3_t amove, gentity_t **
 	}
 
 	// unlink all to be moved entities so they cannot get stuck in each other
-	for ( e = 0; e < moveEntities; e++ ) {
-		check = &g_entities[ moveList[e] ];
+	for (e = 0; e < moveEntities; e++) {
+		check = &g_entities[moveList[e]];
 
-		trap_UnlinkEntity( check );
+		trap_UnlinkEntity(check);
 	}
 
-	for ( e = 0; e < moveEntities; e++ ) {
-		check = &g_entities[ moveList[e] ];
+	for (e = 0; e < moveEntities; e++) {
+		check = &g_entities[moveList[e]];
 
 		// the entity needs to be pushed
-		if ( G_TryPushingEntity( check, pusher, move, amove ) ) {
+		pushedStackDepth = 0;   // Arnout: new push, reset stack depth
+		if (G_TryPushingEntity(check, pusher, move, amove)) {
+			// link it in now so nothing else tries to clip into us
+			trap_LinkEntity(check);
 			continue;
 		}
 
 		// the move was blocked an entity
 
 		// bobbing entities are instant-kill and never get blocked
-		if ( pusher->s.pos.trType == TR_SINE || pusher->s.apos.trType == TR_SINE ) {
-			G_Damage( check, pusher, pusher, NULL, NULL, 99999, 0, MOD_CRUSH );
+		if (pusher->s.pos.trType == TR_SINE || pusher->s.apos.trType == TR_SINE) {
+			G_Damage(check, pusher, pusher, NULL, NULL, 99999, 0, MOD_CRUSH);
 			continue;
 		}
 
-		
+
 		// save off the obstacle so we can call the block function (crush, etc)
 		*obstacle = check;
 
 		// move back any entities we already moved
 		// go backwards, so if the same entity was pushed
 		// twice, it goes back to the original position
-		for ( p=pushed_p-1 ; p>=pushed ; p-- ) {
-			VectorCopy (p->origin, p->ent->s.pos.trBase);
-			VectorCopy (p->angles, p->ent->s.apos.trBase);
-			if ( p->ent->client ) {
+		for (p = pushed_p - 1; p >= pushed; p--) {
+			VectorCopy(p->origin, p->ent->s.pos.trBase);
+			VectorCopy(p->angles, p->ent->s.apos.trBase);
+			if (p->ent->client) {
 				p->ent->client->ps.delta_angles[YAW] = p->deltayaw;
-				VectorCopy (p->origin, p->ent->client->ps.origin);
+				VectorCopy(p->origin, p->ent->client->ps.origin);
 			}
 		}
 		// link all entities at their original position
-		for ( e = 0; e < moveEntities; e++ ) {
-			check = &g_entities[ moveList[e] ];
+		for (e = 0; e < moveEntities; e++) {
+			check = &g_entities[moveList[e]];
 
-			trap_LinkEntity( check );
+			trap_LinkEntity(check);
 		}
 		// movement failed
 		return qfalse;
 	}
 	// link all entities at their final position
-	for ( e = 0; e < moveEntities; e++ ) {
-		check = &g_entities[ moveList[e] ];
+	for (e = 0; e < moveEntities; e++) {
+		check = &g_entities[moveList[e]];
 
-		trap_LinkEntity( check );
+		trap_LinkEntity(check);
 	}
 	// movement was successfull
 	return qtrue;
+
 }
 
 
@@ -702,9 +787,19 @@ void SetMoverState( gentity_t *ent, moverState_t moverState, int time ) {
 
 	}
 	BG_EvaluateTrajectory( &ent->s.pos, level.time, ent->r.currentOrigin );	
-	if (!(ent->r.svFlags & SVF_NOCLIENT) || (ent->r.contents))	// RF, added this for bats, but this is safe for all movers, since if they aren't solid, and aren't visible to the client, they don't need to be linked
-		trap_LinkEntity( ent );
+//	if (!(ent->r.svFlags & SVF_NOCLIENT) || (ent->r.contents))	// RF, added this for bats, but this is safe for all movers, since if they aren't solid, and aren't visible to the client, they don't need to be linked
+//		trap_LinkEntity( ent );
 
+	if (!(ent->r.svFlags & SVF_NOCLIENT) || (ent->r.contents)) {    // RF, added this for bats, but this is safe for all movers, since if they aren't solid, and aren't visible to the client, they don't need to be linked
+		trap_LinkEntity(ent);
+		// if this entity is blocking AAS, then update it
+		if (ent->AASblocking && ent->s.pos.trType == TR_STATIONARY) {
+			// reset old blocking areas
+			G_SetAASBlockingEntity(ent, qfalse);
+			// set new areas
+			G_SetAASBlockingEntity(ent, qtrue);
+		}
+	}
 }
 
 /*
@@ -2630,6 +2725,7 @@ void Reached_Train( gentity_t *ent ) {
 	length = VectorLength( move );
 
 	ent->s.pos.trDuration = length * 1000 / speed;
+	ent->gDuration = ent->s.pos.trDuration;
 
 	// looping sound
 	ent->s.loopSound = next->soundLoop;
