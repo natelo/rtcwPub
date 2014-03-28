@@ -19,8 +19,8 @@
 // jpw
 
 // NOTE: weapons that share ammo (ex. colt/thompson) need to share max ammo, but not necessarily uses or max clip
-#define MAX_AMMO_45		300
-#define MAX_AMMO_9MM	300
+#define MAX_AMMO_45     510	 // L0 - Increased ammo count for thompson - 17 clips..
+#define MAX_AMMO_9MM    512	 // L0 - Increased ammo count for mp40	- 16 clips..
 #define MAX_AMMO_VENOM	1000
 #define MAX_AMMO_MAUSER	50
 #define MAX_AMMO_GARAND	1000
