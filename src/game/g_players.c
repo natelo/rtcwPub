@@ -54,6 +54,7 @@ void Cmd_getStatus(gentity_t *ent) {
 				tag = "";
 				extra = "";				
 				slot = va("%2d", j);
+				sortTag = "";
 
 				team = (cl->sess.sessionTeam == TEAM_SPECTATOR) ? "^3SPEC^7" :
 					(cl->sess.sessionTeam == TEAM_RED ? "^1Axis^7" : "^4Alld^7");

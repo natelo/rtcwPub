@@ -1616,8 +1616,6 @@ player tries to join to a team that's locked but without players.
 ==================
 */
 void handleTeamLocks( int team ) {
-	int axis = level.axisPlayers;
-	int allied = level.alliedPlayers;
 
 	if (teamInfo[team].team_lock == qtrue)
 	{

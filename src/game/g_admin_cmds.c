@@ -1207,16 +1207,9 @@ void cmd_tempBan(gentity_t *ent) {
 		CP(va("print \"To many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
 		return;
 	}
-	/*
-	// FIXME
-	else if (!is_numeric(ent->client->pers.cmd3)) {
-		CPx(ent - g_entities, "print \"^1Error: ^7Invalid syntax! Only numeric values are allowed..\n\"");
-		return;
-	}
-	*/
 
 	// Don't allow Tempban to be higher than a week..let them use banning for that..
-	time = (ent->client->pers.cmd3 > "10080" ? 10080 : (int)ent->client->pers.cmd3);
+	time = (atoi(ent->client->pers.cmd3) > 10080 ? 10080 : (int)ent->client->pers.cmd3);
 
 	for (i = 0; i < count; i++){
 		// TempBan player			
@@ -1243,11 +1236,6 @@ void cmd_addIp(gentity_t *ent) {
 	char *tag, *log;
 
 	tag = sortTag(ent);
-
-	if (!IPv4Valid(ent->client->pers.cmd2)) {
-		CP(va("print \"^1Error: ^7%s is not a valid IPv4 address^1!\n\"", ent->client->pers.cmd2));
-		return;
-	}
 
 	// Note that this blindly accepts what ever user inputs. Not ideal..
 	trap_SendConsoleCommand(EXEC_APPEND, va("addip %s", ent->client->pers.cmd2));

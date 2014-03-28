@@ -267,7 +267,6 @@ vmCvar_t	g_showFirstBlood;		// Show who done it
 vmCvar_t	g_showLastBlood;		// Prints in console at the end of the match
 vmCvar_t	g_mapStats;				// Top records for each map.
 vmCvar_t	g_mapStatsNotify;		// Notifies when record gets broken (during intermission)
-vmCvar_t	g_mapStatsWarmupOnly;	// Shows only in warmup, otherwise every time game init's
 vmCvar_t	g_roundStats;			// Prints high achievers each round
 vmCvar_t	g_excludedRoundStats;	// List of excluded stats (not tracked and not printed)
 

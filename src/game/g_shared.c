@@ -54,22 +54,6 @@ char *getTime( void )
 }
 
 /*
-==================
-Check if string is numeric
-==================
-*/
-int is_numeric(const char *p) {
-	if (*p) {
-		char c;
-		while ((c = *p++)) {
-			if (!isdigit(c)) return 0;
-		}
-		return 1;
-	}
-	return 0;
-}
-
-/*
 ===========
 S4ndmod - Break IP
 ===========

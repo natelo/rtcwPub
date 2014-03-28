@@ -7,11 +7,11 @@ alarmExplosion
 	copied from propExplosion
 ==============
 */
+extern void G_ExplodeMissile(gentity_t *ent);
 void alarmExplosion(gentity_t *ent)
 {
 	gentity_t *bolt;
-
-	extern void G_ExplodeMissile( gentity_t *ent );
+	
 	bolt = G_Spawn();
 	bolt->classname = "props_explosion";
 	bolt->nextthink = level.time + FRAMETIME;

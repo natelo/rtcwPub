@@ -676,7 +676,7 @@ void add_RoundStats(void) {
 	if (roundStats != NULL)
 	for (i = 0; i < ROUND_LIMIT; i++)
 	{
-		char *sorted;
+		char *sorted = "";
 
 		if (roundStats[i].stats)
 		{

@@ -168,46 +168,6 @@ void cmd_do_logout(gentity_t *ent) {
 
 /*
 ===========
-Check if string matches IP pattern
-===========
-*/
-void flip_it(char *s, char in, char out) {
-	while (*s != 0) {
-		if (*s == in)
-			*s = out;
-		s++;
-	}
-}
-// It's not perfect but it helps..
-qboolean IPv4Valid(char *s)
-{
-	int c, i, len = strlen(s);
-	unsigned int d[4];
-	char vrfy[16];
-
-	if (len < 7 || len > 15)
-		return qfalse;
-
-	vrfy[0] = 0;
-	flip_it(s, '*', (char)256);
-
-	c = sscanf(s, "%3u.%3u.%3u.%3u%s",
-		&d[0], &d[1], &d[2], &d[3], vrfy);
-
-	if (c != 4 || vrfy[0])
-		return qfalse;
-
-	for (i = 0; i < 4; i++)
-	if (d[i] > 256)
-		return qfalse;
-
-	flip_it(s, (char)256, '*');
-
-	return qtrue;
-}
-
-/*
-===========
 Get client number from name
 ===========
 */
