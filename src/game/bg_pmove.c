@@ -2413,27 +2413,20 @@ Generates weapon events and modifes the weapon counter
 
 named_weapons_t nmdWpns[] = {
 	{ "none", WP_NONE },
-	{ "knife", WP_KNIFE },
+// Hand Guns
 	{ "luger", WP_LUGER },
-	{ "mauser", WP_MAUSER },
-	{ "grenadelauncher", WP_GRENADE_LAUNCHER },
-	{ "panzer", WP_PANZERFAUST },
-	{ "vemom", WP_VENOM },
-	{ "flamethrower", WP_FLAMETHROWER },
 	{ "colt", WP_COLT },
+// SMGs
 	{ "thompson", WP_THOMPSON },
-	{ "garand", WP_GARAND },
-	{ "grenade", WP_GRENADE_PINEAPPLE },
-	{ "rifle", WP_SNIPERRIFLE },
-	{ "snooper", WP_SNOOPERSCOPE },
 	{ "sten", WP_STEN },
-	{ "syringe", WP_MEDIC_SYRINGE },
-	{ "artillery", WP_ARTY },
-	{ "dynamite", WP_DYNAMITE },
-	{ "sniper", WP_SNIPER },
-	{ "medkit", WP_MEDKIT },
-	{ "pliers", WP_PLIERS },
-	{ "binocs", WP_BINOCULARS },
+	{ "mp40", WP_MP40},
+// Heavy Stuff
+	{ "mauser", WP_MAUSER },
+	{ "rifle", WP_SNIPERRIFLE },
+	{ "panzer", WP_PANZERFAUST },
+	{ "venom", WP_VENOM },
+	{ "flamethrower", WP_FLAMETHROWER },
+
 	{ NULL }
 };
 
@@ -2661,10 +2654,7 @@ static void PM_Weapon(void) {
 			}
 		}
 		// jpw
-
 	}
-
-
 
 	// check for weapon change
 	// can't change if weapon is firing, but can change
@@ -2790,16 +2780,36 @@ static void PM_Weapon(void) {
 
 	// player is underwater - no fire
 	if (pm->waterlevel == 3) {
-		// Nobo - new way
+		// Nobo - new way		
 		qboolean itemFound = qfalse;
-		for (named_weapons_t *_weapon = nmdWpns; _weapon->name; _weapon++){
-			if (Q_FindToken(allowedUnderwater, _weapon->name) && (_weapon->number == pm->ps->weapon)){
-				itemFound = qtrue;
-				break;
-			}
+
+		// L0 - Note: Default stuff should be available all the time.
+		// + Added syringe (revives) and med/ammo packs as 
+		// a new "default", rest depends on allowedUnderwater.
+		if (pm->ps->weapon != WP_MEDKIT &&
+			pm->ps->weapon != WP_AMMO &&	
+			pm->ps->weapon != WP_MEDIC_SYRINGE &&
+			pm->ps->weapon != WP_KNIFE &&
+			pm->ps->weapon != WP_KNIFE2 &&
+			pm->ps->weapon != WP_GRENADE_LAUNCHER &&
+			pm->ps->weapon != WP_GRENADE_PINEAPPLE &&
+			pm->ps->weapon != WP_DYNAMITE &&
+			pm->ps->weapon != WP_DYNAMITE2) 
+		{	
+			if (strlen(allowedUnderwater))
+				for (named_weapons_t *_weapon = nmdWpns; _weapon->name; _weapon++) {
+					if (Q_FindToken(allowedUnderwater, _weapon->name) && (_weapon->number == pm->ps->weapon)) {
+						itemFound = qtrue;
+						break;
+					}
+				}
 		}
-		if (!itemFound){
-			PM_AddEvent(EV_NOFIRE_UNDERWATER);    // event for underwater 'click' for nofire
+
+		// Not found or Allowed
+		if (!itemFound) {
+			// event for underwater 'click' for nofire
+			PM_AddEvent(EV_NOFIRE_UNDERWATER);
+
 			pm->ps->weaponTime = 500;
 			return;
 		}
