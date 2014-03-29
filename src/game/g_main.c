@@ -258,7 +258,7 @@ vmCvar_t	g_balanceSniper;	// Some basic weapon balancing
 vmCvar_t	g_balanceVenom;		// Some basic weapon balancing
 vmCvar_t	g_balanceFlamer;	// Some basic weapon balancing
 vmCvar_t	g_customMGs;		// Allow custom mg's so player can chose with what weapon to spawn with.
-vmCvar_t	g_allowUnderwater;	// Weapons separated by string.
+vmCvar_t	g_allowUnderwater;	// Weapons separated by string
 
 // Stats
 vmCvar_t	g_doubleKills;			// Double, tripple & quad kills

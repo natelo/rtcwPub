@@ -1,8 +1,8 @@
 /*
- * name:		bg_public.h
- *
- * desc:		definitions shared by both the server game and client game modules
- *
+* name:		bg_public.h
+*
+* desc:		definitions shared by both the server game and client game modules
+*
 */
 
 // because games can change separately from the main system version, we need a
@@ -209,7 +209,7 @@ typedef enum {
 } pmtype_t;
 
 typedef enum {
-	WEAPON_READY, 
+	WEAPON_READY,
 	WEAPON_RAISING,
 	WEAPON_DROPPING,
 	WEAPON_READYING,	// getting from 'ready' to 'firing'
@@ -280,13 +280,13 @@ typedef struct {
 
 	// callbacks to test the world
 	// these will be different functions during game and cgame
-	void		(*trace)( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask );
-	int			(*pointcontents)( const vec3_t point, int passEntityNum );
+	void(*trace)(trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask);
+	int(*pointcontents)(const vec3_t point, int passEntityNum);
 } pmove_t;
 
 // if a full pmove isn't done on the client, you can just update the angles
-void PM_UpdateViewAngles( playerState_t *ps, usercmd_t *cmd, void (trace)( trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask ) );
-int Pmove (pmove_t *pmove);
+void PM_UpdateViewAngles(playerState_t *ps, usercmd_t *cmd, void (trace)(trace_t *results, const vec3_t start, const vec3_t mins, const vec3_t maxs, const vec3_t end, int passEntityNum, int contentMask));
+int Pmove(pmove_t *pmove);
 
 //===================================================================================
 
@@ -302,11 +302,11 @@ int Pmove (pmove_t *pmove);
 typedef enum {
 	STAT_HEALTH,
 	STAT_HOLDABLE_ITEM,
-//	STAT_WEAPONS,					// 16 bit fields
-	STAT_ARMOR,				
-//----(SA) Keys for Wolf
+	//	STAT_WEAPONS,					// 16 bit fields
+	STAT_ARMOR,
+	//----(SA) Keys for Wolf
 	STAT_KEYS,						// 16 bit fields
-//----(SA) end
+	//----(SA) end
 	STAT_DEAD_YAW,					// look this direction when dead (FIXME: get rid of?)
 	STAT_CLIENTS_READY,				// bit mask of clients wishing to exit the intermission (FIXME: configstring?)
 	STAT_MAX_HEALTH,				// health / armor limit, changable by handicap
@@ -322,8 +322,8 @@ typedef enum {
 typedef enum {
 	PERS_SCORE,						// !!! MUST NOT CHANGE, SERVER AND GAME BOTH REFERENCE !!!
 	PERS_HITS,						// total points damage inflicted so damage beeps can sound on change
-	PERS_RANK,				
-	PERS_TEAM,				
+	PERS_RANK,
+	PERS_TEAM,
 	PERS_SPAWN_COUNT,				// incremented every respawn
 	PERS_REWARD_COUNT,				// incremented for each reward sound
 	PERS_REWARD,					// a reward_t
@@ -436,7 +436,7 @@ typedef enum {
 typedef enum {
 	HI_NONE,
 
-//	HI_TELEPORTER,
+	//	HI_TELEPORTER,
 	HI_MEDKIT,
 
 	// new for Wolf
@@ -453,7 +453,7 @@ typedef enum {
 	HI_12,
 	HI_13,
 	HI_14,
-//	HI_15,	// ?
+	//	HI_15,	// ?
 
 	HI_NUM_HOLDABLE
 } holdable_t;
@@ -470,9 +470,9 @@ typedef enum
 	AICHAR_ZOMBIE,
 	AICHAR_WARZOMBIE,
 	AICHAR_FEMZOMBIE,
-	
+
 	AICHAR_UNDEAD,
-	
+
 	AICHAR_VENOM,
 
 	AICHAR_LOPER,
@@ -521,7 +521,7 @@ typedef enum {
 	WP_TESLA,				// 10
 	WP_SPEARGUN,			// 11
 
-// weapon keys only go 1-0, so put the alternates above that (since selection will be a double click on the german weapon key)
+	// weapon keys only go 1-0, so put the alternates above that (since selection will be a double click on the german weapon key)
 
 	// American equivalents
 	WP_KNIFE2,				// 12
@@ -548,7 +548,7 @@ typedef enum {
 	WP_SILENCER,			// 29	// used to be sp5
 	WP_AKIMBO,				// 30	//----(SA)	added
 
-// jpw
+	// jpw
 	WP_CROSS,				// 31
 	WP_DYNAMITE,			// 32
 	WP_DYNAMITE2,			// 33	
@@ -588,10 +588,10 @@ typedef struct ammotable_s {
 	int		reloadTime;		// 
 	int		fireDelayTime;	// 
 	int		nextShotTime;	// 
-//----(SA)	added
+	//----(SA)	added
 	int		maxHeat;		// max active firing time before weapon 'overheats' (at which point the weapon will fail)
 	int		coolRate;		// how fast the weapon cools down. (per second)
-//----(SA)	end
+	//----(SA)	end
 	int		mod;			// means of death
 } ammotable_t;
 
@@ -633,18 +633,18 @@ typedef enum {
 /*
 // Original Q3A weaps/order
 typedef enum {
-	WP_NONE,				// 0
-	WP_GAUNTLET,			// 1
-	WP_MACHINEGUN = 20,		// 2
-	WP_SHOTGUN,				// 3
-	WP_GRENADE_LAUNCHER,	// 4
-	WP_ROCKET_LAUNCHER,		// 5
-	WP_LIGHTNING,			// 6
-	WP_RAILGUN,				// 7
-	WP_PLASMAGUN,			// 8
-	WP_BFG,					// 9
-	WP_GRAPPLING_HOOK		// 10
-	WP_NUM_WEAPONS			// 11
+WP_NONE,				// 0
+WP_GAUNTLET,			// 1
+WP_MACHINEGUN = 20,		// 2
+WP_SHOTGUN,				// 3
+WP_GRENADE_LAUNCHER,	// 4
+WP_ROCKET_LAUNCHER,		// 5
+WP_LIGHTNING,			// 6
+WP_RAILGUN,				// 7
+WP_PLASMAGUN,			// 8
+WP_BFG,					// 9
+WP_GRAPPLING_HOOK		// 10
+WP_NUM_WEAPONS			// 11
 } weapon_t;
 
 */
@@ -776,19 +776,19 @@ typedef enum {
 	EV_EXPLODE,		// func_explosive
 	EV_EFFECT,		// target_effect
 	EV_MORTAREFX,	// mortar firing
-// JPW NERVE
+	// JPW NERVE
 	EV_SPINUP,	// JPW NERVE panzerfaust preamble
 	EV_TESTID1, // new particle test
 	EV_TESTID2,
 	EV_ENDTEST,
-// jpw
+	// jpw
 	EV_SNOW_ON,
 	EV_SNOW_OFF,
 	EV_MISSILE_MISS_SMALL,
 	EV_MISSILE_MISS_LARGE,
 	EV_WOLFKICK_HIT_FLESH,
-	EV_WOLFKICK_HIT_WALL,	
-	EV_WOLFKICK_MISS,	
+	EV_WOLFKICK_HIT_WALL,
+	EV_WOLFKICK_MISS,
 	EV_SPIT_HIT,
 	EV_SPIT_MISS,
 	EV_SHARD,
@@ -824,42 +824,42 @@ typedef enum {
 // animations
 /*	// straight Q3A for reference (SA)
 typedef enum {
-	BOTH_DEATH1,
-	BOTH_DEAD1,
-	BOTH_DEATH2,
-	BOTH_DEAD2,
-	BOTH_DEATH3,
-	BOTH_DEAD3,
+BOTH_DEATH1,
+BOTH_DEAD1,
+BOTH_DEATH2,
+BOTH_DEAD2,
+BOTH_DEATH3,
+BOTH_DEAD3,
 
-	TORSO_GESTURE,
+TORSO_GESTURE,
 
-	TORSO_ATTACK,
-	TORSO_ATTACK2,
+TORSO_ATTACK,
+TORSO_ATTACK2,
 
-	TORSO_DROP,
-	TORSO_RAISE,
+TORSO_DROP,
+TORSO_RAISE,
 
-	TORSO_STAND,
-	TORSO_STAND2,
+TORSO_STAND,
+TORSO_STAND2,
 
-	LEGS_WALKCR,
-	LEGS_WALK,
-	LEGS_RUN,
-	LEGS_BACK,
-	LEGS_SWIM,
+LEGS_WALKCR,
+LEGS_WALK,
+LEGS_RUN,
+LEGS_BACK,
+LEGS_SWIM,
 
-	LEGS_JUMP,
-	LEGS_LAND,
+LEGS_JUMP,
+LEGS_LAND,
 
-	LEGS_JUMPB,
-	LEGS_LANDB,
+LEGS_JUMPB,
+LEGS_LANDB,
 
-	LEGS_IDLE,
-	LEGS_IDLECR,
+LEGS_IDLE,
+LEGS_IDLECR,
 
-	LEGS_TURN,
+LEGS_TURN,
 
-	MAX_ANIMATIONS
+MAX_ANIMATIONS
 } animNumber_t;
 */
 
@@ -878,11 +878,11 @@ typedef enum {
 	BOTH_DEAD3_WATER,
 
 	BOTH_CLIMB,
-/*10*/	BOTH_CLIMB_DOWN,
+	/*10*/	BOTH_CLIMB_DOWN,
 	BOTH_CLIMB_DISMOUNT,
 
 	BOTH_SALUTE,
-	
+
 	BOTH_PAIN1,		// head
 	BOTH_PAIN2,		// chest
 	BOTH_PAIN3,		// groin
@@ -890,7 +890,7 @@ typedef enum {
 	BOTH_PAIN5,		// left shoulder
 	BOTH_PAIN6,		// right knee
 	BOTH_PAIN7,		// left knee
-/*20*/	BOTH_PAIN8,		// dazed
+	/*20*/	BOTH_PAIN8,		// dazed
 
 	BOTH_GRAB_GRENADE,
 
@@ -903,7 +903,7 @@ typedef enum {
 	BOTH_EXTRA1,
 	BOTH_EXTRA2,
 	BOTH_EXTRA3,
-/*30*/	BOTH_EXTRA4,
+	/*30*/	BOTH_EXTRA4,
 	BOTH_EXTRA5,
 	BOTH_EXTRA6,
 	BOTH_EXTRA7,
@@ -913,7 +913,7 @@ typedef enum {
 	BOTH_EXTRA11,
 	BOTH_EXTRA12,
 	BOTH_EXTRA13,
-/*40*/	BOTH_EXTRA14,
+	/*40*/	BOTH_EXTRA14,
 	BOTH_EXTRA15,
 	BOTH_EXTRA16,
 	BOTH_EXTRA17,
@@ -924,7 +924,7 @@ typedef enum {
 	TORSO_GESTURE,
 	TORSO_GESTURE2,
 	TORSO_GESTURE3,
-/*50*/	TORSO_GESTURE4,
+	/*50*/	TORSO_GESTURE4,
 
 	TORSO_DROP,
 
@@ -937,7 +937,7 @@ typedef enum {
 	TORSO_RELAX,
 
 	TORSO_RAISE2,	// (high)
-/*60*/	TORSO_ATTACK2,
+	/*60*/	TORSO_ATTACK2,
 	TORSO_STAND2,
 	TORSO_STAND2_ALT1,
 	TORSO_STAND2_ALT2,
@@ -948,7 +948,7 @@ typedef enum {
 	TORSO_ATTACK3,
 	TORSO_STAND3,
 	TORSO_STAND3_ALT1,
-/*70*/	TORSO_STAND3_ALT2,
+	/*70*/	TORSO_STAND3_ALT2,
 	TORSO_READY3,
 	TORSO_RELAX3,
 
@@ -960,7 +960,7 @@ typedef enum {
 	TORSO_READY4,
 	TORSO_RELAX4,
 
-/*80*/	TORSO_RAISE5,	// (throw)
+	/*80*/	TORSO_RAISE5,	// (throw)
 	TORSO_ATTACK5,
 	TORSO_ATTACK5B,
 	TORSO_STAND5,
@@ -971,7 +971,7 @@ typedef enum {
 
 	TORSO_RELOAD1,	// (low)
 	TORSO_RELOAD2,	// (high)
-/*90*/	TORSO_RELOAD3,	// (pistol)
+	/*90*/	TORSO_RELOAD3,	// (pistol)
 	TORSO_RELOAD4,	// (shoulder)
 
 	TORSO_MG42,		// firing tripod mounted weapon animation
@@ -984,7 +984,7 @@ typedef enum {
 	TORSO_EXTRA3,
 	TORSO_EXTRA4,
 	TORSO_EXTRA5,
-/*100*/	TORSO_EXTRA6,
+	/*100*/	TORSO_EXTRA6,
 	TORSO_EXTRA7,
 	TORSO_EXTRA8,
 	TORSO_EXTRA9,
@@ -995,7 +995,7 @@ typedef enum {
 	LEGS_WALK,
 	LEGS_RUN,
 	LEGS_BACK,
-/*110*/	LEGS_SWIM,
+	/*110*/	LEGS_SWIM,
 	LEGS_SWIM_IDLE,
 
 	LEGS_JUMP,
@@ -1010,7 +1010,7 @@ typedef enum {
 
 	LEGS_BOOT,		// kicking animation
 
-/*120*/	LEGS_EXTRA1,
+	/*120*/	LEGS_EXTRA1,
 	LEGS_EXTRA2,
 	LEGS_EXTRA3,
 	LEGS_EXTRA4,
@@ -1021,7 +1021,7 @@ typedef enum {
 	LEGS_EXTRA9,
 	LEGS_EXTRA10,
 
-/*130*/	MAX_ANIMATIONS
+	/*130*/	MAX_ANIMATIONS
 } animNumber_t;
 
 // text represenation for scripting
@@ -1196,20 +1196,20 @@ typedef enum {
 	MOD_LOPER_GROUND,
 	MOD_LOPER_HIT,
 
-// JPW NERVE multiplayer class-specific MODs
+	// JPW NERVE multiplayer class-specific MODs
 	MOD_LT_AMMO,
 	MOD_LT_AIRSTRIKE,
 	MOD_ENGINEER,	// not sure if we'll use
 	MOD_MEDIC,		// these like this or not
-//
+	//
 
-// L0 - New MODs
+	// L0 - New MODs
 	MOD_ADMKILL,
 	MOD_SELFKILL,
 	MOD_THROWKNIFE,
 	MOD_CHICKEN,
 	MOD_POISONDMED,
-// End
+	// End
 
 	MOD_BAT
 
@@ -1227,9 +1227,9 @@ typedef enum {
 	IT_ARMOR,				// EFX: rotate + minlight
 	IT_HEALTH,				// EFX: static external sphere + rotating internal
 	IT_POWERUP,				// instant on, timer based
-							// EFX: rotate + external ring that rotates
+	// EFX: rotate + external ring that rotates
 	IT_HOLDABLE,			// single use, holdable item
-							// EFX: rotate + bob
+	// EFX: rotate + bob
 	IT_KEY,
 	IT_TREASURE,			// gold bars, etc.  things that can be picked up and counted for a tally at end-level
 	IT_CLIPBOARD,			// 'clipboard' used as a general term for 'popup' items where you pick up the item and it pauses and opens a menu
@@ -1268,20 +1268,20 @@ typedef struct gitem_s {
 extern	gitem_t	bg_itemlist[];
 extern	int		bg_numItems;
 
-gitem_t	*BG_FindItem( const char *pickupName );
-gitem_t	*BG_FindItemForWeapon	( weapon_t weapon );
-gitem_t	*BG_FindItemForPowerup	( powerup_t pw );
-gitem_t	*BG_FindItemForHoldable	( holdable_t pw );
-gitem_t *BG_FindItemForAmmo		( int weapon );
-gitem_t *BG_FindItemForKey		( wkey_t k, int *index );
-weapon_t BG_FindAmmoForWeapon	( weapon_t weapon );
-weapon_t BG_FindClipForWeapon	( weapon_t weapon );
+gitem_t	*BG_FindItem(const char *pickupName);
+gitem_t	*BG_FindItemForWeapon(weapon_t weapon);
+gitem_t	*BG_FindItemForPowerup(powerup_t pw);
+gitem_t	*BG_FindItemForHoldable(holdable_t pw);
+gitem_t *BG_FindItemForAmmo(int weapon);
+gitem_t *BG_FindItemForKey(wkey_t k, int *index);
+weapon_t BG_FindAmmoForWeapon(weapon_t weapon);
+weapon_t BG_FindClipForWeapon(weapon_t weapon);
 
-qboolean BG_AkimboFireSequence	( playerState_t *ps );	//----(SA)	added
+qboolean BG_AkimboFireSequence(playerState_t *ps);	//----(SA)	added
 
 #define	ITEM_INDEX(x) ((x)-bg_itemlist)
 
-qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps );
+qboolean	BG_CanItemBeGrabbed(const entityState_t *ent, const playerState_t *ps);
 
 
 // g_dmflags->integer flags
@@ -1340,7 +1340,7 @@ typedef enum {
 	// FIRE PROPS
 	ET_FIRE_COLUMN,
 	ET_FIRE_COLUMN_SMOKE,
-	ET_RAMJET,	
+	ET_RAMJET,
 
 	ET_FLAMETHROWER_CHUNK,		// DHM - NERVE :: Used in server side collision detection for flamethrower
 
@@ -1355,8 +1355,8 @@ typedef enum {
 	ET_MOVERSCALED,
 
 	ET_EVENTS				// any of the EV_* events can be added freestanding
-							// by setting eType to ET_EVENTS + eventNum
-							// this avoids having to set eFlags and eventNum
+	// by setting eType to ET_EVENTS + eventNum
+	// this avoids having to set eFlags and eventNum
 } entityType_t;
 
 
@@ -1411,23 +1411,23 @@ typedef enum {
 
 
 
-void	BG_EvaluateTrajectory( const trajectory_t *tr, int atTime, vec3_t result );
-void	BG_EvaluateTrajectoryDelta( const trajectory_t *tr, int atTime, vec3_t result );
-void	BG_GetMarkDir( const vec3_t dir, const vec3_t normal, vec3_t out );
+void	BG_EvaluateTrajectory(const trajectory_t *tr, int atTime, vec3_t result);
+void	BG_EvaluateTrajectoryDelta(const trajectory_t *tr, int atTime, vec3_t result);
+void	BG_GetMarkDir(const vec3_t dir, const vec3_t normal, vec3_t out);
 
-void	BG_AddPredictableEventToPlayerstate( int newEvent, int eventParm, playerState_t *ps );
+void	BG_AddPredictableEventToPlayerstate(int newEvent, int eventParm, playerState_t *ps);
 
 //void	BG_TouchJumpPad( playerState_t *ps, entityState_t *jumppad );
 
-void	BG_PlayerStateToEntityState( playerState_t *ps, entityState_t *s, qboolean snap );
-void	BG_PlayerStateToEntityStateExtraPolate( playerState_t *ps, entityState_t *s, int time, qboolean snap );
+void	BG_PlayerStateToEntityState(playerState_t *ps, entityState_t *s, qboolean snap);
+void	BG_PlayerStateToEntityStateExtraPolate(playerState_t *ps, entityState_t *s, int time, qboolean snap);
 
-qboolean	BG_WeaponInWolfMP( int weapon );
-qboolean	BG_PlayerTouchesItem( playerState_t *ps, entityState_t *item, int atTime );
-qboolean	BG_PlayerSeesItem	( playerState_t *ps, entityState_t *item, int atTime );
+qboolean	BG_WeaponInWolfMP(int weapon);
+qboolean	BG_PlayerTouchesItem(playerState_t *ps, entityState_t *item, int atTime);
+qboolean	BG_PlayerSeesItem(playerState_t *ps, entityState_t *item, int atTime);
 
 //----(SA)	removed PM_ammoNeeded 11/27/00
-void PM_ClipVelocity( vec3_t in, vec3_t normal, vec3_t out, float overbounce );
+void PM_ClipVelocity(vec3_t in, vec3_t normal, vec3_t out, float overbounce);
 
 #define ARENAS_PER_TIER		4
 #define MAX_ARENAS			64
@@ -1452,7 +1452,7 @@ typedef enum {
 	FOOTSTEP_ROOF,
 	FOOTSTEP_SNOW,
 	FOOTSTEP_CARPET,	//----(SA)	added
-	
+
 	FOOTSTEP_ELITE_STEP,
 	FOOTSTEP_ELITE_METAL,
 	FOOTSTEP_ELITE_ROOF,
@@ -1656,9 +1656,9 @@ typedef struct
 	//
 	// pointers to functions from the owning module
 	//
-  // TTimo: constify the arg
-	int		(*soundIndex)( const char *name );
-	void	(*playSound)( int soundIndex, vec3_t org, int clientNum );
+	// TTimo: constify the arg
+	int(*soundIndex)(const char *name);
+	void(*playSound)(int soundIndex, vec3_t org, int clientNum);
 } animScriptData_t;
 
 //------------------------------------------------------------------
@@ -1710,25 +1710,25 @@ typedef enum
 //------------------------------------------------------------------
 // Global Function Decs
 
-animModelInfo_t *BG_ModelInfoForModelname( char *modelname );
-qboolean BG_AnimParseAnimConfig( animModelInfo_t *animModelInfo, const char *filename, const char *input );
-void BG_AnimParseAnimScript( animModelInfo_t *modelInfo, animScriptData_t *scriptData, int client, char *filename, char *input );
-int BG_AnimScriptAnimation( playerState_t *ps, aistateEnum_t state, scriptAnimMoveTypes_t movetype, qboolean isContinue );
-int	BG_AnimScriptCannedAnimation( playerState_t *ps, aistateEnum_t state );
-int	BG_AnimScriptStateChange( playerState_t *ps, aistateEnum_t newState, aistateEnum_t oldState );
-int	BG_AnimScriptEvent( playerState_t *ps, scriptAnimEventTypes_t event, qboolean isContinue, qboolean force );
-int BG_IndexForString( char *token, animStringItem_t *strings, qboolean allowFail );
-int BG_PlayAnimName( playerState_t *ps, char *animName, animBodyPart_t bodyPart, qboolean setTimer, qboolean isContinue, qboolean force );
-qboolean BG_ValidAnimScript( int clientNum );
-char *BG_GetAnimString( int client, int anim );
-void BG_UpdateConditionValue( int client, int condition, int value, qboolean checkConversion );
-int BG_GetConditionValue( int client, int condition, qboolean checkConversion );
-int BG_GetAnimScriptAnimation( int client, aistateEnum_t state, scriptAnimMoveTypes_t movetype );
-void BG_AnimUpdatePlayerStateConditions( pmove_t *pmove );
-int BG_AnimationIndexForString( char *string, int client );
-animation_t *BG_AnimationForString( char *string, animModelInfo_t *modelInfo );
-animation_t *BG_GetAnimationForIndex( int client, int index );
-int	BG_GetAnimScriptEvent( playerState_t *ps, scriptAnimEventTypes_t event );
+animModelInfo_t *BG_ModelInfoForModelname(char *modelname);
+qboolean BG_AnimParseAnimConfig(animModelInfo_t *animModelInfo, const char *filename, const char *input);
+void BG_AnimParseAnimScript(animModelInfo_t *modelInfo, animScriptData_t *scriptData, int client, char *filename, char *input);
+int BG_AnimScriptAnimation(playerState_t *ps, aistateEnum_t state, scriptAnimMoveTypes_t movetype, qboolean isContinue);
+int	BG_AnimScriptCannedAnimation(playerState_t *ps, aistateEnum_t state);
+int	BG_AnimScriptStateChange(playerState_t *ps, aistateEnum_t newState, aistateEnum_t oldState);
+int	BG_AnimScriptEvent(playerState_t *ps, scriptAnimEventTypes_t event, qboolean isContinue, qboolean force);
+int BG_IndexForString(char *token, animStringItem_t *strings, qboolean allowFail);
+int BG_PlayAnimName(playerState_t *ps, char *animName, animBodyPart_t bodyPart, qboolean setTimer, qboolean isContinue, qboolean force);
+qboolean BG_ValidAnimScript(int clientNum);
+char *BG_GetAnimString(int client, int anim);
+void BG_UpdateConditionValue(int client, int condition, int value, qboolean checkConversion);
+int BG_GetConditionValue(int client, int condition, qboolean checkConversion);
+int BG_GetAnimScriptAnimation(int client, aistateEnum_t state, scriptAnimMoveTypes_t movetype);
+void BG_AnimUpdatePlayerStateConditions(pmove_t *pmove);
+int BG_AnimationIndexForString(char *string, int client);
+animation_t *BG_AnimationForString(char *string, animModelInfo_t *modelInfo);
+animation_t *BG_GetAnimationForIndex(int client, int index);
+int	BG_GetAnimScriptEvent(playerState_t *ps, scriptAnimEventTypes_t event);
 
 extern animStringItem_t animStateStr[];
 extern animStringItem_t animBodyPartsStr[];
