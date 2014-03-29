@@ -2804,6 +2804,10 @@ static void PM_Weapon(void) {
 					}
 				}
 		}
+		else
+		{
+			itemFound = qtrue;
+		}
 
 		// Not found or Allowed
 		if (!itemFound) {
