@@ -334,7 +334,7 @@ qboolean canUse(gentity_t *ent, qboolean isCmd) {
 
 	admCmds(ent->client->pers.cmd1, alt, cmd, qfalse);
 
-	return Q_FindToken(list, ent->client->pers.cmd1);
+	return Q_FindToken(list, cmd);
 }
 
 /*

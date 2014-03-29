@@ -100,8 +100,7 @@ typedef struct {
 	char *snd;
 } round_stats_t;
 
-static const round_stats_t rSM[] = {
-	// The label looks bad..
+static const round_stats_t rSM[] = {	
 	{ "Match Results", "intro.wav" },
 	{ "Most Kills", "blazeofglory.wav" },
 	{ "Most Deaths", "yousuck.wav" },

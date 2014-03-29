@@ -767,10 +767,19 @@ Map restart
 */
 void cmd_restart(gentity_t *ent) {
 	char *tag, *log;
+	char *s;
+	int num;
+	s = ConcatArgs(2);
 
 	tag = sortTag(ent);
 	AP(va("chat \"console: %s has ^3restarted ^7the map^3.\n\"", tag));
-	trap_SendConsoleCommand(EXEC_APPEND, va("map_restart"));
+
+	if (strlen(s)) {
+		num = atoi(s);
+		trap_SendConsoleCommand(EXEC_APPEND, va("map_restart %i", num));
+	}
+	else
+		trap_SendConsoleCommand(EXEC_APPEND, va("map_restart"));
 
 	// Log it
 	log = va("Player %s (IP: %s) has restarted the map.",

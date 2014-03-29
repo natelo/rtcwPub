@@ -591,7 +591,8 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_antilagVersion, "g_antilagVersion", "1.4.0", CVAR_ROM | CVAR_SERVERINFO, 0, qtrue },
 	{ &g_swapCounter, "g_swapCounter", "1", 0, 0, qfalse },
 	{ &shuffleTracking, "shuffleTracking", "0", 0, 0, qfalse },
-	{ &needsBalance, "needsBalance", "0", CVAR_CHEAT, qfalse },
+	{ &needsBalance, "needsBalance", "0", CVAR_CHEAT, 0, qfalse },
+	{ &motdNum, "motdNum", "0", 0, 0, qfalse },
 
 	// Forced stuff
 	{ 0, "cl_allowdownload", "1", CVAR_SYSTEMINFO, qfalse },

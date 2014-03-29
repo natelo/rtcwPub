@@ -507,6 +507,30 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 			else
 			// jpw
 				AddScore( attacker, -1 );
+
+			// L0 - Life stats
+			// FIXME: Port this in structure..
+			if (g_showLifeStats.integer) {
+				float acc = 0.00f;
+
+				acc = (self->client->pers.lifeAcc_shots == 0) ?
+					0.00 : ((float)self->client->pers.lifeAcc_hits / (float)self->client->pers.lifeAcc_shots) * 100.00f;
+
+				// Class based..				
+				if (self->client->ps.stats[PC_MEDIC])
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Rev:^3%d ^7Acc:^3%2.2f\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.lifeRevives, acc));
+				else if (self->client->ps.stats[PC_LT])
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Acc:^3%2.2f\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, acc));
+				else if (self->client->ps.stats[PC_ENGINEER])
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Acc:^3%2.2f\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, acc));
+				else
+					CPx(self - g_entities, va("chat \"^3Last life: ^7Kills:^3%d ^7Hs:^3%d ^7Acc:^3%2.2f\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, acc));
+			} // End
+
 		} else {
 			// JPW NERVE -- mostly added as conveneience so we can tweak from the #defines all in one place
 			if (g_gametype.integer >= GT_WOLF)
@@ -550,14 +574,14 @@ void player_die( gentity_t *self, gentity_t *inflictor, gentity_t *attacker, int
 					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Rev: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
 					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.lifeRevives, acc, attacker->client->pers.netname, attacker->health));
 				else if (self->client->ps.stats[PC_LT])
-					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7AmmoGiv: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
-					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.ammoPacks, acc, attacker->client->pers.netname, attacker->health));
+					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, acc, attacker->client->pers.netname, attacker->health));
 				else if (self->client->ps.stats[PC_ENGINEER])
-					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Gibs: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
-					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.gibs, acc, attacker->client->pers.netname, attacker->health));
+					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, acc, attacker->client->pers.netname, attacker->health));
 				else
-					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Gibs: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
-					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, self->client->pers.gibs, acc, attacker->client->pers.netname, attacker->health));
+					CPx(self - g_entities, va("chat \"^3Last Life: ^7Kills: ^3%d ^7Hs: ^3%d ^7Acc: ^3%2.2f ^7Killer: %s^3[%ihp]\n\"",
+					self->client->pers.lifeKills, self->client->pers.lifeHeadshots, acc, attacker->client->pers.netname, attacker->health));
 			} // End
 		}
 	} else {
@@ -1330,6 +1354,19 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		targ->client->lasthurt_client = attacker->s.number;
 		targ->client->lasthurt_mod = mod;
 		targ->client->lasthurt_time = level.time;	// L0 - chicken test
+	}
+
+	// L0 - Stats..
+	if ((attacker && attacker->client) && (targ && targ->client)){
+		if (!OnSameTeam(attacker, targ) && targ->client->ps.stats[STAT_HEALTH] > 0) {
+			attacker->client->pers.dmgGiven += take;
+			targ->client->pers.dmgReceived += take;
+			// Count team damage but only if victim is alive..
+		}
+		else if (OnSameTeam(attacker, targ) && targ->client->ps.stats[STAT_HEALTH] > 0) {
+			attacker->client->pers.dmgTeam += take;
+			write_RoundStats(attacker->client->pers.netname, attacker->client->pers.dmgTeam, ROUND_TEAMBLEED);
+		}
 	}
 
 	// do the damage
