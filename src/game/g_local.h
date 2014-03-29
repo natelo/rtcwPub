@@ -1457,6 +1457,7 @@ extern vmCvar_t		g_balanceSniper;
 extern vmCvar_t		g_balanceVenom;
 extern vmCvar_t		g_balanceFlamer;
 extern vmCvar_t		g_customMGs;
+extern vmCvar_t		g_allowUnderwater;
 
 // Stats
 extern vmCvar_t		g_doubleKills;

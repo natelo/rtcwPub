@@ -2712,20 +2712,26 @@ static void PM_Weapon( void ) {
 	}
 
 	// player is underwater - no fire
-	// L0 - was thinking to add cvars but what's the point, it's handgun and needle :)
-	if(pm->waterlevel == 3) {
-		if(	pm->ps->weapon != WP_KNIFE &&
+	if (pm->waterlevel == 3) {
+		if ( // L0 - Was thinking to add cvars but what's the point..
+			// Added handgun, smg (only main ones, rifle and heavy weapons are out) and revive
 			pm->ps->weapon != WP_LUGER &&
 			pm->ps->weapon != WP_COLT &&
-			pm->ps->weapon != WP_MEDIC_SYRINGE &&  // L0 - end added
+			pm->ps->weapon != WP_MEDIC_SYRINGE &&
+			pm->ps->weapon != WP_MP40 &&
+			pm->ps->weapon != WP_THOMPSON &&
+			pm->ps->weapon != WP_STEN &&
+			pm->ps->weapon != WP_MEDKIT &&
+			pm->ps->weapon != WP_AMMO &&
+			// pm->ps->weapon != WP_FG42 && // No scoping underwather tho
+			// End
 			pm->ps->weapon != WP_KNIFE &&
 			pm->ps->weapon != WP_KNIFE2 &&
-			pm->ps->weapon != WP_GRENADE_LAUNCHER  &&
+			pm->ps->weapon != WP_GRENADE_LAUNCHER &&
 			pm->ps->weapon != WP_GRENADE_PINEAPPLE &&
 			pm->ps->weapon != WP_DYNAMITE &&
-			pm->ps->weapon != WP_DYNAMITE2) 
-		{
-			PM_AddEvent(EV_NOFIRE_UNDERWATER);	// event for underwater 'click' for nofire
+			pm->ps->weapon != WP_DYNAMITE2) {
+			PM_AddEvent(EV_NOFIRE_UNDERWATER);    // event for underwater 'click' for nofire
 			pm->ps->weaponTime = 500;
 			return;
 		}

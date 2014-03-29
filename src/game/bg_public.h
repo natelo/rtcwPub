@@ -598,6 +598,13 @@ typedef struct ammotable_s {
 extern ammotable_t ammoTable[];		// defined in bg_misc.c
 extern int weapAlts[];	// defined in bg_misc.c
 
+typedef struct named_weapons_s{
+	char *name;
+	int number;
+} named_weapons_t;
+
+extern named_weapons_t nmdWpns[];
+
 
 //----(SA)	
 // for routines that need to check if a WP_ is </=/> a given set of weapons

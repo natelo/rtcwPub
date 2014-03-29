@@ -258,6 +258,7 @@ vmCvar_t	g_balanceSniper;	// Some basic weapon balancing
 vmCvar_t	g_balanceVenom;		// Some basic weapon balancing
 vmCvar_t	g_balanceFlamer;	// Some basic weapon balancing
 vmCvar_t	g_customMGs;		// Allow custom mg's so player can chose with what weapon to spawn with.
+vmCvar_t	g_allowUnderwater;	// Weapons separated by string.
 
 // Stats
 vmCvar_t	g_doubleKills;			// Double, tripple & quad kills
@@ -556,6 +557,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_balanceVenom, "g_balanceVenom", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_balanceFlamer, "g_balanceFlamer", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_customMGs, "g_customMGs", "0", CVAR_ARCHIVE, 0, qtrue },
+	{ &g_allowUnderwater, "g_allowUnderwater", "none", CVAR_ARCHIVE, 0, qfalse },
 
 	// Stats
 	{ &g_doubleKills, "g_doubleKills", "0", CVAR_ARCHIVE, 0, qfalse },
