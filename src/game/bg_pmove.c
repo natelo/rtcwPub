@@ -2411,25 +2411,6 @@ Generates weapon events and modifes the weapon counter
 #define VENOM_ATTACK	WEAP_ATTACK2
 #define VENOM_LOWER		WEAP_ATTACK_LASTSHOT
 
-named_weapons_t nmdWpns[] = {
-	{ "none", WP_NONE },
-// Hand Guns
-	{ "luger", WP_LUGER },
-	{ "colt", WP_COLT },
-// SMGs
-	{ "thompson", WP_THOMPSON },
-	{ "sten", WP_STEN },
-	{ "mp40", WP_MP40},
-// Heavy Stuff
-	{ "mauser", WP_MAUSER },
-	{ "rifle", WP_SNIPERRIFLE },
-	{ "panzer", WP_PANZERFAUST },
-	{ "venom", WP_VENOM },
-	{ "flamethrower", WP_FLAMETHROWER },
-
-	{ NULL }
-};
-
 //#define DO_WEAPON_DBG 1
 extern qboolean Q_FindToken(char *haystack, char *needle);
 static void PM_Weapon(void) {
@@ -2719,7 +2700,7 @@ static void PM_Weapon(void) {
 				return;
 		}
 		if (pm->ps->weapon == WP_SMOKE_GRENADE) {
-			// L0 - Smoke
+// L0 - Smoke
 #ifdef GAMEDLL
 			extern vmCvar_t g_smokeGrenades;
 			int smokeGrenades = g_smokeGrenades.integer;
@@ -2732,7 +2713,7 @@ static void PM_Weapon(void) {
 					return;
 			}
 			else
-				// end
+// end
 			if (pm->cmd.serverTime - pm->ps->classWeaponTime < (pm->ltChargeTime*0.5f))
 				return;
 		}
@@ -2773,19 +2754,17 @@ static void PM_Weapon(void) {
 
 #ifdef GAMEDLL
 	extern vmCvar_t g_allowUnderwater;
-	char *allowedUnderwater = g_allowUnderwater.string;
+	int allowedUnderwater = g_allowUnderwater.integer;
 #else
-	char *allowedUnderwater = 0;
+	int allowedUnderwater = 0;
 #endif
 
 	// player is underwater - no fire
 	if (pm->waterlevel == 3) {
 		// Nobo - new way		
-		qboolean itemFound = qfalse;
+		qboolean isAllowed = qfalse;
 
-		// L0 - Note: Default stuff should be available all the time.
-		// + Added syringe (revives) and med/ammo packs as 
-		// a new "default", rest depends on allowedUnderwater.
+		// L0 - Check Default first
 		if (pm->ps->weapon != WP_MEDKIT &&
 			pm->ps->weapon != WP_AMMO &&	
 			pm->ps->weapon != WP_MEDIC_SYRINGE &&
@@ -2796,24 +2775,31 @@ static void PM_Weapon(void) {
 			pm->ps->weapon != WP_DYNAMITE &&
 			pm->ps->weapon != WP_DYNAMITE2) 
 		{	
-			if (strlen(allowedUnderwater))
-				for (named_weapons_t *_weapon = nmdWpns; _weapon->name; _weapon++) {
-					if (Q_FindToken(allowedUnderwater, _weapon->name) && (_weapon->number == pm->ps->weapon)) {
-						itemFound = qtrue;
-						break;
-					}
-				}
+			// 2 = Handguns only
+			if ((allowedUnderwater == 2) && 
+				(pm->ps->weapon == WP_COLT || pm->ps->weapon == WP_LUGER )) {
+				isAllowed = qtrue;
+			} 
+			// 1 = Handguns + SMGs / Most will set it to 1 and expect everything as usual..
+			else if (allowedUnderwater &&
+				(
+					pm->ps->weapon == WP_COLT ||
+					pm->ps->weapon == WP_LUGER ||
+					pm->ps->weapon == WP_MP40 ||
+					pm->ps->weapon == WP_THOMPSON ||
+					pm->ps->weapon == WP_STEN 
+				))
+			{
+				isAllowed = qtrue;
+			}
 		}
-		else
-		{
-			itemFound = qtrue;
+		else {
+			isAllowed = qtrue;
 		}
 
-		// Not found or Allowed
-		if (!itemFound) {
-			// event for underwater 'click' for nofire
-			PM_AddEvent(EV_NOFIRE_UNDERWATER);
-
+		// Not Allowed
+		if (!isAllowed) {			
+			PM_AddEvent(EV_NOFIRE_UNDERWATER); // event for underwater 'click' for nofire
 			pm->ps->weaponTime = 500;
 			return;
 		}

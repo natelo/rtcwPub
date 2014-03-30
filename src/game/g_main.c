@@ -557,7 +557,7 @@ cvarTable_t		gameCvarTable[] = {
 	{ &g_balanceVenom, "g_balanceVenom", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_balanceFlamer, "g_balanceFlamer", "0", CVAR_ARCHIVE, 0, qtrue },
 	{ &g_customMGs, "g_customMGs", "0", CVAR_ARCHIVE, 0, qtrue },
-	{ &g_allowUnderwater, "g_allowUnderwater", "none", CVAR_ARCHIVE, 0, qfalse },
+	{ &g_allowUnderwater, "g_allowUnderwater", "0", CVAR_ARCHIVE, 0, qfalse },
 
 	// Stats
 	{ &g_doubleKills, "g_doubleKills", "0", CVAR_ARCHIVE, 0, qfalse },

@@ -603,8 +603,6 @@ typedef struct named_weapons_s{
 	int number;
 } named_weapons_t;
 
-extern named_weapons_t nmdWpns[];
-
 
 //----(SA)	
 // for routines that need to check if a WP_ is </=/> a given set of weapons
