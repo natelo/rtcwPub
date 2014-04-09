@@ -434,7 +434,7 @@ void Cmd_Push(gentity_t* ent)
 	// Push is meant to get rid of blockers...not to push enemy players..
 	// Most that use drop reload script, push players when they (drop)reload
 	// which is F annoying in a crowded server..
-	// If enemy is blocking you way, KILL HIM that's the F point.
+	// If enemy is blocking your way, KILL HIM that's the F point.
 	if (ent->client->sess.sessionTeam != target->client->sess.sessionTeam)
 		return;
 
