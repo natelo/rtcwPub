@@ -159,16 +159,25 @@ Last Blood
 Prints in console at the end of the round
 ===========
 */
-void stats_LastBloodMessage(void)
+void stats_LastBloodMessage(qboolean fOut)
 {
 	if (g_showLastBlood.integer)
 	{
 		if (Q_stricmp(level.lastKiller, ""))
 		{
-			if (Q_stricmp(level.lastVictim, ""))
-				AP(va("print \"%s ^7drew ^1Last Blood^7 from %s^7!\n\"", level.lastKiller, level.lastVictim));
-			else
-				AP(va("print \"%s ^7drew the ^1Last Blood^7!\n\"", level.lastKiller));
+			if (!fOut)
+			{
+				if (Q_stricmp(level.lastVictim, ""))
+					AP(va("print \"%s ^7drew ^1Last Blood^7 from %s^7!\n\"", level.lastKiller, level.lastVictim));
+				else
+					AP(va("print \"%s ^7drew the ^1Last Blood^7!\n\"", level.lastKiller));
+			}
+			else {
+				if (Q_stricmp(level.lastVictim, ""))
+					AP(va("print \"\n^1Last Blood^7: %s ^7rocked %s^7's world!\n\n\"", level.lastKiller, level.lastVictim));
+				else
+					AP(va("print \"\n^1Last Blood^7: %s ^7donated the Last Drop of Blood...\n\n\"", level.lastKiller));
+			}
 		}
 	}
 }
