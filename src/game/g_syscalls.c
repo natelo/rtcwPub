@@ -1,6 +1,6 @@
 // Copyright (C) 1999-2000 Id Software, Inc.
 //
-#include "g_local.h"
+#include "g_admin.h"
 
 // this file is only included when building a dll
 // g_syscalls.asm is included instead when building a qvm
@@ -101,7 +101,19 @@ void trap_DropClient( int clientNum, const char *reason ) {
 }
 
 void trap_SendServerCommand( int clientNum, const char *text ) {
-	syscall( G_SEND_SERVER_COMMAND, clientNum, text );
+	// L0 - Log any nuking attempts
+	// This is mostly for 1.1 binaries..
+	if (!(strlen(text) > 1022))
+	{
+		syscall(G_SEND_SERVER_COMMAND, clientNum, text);
+	}	
+	else
+	{
+		logEntry(SYSLOG, va("Nuking[trap_SendServerCommand] - Slot: %d \nString: %s\n-----------------------------",
+			clientNum, text));
+		trap_DropClient(clientNum, "^7Player Kicked: ^3Nuking");
+		return;
+	}
 }
 
 void trap_SetConfigstring( int num, const char *string ) {

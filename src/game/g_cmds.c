@@ -1258,13 +1258,6 @@ void G_Say( gentity_t *ent, gentity_t *target, int mode, const char *chatText ) 
 		}
 	}
 
-	// Nuke
-	if (strlen(chatText) >= 700) {
-		logEntry(SYSLOG, va("Nuking (G_Say :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
-		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
-		return;
-	}
-
 	// Ignored
 	if (ent->client->sess.ignored) {		
 		CP("cp \"You are ignored^1!\n\"2");		
@@ -1438,13 +1431,6 @@ static void G_VoiceTo( gentity_t *ent, gentity_t *other, int mode, const char *i
 		return;
 	}
 
-	//L0 - Nuke
-	if (strlen(id) >= 700) {
-		logEntry(SYSLOG, va("Nuking (G_VoiceTo :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
-		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
-		return;
-	}
-
 	// no chatting to players in tournements
 	if ( (g_gametype.integer == GT_TOURNAMENT )) {
 		return;
@@ -1486,13 +1472,6 @@ void G_Voice( gentity_t *ent, gentity_t *target, int mode, const char *id, qbool
 	{
 		CP(va("print \"You are %s^7!\n\"",
 			(ent->client->sess.ignored == 2) ? "^1permanently ignored ^7on this server" : "^1ignored"));
-		return;
-	}
-
-	//  Nuke
-	if (strlen(id) >= 700) {
-		logEntry(SYSLOG, va("Nuking (G_Voice :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
-		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}
 
@@ -2879,14 +2858,29 @@ ClientCommand
 void ClientCommand( int clientNum ) {
 	gentity_t *ent;
 	char	cmd[MAX_TOKEN_CHARS];
+	char	*cStr;
 
 	ent = g_entities + clientNum;
 	if ( !ent->client ) {
 		return;		// not fully in game yet
 	}
 
-	trap_Argv( 0, cmd, sizeof( cmd ) );
+	// L0 - Check for any nukes..
+	//
+	// 259 will fit console so there's no mistakes..
+	// Input is sanitized/verified at different parts so there's no reason 
+	// I can currently think of, that would lead to false alert.
+	cStr = ConcatArgs(0);
+	if (strlen(cStr) > 259)
+	{
+		logEntry(SYSLOG, va("Nuking[ClientCommand]: %s (IP: %s) \nString: %s\n-----------------------------", 
+			ent->client->pers.netname, clientIP(ent, qtrue), cStr));
+		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
+		return;
+	}
 
+	trap_Argv( 0, cmd, sizeof( cmd ) );
+	
 	if (Q_stricmp (cmd, "say") == 0) {
 		Cmd_Say_f (ent, SAY_ALL, qfalse);
 		return;
@@ -3032,5 +3026,5 @@ void ClientCommand( int clientNum ) {
 	else if (Q_stricmp (cmd, "setspawnpt") == 0)
 		Cmd_SetSpawnPoint_f( ent );
 	else
-		trap_SendServerCommand( clientNum, va("print \"unknown cmd[lof] %s\n\"", cmd ) );
+		trap_SendServerCommand( clientNum, va("print \"unknown cmd[lof] ^3%s\n\"", cmd ) );
 }

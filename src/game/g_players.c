@@ -283,12 +283,6 @@ void Cmd_pMsg(gentity_t *ent)
 	}
 
 	msg = ConcatArgs(2);
-	if (strlen(msg) >= 700) {
-		logEntry(SYSLOG, va("Nuking (Cmd_Pmsg :: strlen >= 700): %s (IP: %s)", ent->client->pers.netname, clientIP(ent, qtrue)));
-		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
-		return;
-	}
-
 	count = ClientNumberFromNameMatch(name, matchList);
 	if (count == 0) {
 		CP("print \"No matching clients found^3!\n\"");

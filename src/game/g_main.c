@@ -147,7 +147,7 @@ vmCvar_t	a4_cmds;		// Level 4 admin commands
 vmCvar_t	a5_cmds;		// Level 5 admin commands
 vmCvar_t	a5_allowAll;	// Allows level 5 to execute all admin commands + any other that's set in a5_cmds ->
 							// In this case, use a5_cmds for server specific cvars like g_allowVote that would otherwise require rcon etc..
-vmCvar_t	adm_help;		// If enabled users can use !cmds to get list of commands for their level..
+vmCvar_t	adm_help;		// If enabled Admins can use !cmds to get list of commands for their level..
 
 // Server Bot
 vmCvar_t	sb_system;						// Controls all SB functionality
