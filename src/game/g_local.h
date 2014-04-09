@@ -1396,6 +1396,7 @@ extern vmCvar_t		g_unlockWeapons;
 extern vmCvar_t		g_tapReports;
 extern vmCvar_t		g_gibReports;
 extern vmCvar_t		g_weaponOwnerLock;
+extern vmCvar_t		g_disableSMGPickup;
 extern vmCvar_t		g_fastStabSound;
 extern vmCvar_t		g_showLifeStats;
 extern vmCvar_t		g_chicken;

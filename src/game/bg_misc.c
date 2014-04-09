@@ -3309,19 +3309,24 @@ qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps 
 #if defined( GAMEDLL )
 	extern vmCvar_t g_unlockWeapons;
 	extern vmCvar_t g_weaponOwnerLock;
+	extern vmCvar_t g_disableSMGPickup;
 	int unlockWeapons = g_unlockWeapons.integer;
 	int weaponOwnerLock = g_weaponOwnerLock.integer;
+	int disableSMGPickup = g_disableSMGPickup.integer;
 /*
 // Uncomment this if at any time, it becomes a client-server mod.
 #elif defined ( CGAMEDLL )
 	extern vmCvar_t cg_unlockWeapons;
 	extern vmCvar_t cg_weaponOwnerLock;
+	extern vmCvar_t cg_disableSMGPickup.integer
 	int unlockWeapons = cg_unlockWeapons.integer;	
 	int weaponOwnerLock = cg_weaponOwnerLock.integer;
+	int disableSMGPickup = cg_disableSMGPickup.integer;
 /*/
 #else
 	int unlockWeapons = 0;	
 	int weaponOwnerLock = 0;
+	int disableSMGPickup = 0;
 #endif
 // End
 
@@ -3336,6 +3341,21 @@ qboolean	BG_CanItemBeGrabbed( const entityState_t *ent, const playerState_t *ps 
 		// Nobo - Check if client can pickup a weapon.
 		if (weaponOwnerLock && ent->clientNum >= 0 && ent->clientNum != ps->clientNum)
 			return qfalse;
+
+// L0 - disable SMG Pickup if client already has a SMG
+		if (disableSMGPickup)
+		{
+			// We only check for SMG's
+			if ((item->giTag == WP_MP40) || 
+				(item->giTag == WP_THOMPSON) || 
+				(item->giTag == WP_STEN))
+			{
+				// If client has it, do not pick it up..
+				if (COM_BitCheck(ps->weapons, item->giTag))
+					return qfalse;
+			}
+		}
+// End
 
 // JPW NERVE -- medics & engineers can only pick up same weapon type
 		if (item->giTag == WP_AMMO) // magic ammo for any two-handed weapon
