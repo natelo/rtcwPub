@@ -591,8 +591,14 @@ Loads next map in rotation (if any)
 void cmd_vstr(gentity_t *ent) {
 	char *tag, *log;
 
+	if (!Q_stricmp(ent->client->pers.cmd2, ""))
+	{
+		CP("print \"^1Error: ^7Please set a Marker (second command) so it can jump to that part of rotation!\n\"");
+		return;
+	}
+
 	tag = sortTag(ent);
-	AP(va("chat \"console: %s set vstr to ^3%s^7.\n\"", tag, ent->client->pers.cmd2));
+	AP(va("chat \"console: %s set ^3vstr ^7to ^3%s^7.\n\"", tag, ent->client->pers.cmd2));
 	trap_SendConsoleCommand(EXEC_APPEND, va("vstr %s", ent->client->pers.cmd2));
 
 	// Log it
