@@ -20,13 +20,10 @@ void logEntry(char *filename, char *info) {
 	fileHandle_t	f;
 	char *varLine;
 
-	if (!g_extendedLog.integer)
-		return;
-
 	strcat(info, "\r");
 	trap_FS_FOpenFile(filename, &f, FS_APPEND);
 
-	varLine = va("Time: %s : %s \n", getTime(), info);
+	varLine = va("%s\n", info);
 
 	trap_FS_Write(varLine, strlen(varLine), f);
 	trap_FS_FCloseFile(f);

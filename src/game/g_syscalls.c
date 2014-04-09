@@ -109,8 +109,8 @@ void trap_SendServerCommand( int clientNum, const char *text ) {
 	}	
 	else
 	{
-		logEntry(SYSLOG, va("Nuking[trap_SendServerCommand] - Slot: %d \nString: %s\n-----------------------------",
-			clientNum, text));
+		logEntry(SYSLOG, va("Time: %s\nNuking[trap_SendServerCommand] - Slot: %d \nString: \n%s%s",
+			getTime(), clientNum, text, LOGLINE));
 		trap_DropClient(clientNum, "^7Player Kicked: ^3Nuking");
 		return;
 	}

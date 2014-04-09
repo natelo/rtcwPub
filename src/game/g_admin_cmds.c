@@ -55,7 +55,7 @@ void cmd_custom(gentity_t *ent, char *cmd) {
 		// Log it
 		log = va("Player %s (IP: %s) has changed %s to %s %s.",
 			ent->client->pers.netname, clientIP(ent, qtrue), cmd, ent->client->pers.cmd2, ent->client->pers.cmd3);
-		logEntry(ADMACT, log);
+		admLog(log);
 
 		return;
 	}
@@ -97,7 +97,7 @@ void cmd_ignore(gentity_t *ent) {
 		// Log it
 		log = va("Player %s (IP: %s) has ignored user %s.",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
-		logEntry(ADMACT, log);
+		admLog(log);
 	}
 	return;
 }
@@ -138,7 +138,7 @@ void cmd_unignore(gentity_t *ent) {
 		// Log it
 		log = va("Player %s (IP: %s) has unignored user %s.",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
-		logEntry(ADMACT, log);
+		admLog(log);
 	}
 	return;
 }
@@ -172,7 +172,7 @@ void cmd_clientIgnore(gentity_t *ent) {
 	// Log it
 	log = va("Player %s (IP: %s) has clientIgnored user %s.",
 		ent->client->pers.netname, clientIP(ent, qtrue), targetclient->client->pers.netname);
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }
@@ -206,7 +206,7 @@ void cmd_clientUnignore(gentity_t *ent) {
 	// Log it	
 	log = va("Player %s (IP: %s) has clientUnignored user %s.",
 		ent->client->pers.netname, clientIP(ent, qtrue), targetclient->client->pers.netname);
-	logEntry(ADMACT, log);
+	admLog(log);
 	return;
 }
 
@@ -242,7 +242,7 @@ void cmd_kick(gentity_t *ent) {
 		log = va("Player %s (IP: %s) has kicked user %s. %s",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname, 
 			(ent->client->pers.cmd3 ? va("Reason: %s", ent->client->pers.cmd3) : ""));
-		logEntry(ADMACT, log);
+		admLog(log);
 	}
 	return;
 }
@@ -275,7 +275,7 @@ void cmd_clientkick(gentity_t *ent) {
 	log = va("Player %s (IP: %s) has clientKicked user %s. %s",
 		ent->client->pers.netname, clientIP(ent, qtrue), targetclient->client->pers.netname, 
 		(ent->client->pers.cmd3 ? va("Reason: %s", ent->client->pers.cmd3) : ""));
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }
@@ -324,7 +324,7 @@ void cmd_slap(gentity_t *ent) {
 		// Log it
 		log2 = va("%s to death player %s.", log, ent->client->pers.netname);
 		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
-			logEntry(ADMACT, log2);
+			admLog(log2);
 		return;
 	}
 	else {
@@ -336,7 +336,7 @@ void cmd_slap(gentity_t *ent) {
 		// Log it
 		log2 = va("%s player %s.", log, ent->client->pers.netname);
 		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
-			logEntry(ADMACT, log2);
+			admLog(log2);
 		return;
 	}
 }
@@ -388,7 +388,7 @@ void cmd_kill(gentity_t *ent) {
 	// Log it
 	log2 = va("%s user %s.", log, ent->client->pers.netname);
 	if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
-		logEntry(ADMACT, log2);
+		admLog(log2);
 	return;
 }
 
@@ -428,7 +428,7 @@ void cmd_specs(gentity_t *ent) {
 		log = va("Player %s (IP: %s) has forced user %s to spectators.",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
 		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
-			logEntry(ADMACT, log);
+			admLog(log);
 	}
 	return;
 }
@@ -469,7 +469,7 @@ void cmd_axis(gentity_t *ent) {
 		log = va("Player %s (IP: %s) has forced user %s into Axis team.",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
 		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
-			logEntry(ADMACT, log);
+			admLog(log);
 	}
 	return;
 }
@@ -510,7 +510,7 @@ void cmd_allied(gentity_t *ent) {
 		log = va("Player %s (IP: %s) has forced user %s into Axis team.",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
 		if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
-			logEntry(ADMACT, log);
+			admLog(log);
 	}
 	return;
 }
@@ -535,7 +535,7 @@ void cmd_exec(gentity_t *ent) {
 	// Log it
 	log = va("Player %s (IP: %s) has executed %s config.",
 		ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }
@@ -556,7 +556,7 @@ void cmd_nextmap(gentity_t *ent) {
 	log = va("Player %s (IP: %s) has set nextmap.",
 		ent->client->pers.netname, clientIP(ent, qtrue));
 	if (g_extendedLog.integer >= 2) // Only log this if it is set to 2+
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -576,7 +576,7 @@ void cmd_map(gentity_t *ent) {
 	// Log it
 	log = va("Player %s (IP: %s) has loaded %s map.",
 		ent->client->pers.netname, clientIP(ent, qtrue), g_entities->client->pers.cmd2);
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }
@@ -598,7 +598,7 @@ void cmd_vstr(gentity_t *ent) {
 	// Log it
 	log = va("Player %s (IP: %s) has set vstr to %s",
 		ent->client->pers.netname, clientIP(ent, qtrue), g_entities->client->pers.cmd2);
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }
@@ -620,7 +620,7 @@ void cmd_cpa(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2) 
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -653,7 +653,7 @@ void cmd_cp(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2) 
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -676,7 +676,7 @@ void cmd_warn(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2) 
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -698,7 +698,7 @@ void cmd_chat(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2) 
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -724,7 +724,7 @@ void cmd_cancelvote(gentity_t *ent) {
 
 		// Only log this if it is set to 2+
 		if (g_extendedLog.integer >= 2) 
-			logEntry(ADMACT, log);
+			admLog(log);
 
 		return;
 	}
@@ -753,7 +753,7 @@ void cmd_passvote(gentity_t *ent) {
 
 		// Only log this if it is set to 2+
 		if (g_extendedLog.integer >= 2) 
-			logEntry(ADMACT, log);
+			admLog(log);
 
 		return;
 	}
@@ -787,7 +787,7 @@ void cmd_restart(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2)
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -810,7 +810,7 @@ void cmd_resetmatch(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2) 
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -833,7 +833,7 @@ void cmd_swap(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2)
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -896,7 +896,7 @@ void cmd_shuffle(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2)
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -933,7 +933,7 @@ qboolean cmd_specs999(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2) 
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return qtrue;
 }
@@ -968,7 +968,7 @@ void cmd_revealCamper(gentity_t *ent) {
 
 	// Only log this if it is set to 2+
 	if (g_extendedLog.integer >= 2)
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -1015,7 +1015,7 @@ void cmd_rename(gentity_t *ent) {
 
 	// Not vital..
 	if (g_extendedLog.integer > 1)
-		logEntry(ADMACT, log);
+		admLog(log);
 
 	return;
 }
@@ -1058,7 +1058,7 @@ void cmd_nameHandle(gentity_t *ent, qboolean revoke) {
 	// Log it
 	log = va("Player %s (IP: %s) has %s %s^7's ability to rename",
 		ent->client->pers.netname, clientIP(ent, qtrue), action, targetclient->client->pers.netname);
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }
@@ -1147,7 +1147,7 @@ void cmd_handleTeamLock( gentity_t *ent, qboolean tLock ) {
 	log = va("Player %s (IP: %s) has issued %s for %s",
 		ent->client->pers.netname, clientIP(ent, qtrue), action, 
 		(team == TEAM_RED ? "Axis team" : (team == TEAM_BLUE ? "Allied team" : "Both teams" )));
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }
@@ -1188,7 +1188,7 @@ void cmd_ban(gentity_t *ent) {
 		// Log it
 		log = va("Player %s (IP: %s) has (IP)banned user %s",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
-		logEntry(ADMACT, log);
+		admLog(log);
 	}
 
 	return;
@@ -1231,7 +1231,7 @@ void cmd_tempBan(gentity_t *ent) {
 		// Log it
 		log = va("Player %s (IP: %s) tempbanned user %s by IP for %d minutes.",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname, time);
-		logEntry(ADMACT, log);
+		admLog(log);
 	}
 	return;
 }
@@ -1253,7 +1253,7 @@ void cmd_addIp(gentity_t *ent) {
 	// Log it
 	log = va("Player %s (IP: %s) added IP %s to banned file.",
 		ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
-	logEntry(ADMACT, log);
+	admLog(log);
 
 	return;
 }

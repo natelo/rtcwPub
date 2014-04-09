@@ -11,6 +11,23 @@ Created: 24. Mar / 2014
 
 /*
 ===========
+Admin Log
+
+Just a wrapper with syntax fixed..
+===========
+*/
+void admLog(char *info) {
+	
+	if (!g_extendedLog.integer)
+		return;
+
+	logEntry(ADMACT, va("Time: %s\n%s%s", getTime(), info, LOGLINE));
+}
+// Admin Activity
+
+
+/*
+===========
 Sort tag
 ===========
 */
@@ -108,20 +125,25 @@ void cmd_do_login(gentity_t *ent, qboolean silent) {
 			ent->client->sess.incognito = 1; // Hide them
 
 			// Log it
-			log = va("Player %s (IP: %s) has silently logged in as %s.",
+			log = va("Time: %s\nPlayer %s (IP: %s) has silently logged in as %s.%s",
+				getTime(),
 				ent->client->pers.netname,
 				clientIP(ent, qtrue),
-				sortTag(ent));
+				sortTag(ent),
+				LOGLINE);
 
-			logEntry(ADMLOG, log);
+			if (g_extendedLog.integer)
+				logEntry(ADMLOG, log);
 		}
 		else {
 			AP(va("chat \"^7console: %s ^7has logged in as %s^7!\n\"", ent->client->pers.netname, sortTag(ent)));
 
 			// Log it
-			log = va("Player %s (IP: %s) has logged in as %s.",
-				ent->client->pers.netname, clientIP(ent, qtrue), sortTag(ent));
-			logEntry(ADMLOG, log);
+			log = va("Time: %s\nPlayer %s (IP: %s) has logged in as %s.%s",
+				getTime(),ent->client->pers.netname, clientIP(ent, qtrue), sortTag(ent), LOGLINE);
+
+			if (g_extendedLog.integer)
+				logEntry(ADMLOG, log);
 		}
 		return;
 	}
@@ -130,11 +152,12 @@ void cmd_do_login(gentity_t *ent, qboolean silent) {
 		CP("print \"Incorrect password^1!\n\"");
 
 		// Log it
-		log = va("Player %s (IP: %s) has tried to login using password: %s",
-			ent->client->pers.netname, clientIP(ent, qtrue), str
-			);
+		log = va("Time: %s\nPlayer %s (IP: %s) has tried to login using password: %s%s",
+			getTime(), ent->client->pers.netname, clientIP(ent, qtrue), str, LOGLINE );
 
-		logEntry(PASSLOG, log);
+		if (g_extendedLog.integer)
+			logEntry(PASSLOG, log);
+
 		return;
 	}
 }

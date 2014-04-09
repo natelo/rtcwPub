@@ -313,14 +313,18 @@ void Cmd_pMsg(gentity_t *ent)
 	// But for the record: I'm totally not happy about this as imho it defeats the purpose.
 	if (g_logPMs.integer)
 		logEntry(PMLOG, va(
-		"Sender: %s (IP: %s)\n"
-			": Receiver(s): %s\n"
-			": Message: %s\n"
-			"---------------------------", 
-		ent->client->pers.netname,
-		clientIP(ent, qtrue),
-		nameList,
-		msg));
+			"Time: %s\n"
+			"Sender: %s (IP: %s)\n"
+			"Receiver(s): %s\n"
+			"Message: \n%s"
+			"%s", 
+			getTime(),
+			ent->client->pers.netname,
+			clientIP(ent, qtrue),
+			nameList,
+			msg,
+			LOGLINE)
+		);
 }
 
 /*

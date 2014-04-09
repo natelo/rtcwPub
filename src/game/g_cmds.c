@@ -2873,8 +2873,8 @@ void ClientCommand( int clientNum ) {
 	cStr = ConcatArgs(0);
 	if (strlen(cStr) > 259)
 	{
-		logEntry(SYSLOG, va("Nuking[ClientCommand]: %s (IP: %s) \nString: %s\n-----------------------------", 
-			ent->client->pers.netname, clientIP(ent, qtrue), cStr));
+		logEntry(SYSLOG, va("Time: %s\nNuking[ClientCommand]: %s (IP: %s) \nString: \n%s%s", 
+			getTime(), ent->client->pers.netname, clientIP(ent, qtrue), cStr, LOGLINE));
 		trap_DropClient(ent - g_entities, "^7Player Kicked: ^3Nuking");
 		return;
 	}

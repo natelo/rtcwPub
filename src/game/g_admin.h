@@ -19,10 +19,12 @@ Created: 24. Mar / 2014
 #define BYPASSLOG	"./logs/banBypass.log"
 #define SYSLOG		"./logs/systemEvents.log"
 #define PMLOG		"./logs/personalMessages.log"
+#define LOGLINE		"\n----------------------\n"
 
 //
 // g_admin.c
 //
+void admLog(char *info);
 char *sortTag(gentity_t *ent);
 void ParseAdmStr(const char *strInput, char *strCmd, char *strArgs);
 qboolean cmds_admin(char cmd[MAX_TOKEN_CHARS], gentity_t *ent);
