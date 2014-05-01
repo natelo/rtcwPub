@@ -1661,6 +1661,11 @@ void Bullet_Fire (gentity_t *ent, float spread, int damage ) {
 		G_TimeShiftAllClients(ent->client->pers.cmd.serverTime, ent);
 	}
 
+	// L0 - disable invincible time when player spawns and starts shooting
+	if (g_disableInv.integer)
+		ent->client->ps.powerups[PW_INVULNERABLE] = 0;
+	// end
+
 	Bullet_Endpos(ent, spread, &end);
 	Bullet_Fire_Extended(ent, ent, muzzleTrace, end, spread, damage);
 
@@ -2044,6 +2049,11 @@ void VenomPattern( vec3_t origin, vec3_t origin2, int seed, gentity_t *ent ) {
 		!(ent->r.svFlags & SVF_BOT)) {
 		G_TimeShiftAllClients(ent->client->pers.cmd.serverTime, ent);
 	}
+
+	// L0 - disable invincible time when player spawns and starts shooting
+	if (g_disableInv.integer)
+		ent->client->ps.powerups[PW_INVULNERABLE] = 0;
+	// end
 
 	// generate the "random" spread pattern
 	for ( i = 0 ; i < DEFAULT_VENOM_COUNT ; i++ ) {
