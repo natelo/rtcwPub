@@ -478,6 +478,8 @@ NOTE: This is now /gib
 =================
 */
 void Cmd_Kill_f( gentity_t *ent ) {
+	gentity_t *attacker;
+
 	if ( ent->client->sess.sessionTeam == TEAM_SPECTATOR ) {
 		return;
 	}
@@ -486,13 +488,14 @@ void Cmd_Kill_f( gentity_t *ent ) {
 	}
 
 	// L0 - Chicken
-	if (G_FearCheck(ent)) {
+	attacker = G_FearCheck(ent);
+	if (attacker) {
 		ent->flags &= ~FL_GODMODE;
 		ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
 		ent->client->ps.persistant[PERS_HWEAPON_USE] = 0;
 
 		APRS(ent, "rtcwpub/sound/game/events/comeback.wav");
-		player_die(ent, ent, ent, (ent->health + 100000), MOD_CHICKEN);
+		player_die(ent, attacker, attacker, (ent->health + 100000), MOD_CHICKEN);
 
 		// Stats
 		ent->client->pers.suicides++;
@@ -519,6 +522,8 @@ Kills but doesn't gibs
 =================
 */
 void Cmd_SoftKill_f(gentity_t *ent) {
+	gentity_t *attacker;
+
 	if (ent->client->sess.sessionTeam == TEAM_SPECTATOR) {
 		return;
 	}
@@ -527,13 +532,14 @@ void Cmd_SoftKill_f(gentity_t *ent) {
 	}
 
 	// L0 - Chicken
-	if (G_FearCheck(ent)) {
+	attacker = G_FearCheck(ent);
+	if (attacker) {
 		ent->flags &= ~FL_GODMODE;
 		ent->client->ps.stats[STAT_HEALTH] = ent->health = 0;
 		ent->client->ps.persistant[PERS_HWEAPON_USE] = 0;
 
 		APRS(ent, "rtcwpub/sound/game/events/comeback.wav");
-		player_die(ent, ent, ent, ent->health, MOD_CHICKEN);
+		player_die(ent, attacker, attacker, ent->health, MOD_CHICKEN);
 
 		// Stats
 		ent->client->pers.suicides++;
