@@ -1022,7 +1022,8 @@ void Hitsounds(gentity_t *targ, gentity_t *attacker, qboolean body) {
 		}
 
 		// if team mate
-		if (targ->client && attacker->client && onSameTeam && targ->client == attacker->client) {
+		if (targ->client && attacker->client && onSameTeam) {
+
 			te = G_TempEntity(attacker->s.pos.trBase, EV_GLOBAL_CLIENT_SOUND);
 			// These need to be changed to match s4ndmod's.. Everyone still and will continue to use s4ndmod's..
 			te->s.eventParm = G_SoundIndex("sound/player/hitteam.wav");
