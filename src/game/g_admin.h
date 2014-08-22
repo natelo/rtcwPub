@@ -72,5 +72,6 @@ void cmd_handleTeamLock(gentity_t *ent, qboolean tLock);
 void cmd_ban(gentity_t *ent);
 void cmd_tempBan(gentity_t *ent);
 void cmd_addIp(gentity_t *ent);
+void cmd_removeIp(gentity_t *ent);
 
 #endif // __ADMIN_H

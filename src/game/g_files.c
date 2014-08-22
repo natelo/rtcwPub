@@ -38,59 +38,79 @@ Took this from old S4NDMoD source as it simply works (time saver).
 TODO: Redo & Replace ban & tempban..
 ===========
 */
-void banClient(char arg[MAX_TOKEN_CHARS]) {
+void banClient(char arg1[MAX_TOKEN_CHARS], char arg2[MAX_TOKEN_CHARS]) {
 	FILE		*bannedfile;
 
 	bannedfile = fopen("banned.txt", "a+");
-	fputs(va("%s\n", arg), bannedfile);
+	fputs(va("%s-%s|\n", arg1, arg2), bannedfile);
 	fclose(bannedfile);
 }
-// Check if client is banned
-qboolean Banned(char * Clientip, char * password)
+
+/*
+=========
+Banned
+=========
+*/
+qboolean Banned(char * IP, char * password)
 {
-	FILE * bannedfile;
-	char		ip1[10];
-	char		ip2[10];
-	char		ip3[10];
-	char		ip4[10];
-	char		banip1[10];
-	char		banip2[10];
-	char		banip3[10];
-	char		banip4[10];
-	char		bannedips[1024];
+	char ip1[4];
+	char ip2[4];
+	char ip3[4];
+	char ip4[4];
+	char ipfrom[20];
+	char ipfrom1[4];
+	char ipfrom2[4];
+	char ipfrom3[4];
+	char ipfrom4[4];
+	char ipto[20];
+	char ipto1[4];
+	char ipto2[4];
+	char ipto3[4];
+	char ipto4[4];
+
+	char buffer[1024];
+	FILE*banfile = fopen("banned.txt", "r");
+
 	Q_strncpyz(ip1, "", sizeof(ip1));
 	Q_strncpyz(ip2, "", sizeof(ip2));
 	Q_strncpyz(ip3, "", sizeof(ip3));
 	Q_strncpyz(ip4, "", sizeof(ip4));
 
-	BreakIP(va("%s\n", Clientip), ip1, ip2, ip3, ip4);
-	bannedfile = fopen("banned.txt", "r");
+	BreakIP(IP, ip1, ip2, ip3, ip4);
 
-	if (bannedfile){
-		while (fgets(bannedips, 1024, bannedfile) != NULL){
-			Q_strncpyz(banip1, "", sizeof(banip1));
-			Q_strncpyz(banip2, "", sizeof(banip2));
-			Q_strncpyz(banip3, "", sizeof(banip3));
-			Q_strncpyz(banip4, "", sizeof(banip4));
+	if (banfile){
+		while (fgets(buffer, 1024, banfile) != NULL)
+		{
+			Q_strncpyz(ipfrom, "", sizeof(ipfrom));
+			Q_strncpyz(ipto, "", sizeof(ipto));
+			Q_strncpyz(ipfrom1, "", sizeof(ipfrom1));
+			Q_strncpyz(ipfrom2, "", sizeof(ipfrom2));
+			Q_strncpyz(ipfrom3, "", sizeof(ipfrom3));
+			Q_strncpyz(ipfrom4, "", sizeof(ipfrom4));
+			Q_strncpyz(ipto1, "", sizeof(ipto1));
+			Q_strncpyz(ipto2, "", sizeof(ipto2));
+			Q_strncpyz(ipto3, "", sizeof(ipto3));
+			Q_strncpyz(ipto4, "", sizeof(ipto4));
 
-			BreakIP(bannedips, banip1, banip2, banip3, banip4);
+			BreakRange(buffer, ipfrom, ipto);
 
-			if (!Q_stricmp(banip1, ip1) || !Q_stricmp(banip1, "*")){
-				if (!Q_stricmp(banip2, ip2) || !Q_stricmp(banip2, "*")){
-					if (!Q_stricmp(banip3, ip3) || !Q_stricmp(banip3, "*")){
-						if (!Q_stricmp(banip4, ip4) || !Q_stricmp(banip4, "*\n")){
+			BreakIP(ipfrom, ipfrom1, ipfrom2, ipfrom3, ipfrom4);
 
-							fclose(bannedfile);
-							if (bypassing(password))
-								return qfalse;
-							else
-								return qtrue;
-						}
-					}
-				}
+			BreakIP(ipto, ipto1, ipto2, ipto3, ipto4);
+
+			if ((atoi(ip1) >= atoi(ipfrom1) && atoi(ip1) <= atoi(ipto1)) &&
+				(atoi(ip2) >= atoi(ipfrom2) && atoi(ip2) <= atoi(ipto2)) &&
+				(atoi(ip3) >= atoi(ipfrom3) && atoi(ip3) <= atoi(ipto3)) &&
+				(atoi(ip4) >= atoi(ipfrom4) && atoi(ip4) <= atoi(ipto4))) {
+
+				fclose(banfile);
+				if (bypassing(password))
+					return qfalse;
+				else
+					return qtrue;
 			}
 		}
-		fclose(bannedfile);
+		fclose(banfile);
 	}
 	return qfalse;
 }
@@ -159,6 +179,66 @@ void write_tempbannedtemp(void)
 		rewrite_tempbanned();
 	}
 }
+
+void rewrite_banned(void){
+	FILE	*bannedfile;
+	FILE	*tempfile;
+	char	tempbannedips[MAX_STRING_TOKENS];
+
+	bannedfile = fopen("banned.txt", "w+");
+	tempfile = fopen("bannedtemp.txt", "r+");
+
+	while (fgets(tempbannedips, 20, tempfile) != NULL)
+	{
+		fputs(tempbannedips, bannedfile);
+	}
+
+	fclose(bannedfile);
+	fclose(tempfile);
+
+	remove("bannedtemp.txt");
+}
+
+qboolean write_bannedtemp(const char ip[40]){
+	FILE	*bannedfile;
+	FILE	*tempfile;
+	char	bannedips[MAX_STRING_TOKENS];
+	char	ipfrom[20];
+	char	ipto[20];
+	char	_ipfrom[20];
+	char	_ipto[20];
+	qboolean found = qfalse;
+
+	BreakRange(ip, _ipfrom, _ipto);
+
+	bannedfile = fopen("banned.txt", "r+");
+	if (bannedfile){
+		tempfile = fopen("bannedtemp.txt", "w+");
+		while (fgets(bannedips, 1024, bannedfile) != NULL)
+		{
+			Q_strncpyz(ipfrom, "", sizeof(ipfrom));
+			Q_strncpyz(ipto, "", sizeof(ipto));
+
+			BreakRange(bannedips, ipfrom, ipto);
+
+			if ((!Q_stricmp(ipfrom, ip) && !Q_stricmp(ipto, ip)) || (!Q_stricmp(ipfrom, _ipfrom) && !Q_stricmp(_ipto, ipto)))
+				found = qtrue;
+			else
+				fputs(bannedips, tempfile);
+		}
+		fclose(bannedfile);
+		fclose(tempfile);
+
+		if (found){
+			remove("banned.txt");
+			rewrite_banned();
+		}
+		else
+			remove("bannedtemp.txt");
+	}
+	return found;
+}
+
 // Clean tempbans
 void clean_tempbans(void)
 {

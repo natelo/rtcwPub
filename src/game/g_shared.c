@@ -108,6 +108,46 @@ void BreakIP(const char *IP, char *charip1, char* charip2, char* charip3, char* 
 
 /*
 ===========
+S4ndmod - Break Range
+===========
+*/
+void BreakRange(const char *range, char *from, char *to){
+
+	int i = 0, j = 0;
+	int founddash = 0;
+	for (i = 0; i<strlen(range); i++)
+	{
+		if (range[i] == '|')
+		{
+			to[j++] = 0;
+			if (!founddash)
+			{
+				from = "0.0.0.0";
+				to = "0.0.0.0";
+			}
+			break;
+		}
+
+		if (!founddash)
+		{
+			if (range[i] == '-')
+			{
+				founddash++;
+				from[j++] = 0;
+				j = 0;
+			}
+			else{
+				from[j++] = range[i];
+			}
+		}
+		else{
+			to[j++] = range[i];
+		}
+	}
+}
+
+/*
+===========
 S4ndmod - Get IP
 ===========
 */

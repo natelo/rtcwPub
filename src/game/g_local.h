@@ -1711,6 +1711,7 @@ typedef enum
 void DecolorString(char *in, char *out);
 char *getTime( void );
 void BreakIP(const char *IP, char *charip1, char* charip2, char* charip3, char* charip4);
+void BreakRange(const char *range, char *from, char *to);
 void GetIP(const char *strIP1, char *strIP2, char *strPort);
 void APSound(char *sound);
 void CPSound(gentity_t *ent, char *sound);
@@ -1725,12 +1726,13 @@ char *Q_StrReplace(char *haystack, char *needle, char *newVal);
 // g_files.c
 //
 void logEntry(char *filename, char *info);
-void banClient(char arg[MAX_TOKEN_CHARS]);
+void banClient(char arg1[MAX_TOKEN_CHARS], char arg2[MAX_TOKEN_CHARS]);
 void tempbanClient(gentity_t *ent, const int minsbanned);
 extern char *TempBannedMessage;
 void clean_tempbans(void);
 qboolean TempBanned(char * Clientip);
 qboolean Banned(char * Clientip, char * password);
+qboolean write_bannedtemp(const char * ip);
 
 //
 // g_antilag.c

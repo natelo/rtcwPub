@@ -17,10 +17,39 @@ Adds IP to banned file
 =================
 */
 void Svcmd_AddIP_f(void) {
-	char	arg[MAX_STRING_TOKENS];
+	char	arg1[MAX_STRING_TOKENS];
+	char	arg2[MAX_STRING_TOKENS];
 
-	trap_Argv(1, arg, sizeof(arg));
-	banClient(arg);
+	trap_Argv(1, arg1, sizeof(arg1));
+	if (trap_Argc() == 3) trap_Argv(2, arg2, sizeof(arg2));
+	else strncpy(arg2, arg1, sizeof(arg2));
+	
+	banClient(arg1, arg2);
+}
+
+/*
+==========
+REMOVEIP
+==========
+*/
+void Svcmd_Unbanip_f(void)
+{
+	char		arg1[MAX_STRING_TOKENS];
+	char		arg2[MAX_STRING_TOKENS];
+	char*		error = "Removeip usage:\n-Remove single ip: /removeip <ip>\n-Remove range:     /removeip <from ip> <to ip>\n";
+
+	trap_Argv(1, arg1, sizeof(arg1));
+	if (!strlen(arg1)){ G_Printf(error); return; }
+
+	if (trap_Argc() == 3) {
+		trap_Argv(2, arg2, sizeof(arg2));
+		if (!strlen(arg2)) { G_Printf(error); return; }
+
+		write_bannedtemp(va("%s-%s|", arg1, arg2));
+	}
+	else {
+		write_bannedtemp(va("%s", arg1));
+	}
 }
 
 /*
@@ -415,6 +444,12 @@ qboolean	ConsoleCommand( void ) {
 	// AddIP command
 	if  (Q_stricmp(cmd, "addip") == 0 ) {
 		Svcmd_AddIP_f();
+		return qtrue;
+	}
+
+	// RemoveIP command
+	if (Q_stricmp(cmd, "removeip") == 0) {
+		Svcmd_Unbanip_f();
 		return qtrue;
 	}
 
