@@ -38,81 +38,58 @@ Took this from old S4NDMoD source as it simply works (time saver).
 TODO: Redo & Replace ban & tempban..
 ===========
 */
-void banClient(char arg1[MAX_TOKEN_CHARS], char arg2[MAX_TOKEN_CHARS]) {
+void banClient(char arg[MAX_TOKEN_CHARS]) {
 	FILE		*bannedfile;
 
 	bannedfile = fopen("banned.txt", "a+");
-	fputs(va("%s-%s|\n", arg1, arg2), bannedfile);
+	fputs(va("%s\n", arg), bannedfile);
 	fclose(bannedfile);
 }
 
-/*
-=========
-Banned
-=========
-*/
-qboolean Banned(char * IP, char * password)
+qboolean Banned(const char* ipToMatch, const char* password)
 {
-	char ip1[4];
-	char ip2[4];
-	char ip3[4];
-	char ip4[4];
-	char ipfrom[20];
-	char ipfrom1[4];
-	char ipfrom2[4];
-	char ipfrom3[4];
-	char ipfrom4[4];
-	char ipto[20];
-	char ipto1[4];
-	char ipto2[4];
-	char ipto3[4];
-	char ipto4[4];
+	unsigned bipfromfile[5];
+	unsigned biptomatch[5];
+	int type = 0;
+	qboolean banned = qfalse;
 
-	char buffer[1024];
-	FILE*banfile = fopen("banned.txt", "r");
+	unsigned mipid = ParseIP(ipToMatch, biptomatch, &type);
+	if (type != SINGLE_IP)
+		return qfalse;
 
-	Q_strncpyz(ip1, "", sizeof(ip1));
-	Q_strncpyz(ip2, "", sizeof(ip2));
-	Q_strncpyz(ip3, "", sizeof(ip3));
-	Q_strncpyz(ip4, "", sizeof(ip4));
+	FILE* banfile = fopen("banned.txt", "r");
 
-	BreakIP(IP, ip1, ip2, ip3, ip4);
+	if (banfile)
+	{
+		char content[1024];
 
-	if (banfile){
-		while (fgets(buffer, 1024, banfile) != NULL)
+		while (fgets(content, 1024, banfile))
 		{
-			Q_strncpyz(ipfrom, "", sizeof(ipfrom));
-			Q_strncpyz(ipto, "", sizeof(ipto));
-			Q_strncpyz(ipfrom1, "", sizeof(ipfrom1));
-			Q_strncpyz(ipfrom2, "", sizeof(ipfrom2));
-			Q_strncpyz(ipfrom3, "", sizeof(ipfrom3));
-			Q_strncpyz(ipfrom4, "", sizeof(ipfrom4));
-			Q_strncpyz(ipto1, "", sizeof(ipto1));
-			Q_strncpyz(ipto2, "", sizeof(ipto2));
-			Q_strncpyz(ipto3, "", sizeof(ipto3));
-			Q_strncpyz(ipto4, "", sizeof(ipto4));
+			unsigned fipid = ParseIP(content, bipfromfile, &type);
 
-			BreakRange(buffer, ipfrom, ipto);
-
-			BreakIP(ipfrom, ipfrom1, ipfrom2, ipfrom3, ipfrom4);
-
-			BreakIP(ipto, ipto1, ipto2, ipto3, ipto4);
-
-			if ((atoi(ip1) >= atoi(ipfrom1) && atoi(ip1) <= atoi(ipto1)) &&
-				(atoi(ip2) >= atoi(ipfrom2) && atoi(ip2) <= atoi(ipto2)) &&
-				(atoi(ip3) >= atoi(ipfrom3) && atoi(ip3) <= atoi(ipto3)) &&
-				(atoi(ip4) >= atoi(ipfrom4) && atoi(ip4) <= atoi(ipto4))) {
-
-				fclose(banfile);
-				if (bypassing(password))
-					return qfalse;
-				else
-					return qtrue;
+			if (type == RANGE_IP)
+			{
+				if (bipfromfile[4] < 0 || bipfromfile[4] > 32)
+					continue;
+				if (mipid >= fipid && mipid <= (fipid | 0xFFFFFFFF >> bipfromfile[4])) {
+					banned = qtrue;
+					break;
+				}
+			}
+			else if (type == SINGLE_IP)
+			{
+				if ((fipid & ~mipid) == 0) {
+					banned = qtrue;
+					break;
+				}
 			}
 		}
 		fclose(banfile);
 	}
-	return qfalse;
+	if (banned && bypassing(password))
+		banned = qfalse;
+
+	return banned;
 }
 
 /*
@@ -178,65 +155,6 @@ void write_tempbannedtemp(void)
 		fclose(bannedfile);
 		rewrite_tempbanned();
 	}
-}
-
-void rewrite_banned(void){
-	FILE	*bannedfile;
-	FILE	*tempfile;
-	char	tempbannedips[MAX_STRING_TOKENS];
-
-	bannedfile = fopen("banned.txt", "w+");
-	tempfile = fopen("bannedtemp.txt", "r+");
-
-	while (fgets(tempbannedips, 20, tempfile) != NULL)
-	{
-		fputs(tempbannedips, bannedfile);
-	}
-
-	fclose(bannedfile);
-	fclose(tempfile);
-
-	remove("bannedtemp.txt");
-}
-
-qboolean write_bannedtemp(const char ip[40]){
-	FILE	*bannedfile;
-	FILE	*tempfile;
-	char	bannedips[MAX_STRING_TOKENS];
-	char	ipfrom[20];
-	char	ipto[20];
-	char	_ipfrom[20];
-	char	_ipto[20];
-	qboolean found = qfalse;
-
-	BreakRange(ip, _ipfrom, _ipto);
-
-	bannedfile = fopen("banned.txt", "r+");
-	if (bannedfile){
-		tempfile = fopen("bannedtemp.txt", "w+");
-		while (fgets(bannedips, 1024, bannedfile) != NULL)
-		{
-			Q_strncpyz(ipfrom, "", sizeof(ipfrom));
-			Q_strncpyz(ipto, "", sizeof(ipto));
-
-			BreakRange(bannedips, ipfrom, ipto);
-
-			if ((!Q_stricmp(ipfrom, ip) && !Q_stricmp(ipto, ip)) || (!Q_stricmp(ipfrom, _ipfrom) && !Q_stricmp(_ipto, ipto)))
-				found = qtrue;
-			else
-				fputs(bannedips, tempfile);
-		}
-		fclose(bannedfile);
-		fclose(tempfile);
-
-		if (found){
-			remove("banned.txt");
-			rewrite_banned();
-		}
-		else
-			remove("bannedtemp.txt");
-	}
-	return found;
 }
 
 // Clean tempbans

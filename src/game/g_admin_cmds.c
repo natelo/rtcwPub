@@ -1248,56 +1248,17 @@ Add IP
 ===========
 */
 void cmd_addIp(gentity_t *ent) {
-	char *tag, *log, *command, *output;
+	char *tag, *log;
 
 	tag = sortTag(ent);
 
 	// Note that this blindly accepts what ever user inputs. Not ideal..
-	if (strlen(ent->client->pers.cmd3)) {
-		command = va("addip %s %s", ent->client->pers.cmd2, ent->client->pers.cmd3);
-		output = va("chat \"console: %s has added IP range ^3%s^7-^3%s ^7to banned file.\n\"", tag, ent->client->pers.cmd2, ent->client->pers.cmd3);
-		log = va("Player %s (IP: %s) added IP range %s-%s to banned file.",
-			ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2, ent->client->pers.cmd3);
-	}
-	else {
-		command = va("addip %s", ent->client->pers.cmd2);
-		output = va("chat \"console: %s has added IP ^3%s ^7to banned file.\n\"", tag, ent->client->pers.cmd2);
-		log = va("Player %s (IP: %s) added IP %s to banned file.",
-			ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
-	}
+	trap_SendConsoleCommand(EXEC_APPEND, va("addip %s", ent->client->pers.cmd2));
+	AP(va("chat \"console: %s has added IP ^3%s ^7to banned file.\n\"", tag, ent->client->pers.cmd2));
 
-	trap_SendConsoleCommand(EXEC_APPEND, command);
-	AP(output);
-	admLog(log);
-
-	return;
-}
-
-/*
-===========
-Remove IP
-===========
-*/
-void cmd_removeIp(gentity_t *ent) {
-	char *tag, *log, *command, *output;
-
-	tag = sortTag(ent);
-
-	if (strlen(ent->client->pers.cmd3)) {
-		command = va("removeip %s %s", ent->client->pers.cmd2, ent->client->pers.cmd3);
-		output = va("chat \"console: %s has removed IP range ^3%s^7-^3%s ^7from banned file.\n\"", tag, ent->client->pers.cmd2, ent->client->pers.cmd3);
-		log = va("Player %s (IP: %s) removed IP range %s to %s from banned file.",
-			ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2, ent->client->pers.cmd3);
-	}
-	else {
-		command = va("removeip %s", ent->client->pers.cmd2);
-		output = va("chat \"console: %s has removed IP ^3%s ^7from banned file.\n\"", tag, ent->client->pers.cmd2);
-		log = va("Player %s (IP: %s) removed IP %s from banned file.",
-			ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
-	}
-
-	trap_SendConsoleCommand(EXEC_APPEND, command);
-	AP(output);
+	// Log it
+	log = va("Player %s (IP: %s) added IP %s to banned file.",
+		ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
 	admLog(log);
 
 	return;

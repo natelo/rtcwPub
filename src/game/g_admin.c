@@ -474,7 +474,6 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "ban"))			{ if (canUse(ent, qtrue)) cmd_ban(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "tempban"))		{ if (canUse(ent, qtrue)) cmd_tempBan(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "addip"))			{ if (canUse(ent, qtrue)) cmd_addIp(ent); else cantUse(ent); return qtrue; }
-	else if (!strcmp(cmd, "removeip"))		{ if (canUse(ent, qtrue)) cmd_removeIp(ent); else cantUse(ent); return qtrue; }
 	// Any other command
 	else if (canUse(ent, qfalse))			{ cmd_custom(ent, cmd); return qtrue; }
 
