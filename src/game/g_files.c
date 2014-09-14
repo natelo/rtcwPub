@@ -85,9 +85,9 @@ qboolean Banned(char *ip, char *password) {
 						)
 					) {
 						// Traverse through it now
-						if (subrange == 24 && clientIP[2] == match[2] && clientIP[1] == match[1] && clientIP[0] == match[0])
+						if (subrange == 24 && clientIP[2] == match[2] && clientIP[1] == match[1])
 							banned = qtrue;
-						else if (subrange == 16 && clientIP[1] == match[1] && clientIP[0] == match[0])
+						else if (subrange == 16 && clientIP[1] == match[1])
 							banned = qtrue;
 						else if (subrange == 8) // First bit already matched upon entry..
 							banned = qtrue;
