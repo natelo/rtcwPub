@@ -45,54 +45,55 @@ void banClient(char arg[MAX_TOKEN_CHARS]) {
 	fputs(va("%s\n", arg), bannedfile);
 	fclose(bannedfile);
 }
-// Check if client is banned
-qboolean Banned(char * Clientip, char * password)
+
+qboolean Banned(const char* ipToMatch, const char* password)
 {
-	FILE * bannedfile;
-	char		ip1[10];
-	char		ip2[10];
-	char		ip3[10];
-	char		ip4[10];
-	char		banip1[10];
-	char		banip2[10];
-	char		banip3[10];
-	char		banip4[10];
-	char		bannedips[1024];
-	Q_strncpyz(ip1, "", sizeof(ip1));
-	Q_strncpyz(ip2, "", sizeof(ip2));
-	Q_strncpyz(ip3, "", sizeof(ip3));
-	Q_strncpyz(ip4, "", sizeof(ip4));
+	unsigned bipfromfile[5];
+	unsigned biptomatch[5];
+	int type = 0;
+	qboolean banned = qfalse;
+	FILE* banfile;
 
-	BreakIP(va("%s\n", Clientip), ip1, ip2, ip3, ip4);
-	bannedfile = fopen("banned.txt", "r");
+	unsigned mipid = ParseIP(ipToMatch, biptomatch, &type);
+	if (type != SINGLE_IP)
+		return qfalse;
 
-	if (bannedfile){
-		while (fgets(bannedips, 1024, bannedfile) != NULL){
-			Q_strncpyz(banip1, "", sizeof(banip1));
-			Q_strncpyz(banip2, "", sizeof(banip2));
-			Q_strncpyz(banip3, "", sizeof(banip3));
-			Q_strncpyz(banip4, "", sizeof(banip4));
+	banfile = fopen("banned.txt", "r");
 
-			BreakIP(bannedips, banip1, banip2, banip3, banip4);
+	if (banfile)
+	{
+		char content[1024];
 
-			if (!Q_stricmp(banip1, ip1) || !Q_stricmp(banip1, "*")){
-				if (!Q_stricmp(banip2, ip2) || !Q_stricmp(banip2, "*")){
-					if (!Q_stricmp(banip3, ip3) || !Q_stricmp(banip3, "*")){
-						if (!Q_stricmp(banip4, ip4) || !Q_stricmp(banip4, "*\n")){
+		while (fgets(content, 1024, banfile))
+		{
+			unsigned fipid = ParseIP(content, bipfromfile, &type);
 
-							fclose(bannedfile);
-							if (bypassing(password))
-								return qfalse;
-							else
-								return qtrue;
-						}
-					}
+			if (type == RANGE_IP)
+			{
+				unsigned subnet = bipfromfile[4];
+				// Clamp subnet, unfortunately 32 bit shifts result in "undefined" behavior (unless hard-coded).
+				// This means /32 mask will ban 2 people instead of the desired 1 :(
+				if (subnet <= 0) subnet = 1;
+				else if (subnet >= 32) subnet = 31;
+				if (mipid >= (fipid & 0xFFFFFFFF << (32 - subnet)) && mipid <= (fipid | 0xFFFFFFFF >> subnet)) {
+					banned = qtrue;
+					break;
+				}
+			}
+			else if (type == SINGLE_IP)
+			{
+				if (fipid == mipid) {
+					banned = qtrue;
+					break;
 				}
 			}
 		}
-		fclose(bannedfile);
+		fclose(banfile);
 	}
-	return qfalse;
+	if (banned && bypassing(password))
+		banned = qfalse;
+
+	return banned;
 }
 
 /*
@@ -159,6 +160,7 @@ void write_tempbannedtemp(void)
 		rewrite_tempbanned();
 	}
 }
+
 // Clean tempbans
 void clean_tempbans(void)
 {

@@ -1513,4 +1513,8 @@ typedef enum {
 	GS_RESET
 } gamestate_t;
 
+#define NO_IP 0
+#define SINGLE_IP 1
+#define RANGE_IP 2
+
 #endif	// __Q_SHARED_H
