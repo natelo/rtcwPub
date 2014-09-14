@@ -52,12 +52,13 @@ qboolean Banned(const char* ipToMatch, const char* password)
 	unsigned biptomatch[5];
 	int type = 0;
 	qboolean banned = qfalse;
+	FILE* banfile;
 
 	unsigned mipid = ParseIP(ipToMatch, biptomatch, &type);
 	if (type != SINGLE_IP)
 		return qfalse;
 
-	FILE* banfile = fopen("banned.txt", "r");
+	banfile = fopen("banned.txt", "r");
 
 	if (banfile)
 	{
