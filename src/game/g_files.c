@@ -46,8 +46,7 @@ void banClient(char arg[MAX_TOKEN_CHARS]) {
 	fclose(bannedfile);
 }
 
-qboolean Banned(const char* ipToMatch, const char* password)
-{
+qboolean Banned(char *ipToMatch, char *password) {
 	unsigned bipfromfile[5];
 	unsigned biptomatch[5];
 	int type = 0;
@@ -60,28 +59,26 @@ qboolean Banned(const char* ipToMatch, const char* password)
 
 	banfile = fopen("banned.txt", "r");
 
-	if (banfile)
-	{
+	if (banfile) {
 		char content[1024];
 
-		while (fgets(content, 1024, banfile))
-		{
+		while (fgets(content, 1024, banfile) != NULL) {
 			unsigned fipid = ParseIP(content, bipfromfile, &type);
 
-			if (type == RANGE_IP)
-			{
+			if (type == RANGE_IP) {
 				unsigned subnet = bipfromfile[4];
+
 				// Clamp subnet, unfortunately 32 bit shifts result in "undefined" behavior (unless hard-coded).
 				// This means /32 mask will ban 2 people instead of the desired 1 :(
 				if (subnet <= 0) subnet = 1;
 				else if (subnet >= 32) subnet = 31;
+
 				if (mipid >= (fipid & 0xFFFFFFFF << (32 - subnet)) && mipid <= (fipid | 0xFFFFFFFF >> subnet)) {
 					banned = qtrue;
 					break;
 				}
 			}
-			else if (type == SINGLE_IP)
-			{
+			else if (type == SINGLE_IP)	{
 				if (fipid == mipid) {
 					banned = qtrue;
 					break;
@@ -90,6 +87,7 @@ qboolean Banned(const char* ipToMatch, const char* password)
 		}
 		fclose(banfile);
 	}
+
 	if (banned && bypassing(password))
 		banned = qfalse;
 
