@@ -60,7 +60,7 @@ qboolean Banned(char *ip, char *password) {
 
 		while (fgets(line, 1024, banfile) != NULL) {
 			unsigned int match[5];
-			int subrange;
+			unsigned int subrange;
 
 			sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
 			subrange = match[4];
