@@ -48,8 +48,8 @@ void banClient(char arg[MAX_TOKEN_CHARS]) {
 
 qboolean Banned(const char* ipToMatch, const char* password)
 {
-	unsigned bipfromfile[5];
-	unsigned biptomatch[5];
+	unsigned bipfromfile[5] = { 32 };
+	unsigned biptomatch[5] = { 32 };
 	int type = 0;
 	qboolean banned = qfalse;
 
@@ -69,9 +69,10 @@ qboolean Banned(const char* ipToMatch, const char* password)
 
 			if (type == RANGE_IP)
 			{
-				if (bipfromfile[4] < 0 || bipfromfile[4] > 32)
+				unsigned subnet = bipfromfile[4];
+				if (subnet < 0 || subnet > 32)
 					continue;
-				if (mipid >= fipid && mipid <= (fipid | 0xFFFFFFFF >> bipfromfile[4])) {
+				if (mipid >= (fipid & 0xFFFFFFFF << (32 - subnet)) && mipid <= (fipid | 0xFFFFFFFF >> subnet)) {
 					banned = qtrue;
 					break;
 				}
