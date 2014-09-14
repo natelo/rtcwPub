@@ -48,8 +48,8 @@ void banClient(char arg[MAX_TOKEN_CHARS]) {
 
 qboolean Banned(const char* ipToMatch, const char* password)
 {
-	unsigned bipfromfile[5] = { 32 };
-	unsigned biptomatch[5] = { 32 };
+	unsigned bipfromfile[5];
+	unsigned biptomatch[5];
 	int type = 0;
 	qboolean banned = qfalse;
 
@@ -70,8 +70,10 @@ qboolean Banned(const char* ipToMatch, const char* password)
 			if (type == RANGE_IP)
 			{
 				unsigned subnet = bipfromfile[4];
-				if (subnet < 0 || subnet > 32)
-					continue;
+				// Clamp subnet, unfortunately 32 bit shifts result in "undefined" behavior (unless hard-coded).
+				// This means /32 mask will ban 2 people instead of the desired 1 :(
+				if (subnet <= 0) subnet = 1;
+				else if (subnet >= 32) subnet = 31;
 				if (mipid >= (fipid & 0xFFFFFFFF << (32 - subnet)) && mipid <= (fipid | 0xFFFFFFFF >> subnet)) {
 					banned = qtrue;
 					break;
