@@ -78,7 +78,7 @@ qboolean Banned(const char* ipToMatch, const char* password)
 			}
 			else if (type == SINGLE_IP)
 			{
-				if ((fipid & ~mipid) == 0) {
+				if (fipid == mipid) {
 					banned = qtrue;
 					break;
 				}
