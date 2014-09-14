@@ -55,19 +55,6 @@ char *getTime( void )
 
 /*
 ===========
-Parse IP
-===========
-*/
-unsigned ParseIP(const char *ipToBreak, unsigned int *iparr, int *type) {
-	int matches = sscanf(ipToBreak, "%3u.%3u.%3u.%3u/%2u", &iparr[0], &iparr[1], &iparr[2], &iparr[3], &iparr[4]);
-
-	*type = ( (matches == 5) ? RANGE_IP : ((matches == 4) ? SINGLE_IP : NO_IP) );
-
-	return ( (type != NO_IP) ? (iparr[3] | iparr[2] << 8 | iparr[1] << 16 | iparr[0] << 24) : 0);
-}
-
-/*
-===========
 S4ndmod - Get IP
 ===========
 */

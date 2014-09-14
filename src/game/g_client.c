@@ -1676,9 +1676,9 @@ char *ClientConnect( int clientNum, qboolean firstTime, qboolean isBot ) {
 		if (!Q_stricmp(value, ""))
 			return "^1Socket/IP Spoof- ^7Entrance refused^1!";
 						
-		if (checkBanned(Info_ValueForKey(userinfo, "ip"), Info_ValueForKey(userinfo, "password")) == 1)
+		if (checkBanned(value, Info_ValueForKey(userinfo, "password")) == 1)
 			return bannedMSG.string;
-		else if (checkBanned(Info_ValueForKey(userinfo, "ip"), Info_ValueForKey(userinfo, "password")) == 2)
+		else if (checkBanned(value, Info_ValueForKey(userinfo, "password")) == 2)
 			return TempBannedMessage;
 	}
 		

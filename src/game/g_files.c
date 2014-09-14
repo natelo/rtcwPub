@@ -32,10 +32,7 @@ void logEntry(char *filename, char *info) {
 
 /*
 ===========
-Banned (file check version)
-
-Took this from old S4NDMoD source as it simply works (time saver).
-TODO: Redo & Replace ban & tempban..
+Add IP to banned file
 ===========
 */
 void banClient(char arg[MAX_TOKEN_CHARS]) {
@@ -46,51 +43,71 @@ void banClient(char arg[MAX_TOKEN_CHARS]) {
 	fclose(bannedfile);
 }
 
-qboolean Banned(char *ipToMatch, char *password) {
-	unsigned bipfromfile[5];
-	unsigned biptomatch[5];
-	int type = 0;
-	qboolean banned = qfalse;
+/*
+===========
+Banned (file check version)
+===========
+*/
+qboolean Banned(char *ip, char *password) {	
+	qboolean banned = qfalse;	
 	FILE* banfile;
 
-	unsigned mipid = ParseIP(ipToMatch, biptomatch, &type);
-	if (type != SINGLE_IP)
-		return qfalse;
-
 	banfile = fopen("banned.txt", "r");
-
 	if (banfile) {
-		char content[1024];
+		char line[1024];
+		unsigned int clientIP[4]; 
+		sscanf(ip, "%3u.%3u.%3u.%3u", &clientIP[0], &clientIP[1], &clientIP[2], &clientIP[3]);
 
-		while (fgets(content, 1024, banfile) != NULL) {
-			unsigned fipid = ParseIP(content, bipfromfile, &type);
+		while (fgets(line, 1024, banfile) != NULL) {
+			unsigned int match[5];
+			int subrange;
 
-			if (type == RANGE_IP) {
-				unsigned subnet = bipfromfile[4];
+			sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
+			subrange = match[4];
 
-				// Clamp subnet, unfortunately 32 bit shifts result in "undefined" behavior (unless hard-coded).
-				// This means /32 mask will ban 2 people instead of the desired 1 :(
-				if (subnet <= 0) subnet = 1;
-				else if (subnet >= 32) subnet = 31;
+			// Some (really basic) sanity checks
+			if (strlen(line) < 7 || !(match[0] > 0 || match[0] < 256))
+				continue;
 
-				if (mipid >= (fipid & 0xFFFFFFFF << (32 - subnet)) && mipid <= (fipid | 0xFFFFFFFF >> subnet)) {
+			// Check it now..only bothers with it, if first bit matches..
+			if (clientIP[0] == match[0]) {
+
+				// Full Range (32)
+				if (clientIP[1] == match[1] && clientIP[2] == match[2] && clientIP[3] == match[3]) {
 					banned = qtrue;
-					break;
+				}
+				else {
+					if (subrange &&
+						(
+							subrange == 24 ||
+							subrange == 16 ||
+							subrange == 8
+						)
+					) {
+						// Traverse through it now
+						if (subrange == 24 && clientIP[2] == match[2] && clientIP[1] == match[1] && clientIP[0] == match[0])
+							banned = qtrue;
+						else if (subrange == 16 && clientIP[1] == match[1] && clientIP[0] == match[0])
+							banned = qtrue;
+						else if (subrange == 8) // First bit already matched upon entry..
+							banned = qtrue;
+
+						// Else = no match..
+					}
+					// There's no subrange..so bail out 
 				}
 			}
-			else if (type == SINGLE_IP)	{
-				if (fipid == mipid) {
-					banned = qtrue;
-					break;
-				}
+
+			if (banned) {
+				// Overwrite if needed..
+				if (bypassing(password))
+					banned = qfalse;
+
+				break;
 			}
 		}
 		fclose(banfile);
 	}
-
-	if (banned && bypassing(password))
-		banned = qfalse;
-
 	return banned;
 }
 

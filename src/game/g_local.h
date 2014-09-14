@@ -1710,7 +1710,6 @@ typedef enum
 //
 void DecolorString(char *in, char *out);
 char *getTime( void );
-unsigned ParseIP(const char* ipToBreak, unsigned* iparr, int* type);
 void GetIP(const char *strIP1, char *strIP2, char *strPort);
 void APSound(char *sound);
 void CPSound(gentity_t *ent, char *sound);
@@ -1730,7 +1729,7 @@ void tempbanClient(gentity_t *ent, const int minsbanned);
 extern char *TempBannedMessage;
 void clean_tempbans(void);
 qboolean TempBanned(char * Clientip);
-qboolean Banned(char *ipToMatch, char *password);
+qboolean Banned(char *ip, char *password);
 qboolean write_bannedtemp(const char * ip);
 
 //
@@ -1830,10 +1829,6 @@ qboolean G_CensorText(char *text, wordDictionary *dictionary);
 
 #define MT_EI	0												// Match Times - End info
 #define MT_ME	1												// Match Times - Match Event(s)
-
-#define NO_IP		0	// Banning
-#define SINGLE_IP	1	// - || -
-#define RANGE_IP	2	// - || -
 
 //
 // Include stuff
