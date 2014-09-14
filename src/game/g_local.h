@@ -1710,6 +1710,7 @@ typedef enum
 //
 void DecolorString(char *in, char *out);
 char *getTime( void );
+char *getDate( void );
 void GetIP(const char *strIP1, char *strIP2, char *strPort);
 void APSound(char *sound);
 void CPSound(gentity_t *ent, char *sound);

@@ -1183,9 +1183,10 @@ void cmd_ban(gentity_t *ent) {
 
 	for (i = 0; i < count; i++){
 		// Ban player			
-		trap_SendConsoleCommand(EXEC_APPEND, va("addip %i.%i.%i.%i",
+		trap_SendConsoleCommand(EXEC_APPEND, va("addip %i.%i.%i.%i/32|none|%s|%s|none",
 			g_entities[nums[i]].client->sess.ip[0], g_entities[nums[i]].client->sess.ip[1],
-			g_entities[nums[i]].client->sess.ip[2], g_entities[nums[i]].client->sess.ip[3]));
+			g_entities[nums[i]].client->sess.ip[2], g_entities[nums[i]].client->sess.ip[3],
+			g_entities[nums[i]].client->pers.netname, getDate()));
 
 		// Kick player now
 		trap_DropClient(nums[i], va("banned by ^3%s \n^7%s", tag, ent->client->pers.cmd3));
@@ -1193,6 +1194,59 @@ void cmd_ban(gentity_t *ent) {
 
 		// Log it
 		log = va("Player %s (IP: %s) has (IP)banned user %s",
+			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
+		admLog(log);
+	}
+
+	return;
+}
+
+/*
+===========
+RangeBan ip
+===========
+*/
+void cmd_rangeBan(gentity_t *ent) {
+	int count = 0;
+	int i;
+	int nums[MAX_CLIENTS];
+	char *tag, *log;
+	char *range = ent->client->pers.cmd3;
+
+	tag = sortTag(ent);
+	count = ClientNumberFromNameMatch(ent->client->pers.cmd2, nums);
+
+	if (count == 0){
+		CP("print \"Client not on server^3!\n\"");
+		return;
+	}
+	else if (count > 1) {
+		CP(va("print \"Too many people with ^3%s ^7in their name^3!\n\"", ent->client->pers.cmd2));
+		return;
+	}
+
+	// Figure out what we're about
+	if (Q_stricmp(range, "32") && Q_stricmp(range, "24") && Q_stricmp(range, "16") && Q_stricmp(range, "8")) {
+		if (Q_stricmp(range, ""))
+			CP(va("print \"^3Error: ^7%s is not a valid Subnet Range!\n^3Valid input is: ^7!rangeban <player> <8/16/24/32>\n", range));
+		else
+			CP(va("print \"^3Error: ^7Missing Subnet!\n^3Valid input is: ^7!rangeban <player> <8/16/24/32>\n", range));
+		return;
+	}
+
+	for (i = 0; i < count; i++){
+		// Ban player			
+		trap_SendConsoleCommand(EXEC_APPEND, va("addip %i.%i.%i.%i/%s|none|%s|%s|none",
+			g_entities[nums[i]].client->sess.ip[0], g_entities[nums[i]].client->sess.ip[1],
+			g_entities[nums[i]].client->sess.ip[2], g_entities[nums[i]].client->sess.ip[3],
+			range, g_entities[nums[i]].client->pers.netname, getDate()));
+
+		// Kick player now
+		trap_DropClient(nums[i], va("banned by ^3%s", tag));
+		AP(va("chat \"console: %s has banned player %s^3!\n\"", tag, g_entities[nums[i]].client->pers.netname));
+
+		// Log it
+		log = va("Player %s (IP: %s) has (IP)rangeBanned user %s",
 			ent->client->pers.netname, clientIP(ent, qtrue), g_entities[nums[i]].client->pers.netname);
 		admLog(log);
 	}
@@ -1245,6 +1299,10 @@ void cmd_tempBan(gentity_t *ent) {
 /*
 ===========
 Add IP
+
+FIXME: 
+- Convert * to subranges (multiply *(8) by times : *.* = 16 )
+- Add some input checks..
 ===========
 */
 void cmd_addIp(gentity_t *ent) {

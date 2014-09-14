@@ -70,6 +70,7 @@ void cmd_rename(gentity_t *ent);
 void cmd_nameHandle(gentity_t *ent, qboolean revoke);
 void cmd_handleTeamLock(gentity_t *ent, qboolean tLock);
 void cmd_ban(gentity_t *ent);
+void cmd_rangeBan(gentity_t *ent);
 void cmd_tempBan(gentity_t *ent);
 void cmd_addIp(gentity_t *ent);
 

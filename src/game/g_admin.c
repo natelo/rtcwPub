@@ -472,6 +472,7 @@ qboolean do_cmds(gentity_t *ent) {
 	else if (!strcmp(cmd, "lock"))			{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qtrue); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "unlock"))		{ if (canUse(ent, qtrue)) cmd_handleTeamLock(ent, qfalse); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "ban"))			{ if (canUse(ent, qtrue)) cmd_ban(ent); else cantUse(ent); return qtrue; }
+	else if (!strcmp(cmd, "rangeban"))		{ if (canUse(ent, qtrue)) cmd_rangeBan(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "tempban"))		{ if (canUse(ent, qtrue)) cmd_tempBan(ent); else cantUse(ent); return qtrue; }
 	else if (!strcmp(cmd, "addip"))			{ if (canUse(ent, qtrue)) cmd_addIp(ent); else cantUse(ent); return qtrue; }
 	// Any other command
@@ -537,8 +538,9 @@ static const helpCmd_reference_t helpInfo[] = {
 	_HELP("spec999", "Moves all lagged (999) players to spectators.", NULL)
 	_HELP("whereis", "Reveals players location to all.", "Uses client slot number!")
 	_HELP("ban", "Bans player.", "!ban <unique part of name>")
+	_HELP("rangeban", "Range Bans player.", "!rangeban <unique part of name> <8/16/24/32>")
 	_HELP("tempban", "Temporarily Bans player.", "!tempban <unique part of name> <mins>")
-	_HELP("addip", "Adds IP to banned file. You can use wildcards for subrange bans.", "example - !addip 100.*.*.*")
+	_HELP("addip", "Adds IP to banned file. You can also use subranges.", "example - !addip 100.100.100.100/32")
 	_HELP("rename", "Renames players.", "!rename <client slot> <new name>")
 	_HELP("vstr", "Loads a level from rotation file. Note - You need to know rotation labels..", "!vstr map1")
 	_HELP("renameon", "Restores ability to rename from client.", "!renameon <client number>")

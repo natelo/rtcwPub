@@ -42,15 +42,22 @@ const char *months[12] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
-// Returns current time
-char *getTime( void )
-{
+// Returns current time % date
+char *getTime( void ) {
 	qtime_t		ct;
 	trap_RealTime(&ct);
 
 	return va("%02d:%02d:%02d/%02d %s %d",
 		ct.tm_hour, ct.tm_min, ct.tm_sec, ct.tm_mday,
 		months[ct.tm_mon], 1900 + ct.tm_year);
+}
+
+// Returns current date
+char *getDate( void ) {
+	qtime_t		ct;
+	trap_RealTime(&ct);
+
+	return va("%02d/%s/%d",	ct.tm_mday,	months[ct.tm_mon], 1900 + ct.tm_year);
 }
 
 /*

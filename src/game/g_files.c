@@ -61,7 +61,10 @@ qboolean Banned(char *ip, char *password) {
 		while (fgets(line, 1024, banfile) != NULL) {
 			unsigned int match[5];
 			unsigned int subrange;
+			//char data[MAX_STRING_TOKENS];
 
+			// Here for later on so I can tackle bypasses and banned reasons later..
+			//sscanf(line, "%3u.%3u.%3u.%3u/%2u|%[^\n]", &match[0], &match[1], &match[2], &match[3], &match[4], &data);
 			sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
 			subrange = match[4];
 
