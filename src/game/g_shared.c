@@ -42,9 +42,8 @@ const char *months[12] = {
 	"Jan", "Feb", "Mar", "Apr", "May", "Jun",
 	"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 };
-// Returns current time
-char *getTime( void )
-{
+// Returns current time % date
+char *getTime( void ) {
 	qtime_t		ct;
 	trap_RealTime(&ct);
 
@@ -53,57 +52,12 @@ char *getTime( void )
 		months[ct.tm_mon], 1900 + ct.tm_year);
 }
 
-/*
-===========
-S4ndmod - Break IP
-===========
-*/
-void BreakIP(const char *IP, char *charip1, char* charip2, char* charip3, char* charip4) {
-	int i = 0, a = 0, b = 0, c = 0, d = 0;
-	int foundperiod = 0;
+// Returns current date
+char *getDate( void ) {
+	qtime_t		ct;
+	trap_RealTime(&ct);
 
-	while (IP[i] != 0){
-		if (!foundperiod){
-			if (IP[i] == '.') {
-				foundperiod = 1;
-				charip1[a] = 0;
-			}
-			else
-				charip1[a] = IP[i];
-			i++;
-			a++;
-		}
-		else if (foundperiod == 1){
-			if (IP[i] == '.'){
-				foundperiod = 2;
-				charip2[b] = 0;
-			}
-			else
-				charip2[b] = IP[i];
-			i++;
-			b++;
-		}
-		else if (foundperiod == 2){
-			if (IP[i] == '.'){
-				foundperiod = 3;
-				charip3[c] = 0;
-			}
-			else
-				charip3[c] = IP[i];
-			i++;
-			c++;
-		}
-		else if (foundperiod == 3){
-			if (IP[i] == '.'){
-				foundperiod = 4;
-				charip4[d] = 0;
-			}
-			else
-				charip4[d] = IP[i];
-			i++;
-			d++;
-		}
-	}
+	return va("%02d/%s/%d",	ct.tm_mday,	months[ct.tm_mon], 1900 + ct.tm_year);
 }
 
 /*

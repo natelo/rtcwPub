@@ -32,10 +32,7 @@ void logEntry(char *filename, char *info) {
 
 /*
 ===========
-Banned (file check version)
-
-Took this from old S4NDMoD source as it simply works (time saver).
-TODO: Redo & Replace ban & tempban..
+Add IP to banned file
 ===========
 */
 void banClient(char arg[MAX_TOKEN_CHARS]) {
@@ -45,54 +42,76 @@ void banClient(char arg[MAX_TOKEN_CHARS]) {
 	fputs(va("%s\n", arg), bannedfile);
 	fclose(bannedfile);
 }
-// Check if client is banned
-qboolean Banned(char * Clientip, char * password)
-{
-	FILE * bannedfile;
-	char		ip1[10];
-	char		ip2[10];
-	char		ip3[10];
-	char		ip4[10];
-	char		banip1[10];
-	char		banip2[10];
-	char		banip3[10];
-	char		banip4[10];
-	char		bannedips[1024];
-	Q_strncpyz(ip1, "", sizeof(ip1));
-	Q_strncpyz(ip2, "", sizeof(ip2));
-	Q_strncpyz(ip3, "", sizeof(ip3));
-	Q_strncpyz(ip4, "", sizeof(ip4));
 
-	BreakIP(va("%s\n", Clientip), ip1, ip2, ip3, ip4);
-	bannedfile = fopen("banned.txt", "r");
+/*
+===========
+Banned (file check version)
+===========
+*/
+qboolean Banned(char *ip, char *password) {	
+	qboolean banned = qfalse;	
+	FILE* banfile;
 
-	if (bannedfile){
-		while (fgets(bannedips, 1024, bannedfile) != NULL){
-			Q_strncpyz(banip1, "", sizeof(banip1));
-			Q_strncpyz(banip2, "", sizeof(banip2));
-			Q_strncpyz(banip3, "", sizeof(banip3));
-			Q_strncpyz(banip4, "", sizeof(banip4));
+	banfile = fopen("banned.txt", "r");
+	if (banfile) {
+		char line[1024];
+		unsigned int clientIP[4]; 
+		sscanf(ip, "%3u.%3u.%3u.%3u", &clientIP[0], &clientIP[1], &clientIP[2], &clientIP[3]);
 
-			BreakIP(bannedips, banip1, banip2, banip3, banip4);
+		while (fgets(line, 1024, banfile) != NULL) {
+			unsigned int match[5];
+			unsigned int subrange;
+			//char data[MAX_STRING_TOKENS];
 
-			if (!Q_stricmp(banip1, ip1) || !Q_stricmp(banip1, "*")){
-				if (!Q_stricmp(banip2, ip2) || !Q_stricmp(banip2, "*")){
-					if (!Q_stricmp(banip3, ip3) || !Q_stricmp(banip3, "*")){
-						if (!Q_stricmp(banip4, ip4) || !Q_stricmp(banip4, "*\n")){
+			// Here for later on so I can tackle bypasses and banned reasons later..
+			//sscanf(line, "%3u.%3u.%3u.%3u/%2u|%[^\n]", &match[0], &match[1], &match[2], &match[3], &match[4], &data);
+			sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
+			subrange = match[4];
 
-							fclose(bannedfile);
-							if (bypassing(password))
-								return qfalse;
-							else
-								return qtrue;
-						}
+			// Some (really basic) sanity checks
+			if (strlen(line) < 7 || !(match[0] > 0 || match[0] < 256))
+				continue;
+
+			// Check it now..only bothers with it, if first bit matches..
+			if (clientIP[0] == match[0]) {
+
+				// Full Range (32)
+				if (clientIP[1] == match[1] && clientIP[2] == match[2] && clientIP[3] == match[3]) {
+					banned = qtrue;
+				}
+				else {
+					if (subrange &&
+						(
+							subrange == 24 ||
+							subrange == 16 ||
+							subrange == 8
+						)
+					) {
+						// Traverse through it now
+						if (subrange == 24 && clientIP[2] == match[2] && clientIP[1] == match[1])
+							banned = qtrue;
+						else if (subrange == 16 && clientIP[1] == match[1])
+							banned = qtrue;
+						else if (subrange == 8) // First bit already matched upon entry..
+							banned = qtrue;
+
+						// Else = no match..
 					}
+					// There's no subrange..so bail out 
 				}
 			}
+
+			if (banned) {
+				// Overwrite if needed..
+				if (bypassing(password))
+					banned = qfalse;
+
+				break;
+			}
 		}
-		fclose(bannedfile);
+		fclose(banfile);
 	}
-	return qfalse;
+	return banned;
 }
 
 /*
@@ -159,6 +178,7 @@ void write_tempbannedtemp(void)
 		rewrite_tempbanned();
 	}
 }
+
 // Clean tempbans
 void clean_tempbans(void)
 {
