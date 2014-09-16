@@ -55,11 +55,12 @@ qboolean Banned(char *ip, char *password) {
 	banfile = fopen("banned.txt", "r");
 	if (banfile) {
 		char line[1024];
-		unsigned int clientIP[4]; 
+		unsigned int clientIP[4] = { 0 };
+
 		sscanf(ip, "%3u.%3u.%3u.%3u", &clientIP[0], &clientIP[1], &clientIP[2], &clientIP[3]);
 
 		while (fgets(line, 1024, banfile) != NULL) {
-			unsigned int match[5];
+			unsigned int match[5] = { 1 };
 			unsigned int subrange;
 			//char data[MAX_STRING_TOKENS];
 
@@ -69,7 +70,7 @@ qboolean Banned(char *ip, char *password) {
 			subrange = match[4];
 
 			// Some (really basic) sanity checks
-			if (strlen(line) < 7 || !(match[0] > 0 || match[0] < 256))
+			if (strlen(ip) < 7 || !(match[0] > 0 || match[0] < 256))
 				continue;
 
 			// Check it now..only bothers with it, if first bit matches..

@@ -1301,22 +1301,39 @@ void cmd_tempBan(gentity_t *ent) {
 Add IP
 
 FIXME: 
-- Convert * to subranges (multiply *(8) by times : *.* = 16 )
 - Add some input checks..
 ===========
 */
 void cmd_addIp(gentity_t *ent) {
-	char *tag, *log;
+	char *tag, *log, *command, *output;
+	int starcount, subrange;
+	char* ip = ent->client->pers.cmd2;
 
 	tag = sortTag(ent);
 
-	// Note that this blindly accepts what ever user inputs. Not ideal..
-	trap_SendConsoleCommand(EXEC_APPEND, va("addip %s", ent->client->pers.cmd2));
-	AP(va("chat \"console: %s has added IP ^3%s ^7to banned file.\n\"", tag, ent->client->pers.cmd2));
+	if (starcount = (strlen(ip) - strlen(Q_StrReplace(ip, "*", "")))) {
+		if (starcount > 3) {
+			CP(va("print \"^3Error: ^7%s is not a valid range ban!\n^3Valid input would be: ^7!addip 192.*.*.*\n", ip));
+			return;
+		}
+		subrange = starcount * 8;
+	}
+	
+	if (subrange) {
+		command = va("addip %s/%i", ip, subrange);
+		output = va("chat \"console: %s added range ^3%s/%i ^7to banned file.\n\"", tag, ip, subrange);
+		log = va("Player %s (IP: %s) added range %s/%i to banned file.",
+			ent->client->pers.netname, clientIP(ent, qtrue), ip, subrange);
+	}
+	else {
+		command = va("addip %s", ip);
+		output = va("chat \"console: %s added IP ^3%s ^7to banned file.\n\"", tag, ip);
+		log = va("Player %s (IP: %s) added IP %s to banned file.",
+			ent->client->pers.netname, clientIP(ent, qtrue), ip);
+	}
 
-	// Log it
-	log = va("Player %s (IP: %s) added IP %s to banned file.",
-		ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
+	trap_SendConsoleCommand(EXEC_APPEND, command);
+	AP(output);
 	admLog(log);
 
 	return;
