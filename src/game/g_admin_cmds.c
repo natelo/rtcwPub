@@ -1314,10 +1314,11 @@ void cmd_addIp(gentity_t *ent) {
 	starcount = (strlen(ip) - strlen(Q_StrReplace(ip, "*", "")));
 
 	if (starcount) {
-		ip = Q_StrReplace(ip, "*", "0");
-		subrange = 8 * (4 - starcount);
+		ip = Q_StrReplace(ip, "*", "0"); // Required so that the Banned call can pick up the subnet
+		subrange = 8 * (4 - starcount);  // This is essentially multiplying 8 by the amount of numbered octets, not stars (as this is the correct way)
 	}
 	
+	// Instead could have it output /32 if it's a normal ip ban (i.e. 192.168.1.1/32), that way this if statement would not be needed
 	if (subrange) {
 		command = va("addip %s/%i", ip, subrange);
 		output = va("chat \"console: %s added range ^3%s/%i ^7to banned file.\n\"", tag, ip, subrange);

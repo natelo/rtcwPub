@@ -66,11 +66,11 @@ qboolean Banned(char *ip, char *password) {
 
 			// Here for later on so I can tackle bypasses and banned reasons later..
 			//sscanf(line, "%3u.%3u.%3u.%3u/%2u|%[^\n]", &match[0], &match[1], &match[2], &match[3], &match[4], &data);
-			sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
+			int matchcount = sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
 			subrange = match[4];
 
 			// Some (really basic) sanity checks
-			if (strlen(ip) < 7 || !(match[0] > 0 || match[0] < 256))
+			if (matchcount < 4 || !(match[0] > 0 || match[0] < 256))
 				continue;
 
 			// Check it now..only bothers with it, if first bit matches..
