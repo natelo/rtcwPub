@@ -1307,16 +1307,15 @@ FIXME:
 void cmd_addIp(gentity_t *ent) {
 	char *tag, *log, *command, *output;
 	int starcount, subrange;
-	char* ip = ent->client->pers.cmd2;
+	char *ip = ent->client->pers.cmd2;
 
 	tag = sortTag(ent);
+	// This could be much smarter.. i.e. currently *.1.2.3 will add 0.1.2.3/24
+	starcount = (strlen(ip) - strlen(Q_StrReplace(ip, "*", "")));
 
-	if (starcount = (strlen(ip) - strlen(Q_StrReplace(ip, "*", "")))) {
-		if (starcount > 3) {
-			CP(va("print \"^3Error: ^7%s is not a valid range ban!\n^3Valid input would be: ^7!addip 192.*.*.*\n", ip));
-			return;
-		}
-		subrange = starcount * 8;
+	if (starcount) {
+		ip = Q_StrReplace(ip, "*", "0");
+		subrange = 8 * (4 - starcount);
 	}
 	
 	if (subrange) {

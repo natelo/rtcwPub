@@ -292,15 +292,3 @@ char *Q_StrReplace(char *haystack, char *needle, char *newp)
 
 	return final;
 }
-
-int Q_ChrReplace(char* src, char lookingfor, char replacewith)
-{
-	int count = 0;
-	while (*src++) {
-		if (*src == lookingfor) {
-			*src = replacewith;
-			count++;
-		}
-	}
-	return count;
-}
