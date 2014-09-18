@@ -1301,22 +1301,39 @@ void cmd_tempBan(gentity_t *ent) {
 Add IP
 
 FIXME: 
-- Convert * to subranges (multiply *(8) by times : *.* = 16 )
 - Add some input checks..
 ===========
 */
 void cmd_addIp(gentity_t *ent) {
-	char *tag, *log;
+	char *tag, *log, *command, *output;
+	int starcount, subrange;
+	char *ip = ent->client->pers.cmd2;
 
 	tag = sortTag(ent);
+	// This could be much smarter.. i.e. currently *.1.2.3 will add 0.1.2.3/24
+	starcount = (strlen(ip) - strlen(Q_StrReplace(ip, "*", "")));
 
-	// Note that this blindly accepts what ever user inputs. Not ideal..
-	trap_SendConsoleCommand(EXEC_APPEND, va("addip %s", ent->client->pers.cmd2));
-	AP(va("chat \"console: %s has added IP ^3%s ^7to banned file.\n\"", tag, ent->client->pers.cmd2));
+	if (starcount) {
+		ip = Q_StrReplace(ip, "*", "0"); // Required so that the Banned call can pick up the subnet
+		subrange = 8 * (4 - starcount);  // This is essentially multiplying 8 by the amount of numbered octets, not stars (as this is the correct way)
+	}
+	
+	// Instead could have it output /32 if it's a normal ip ban (i.e. 192.168.1.1/32), that way this if statement would not be needed
+	if (subrange) {
+		command = va("addip %s/%i", ip, subrange);
+		output = va("chat \"console: %s added range ^3%s/%i ^7to banned file.\n\"", tag, ip, subrange);
+		log = va("Player %s (IP: %s) added range %s/%i to banned file.",
+			ent->client->pers.netname, clientIP(ent, qtrue), ip, subrange);
+	}
+	else {
+		command = va("addip %s", ip);
+		output = va("chat \"console: %s added IP ^3%s ^7to banned file.\n\"", tag, ip);
+		log = va("Player %s (IP: %s) added IP %s to banned file.",
+			ent->client->pers.netname, clientIP(ent, qtrue), ip);
+	}
 
-	// Log it
-	log = va("Player %s (IP: %s) added IP %s to banned file.",
-		ent->client->pers.netname, clientIP(ent, qtrue), ent->client->pers.cmd2);
+	trap_SendConsoleCommand(EXEC_APPEND, command);
+	AP(output);
 	admLog(log);
 
 	return;

@@ -55,7 +55,8 @@ qboolean Banned(char *ip, char *password) {
 	banfile = fopen("banned.txt", "r");
 	if (banfile) {
 		char line[1024];
-		unsigned int clientIP[4]; 
+		unsigned int clientIP[4];
+
 		sscanf(ip, "%3u.%3u.%3u.%3u", &clientIP[0], &clientIP[1], &clientIP[2], &clientIP[3]);
 
 		while (fgets(line, 1024, banfile) != NULL) {
@@ -65,11 +66,11 @@ qboolean Banned(char *ip, char *password) {
 
 			// Here for later on so I can tackle bypasses and banned reasons later..
 			//sscanf(line, "%3u.%3u.%3u.%3u/%2u|%[^\n]", &match[0], &match[1], &match[2], &match[3], &match[4], &data);
-			sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
+			int matchcount = sscanf(line, "%3u.%3u.%3u.%3u/%2u", &match[0], &match[1], &match[2], &match[3], &match[4]);
 			subrange = match[4];
 
 			// Some (really basic) sanity checks
-			if (strlen(line) < 7 || !(match[0] > 0 || match[0] < 256))
+			if (matchcount < 4 || !(match[0] > 0 || match[0] < 256))
 				continue;
 
 			// Check it now..only bothers with it, if first bit matches..
