@@ -1319,7 +1319,7 @@ void cmd_addIp(gentity_t *ent) {
 
 	}
 
-	if (!ValidIP(ip))
+	if (!isValidIP(ip))
 		return;
 
 	trap_SendConsoleCommand(EXEC_APPEND, va("addip %s", ip));

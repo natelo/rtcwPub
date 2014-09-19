@@ -99,9 +99,8 @@ ValidIP
 Works with regular IPv4 (without port) and IPv4 with subnet
 =========
 */
-qboolean ValidIP(const char *ip)
-{
-	unsigned b1, b2, b3, b4, subnet = 8;
+qboolean isValidIP(const char *ip) {
+	unsigned int b1, b2, b3, b4, subnet = 8;
 	int rc;
 
 	rc = sscanf(ip, "%3u.%3u.%3u.%3u/%2u", &b1, &b2, &b3, &b4, &subnet);
