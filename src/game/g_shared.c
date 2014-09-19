@@ -93,6 +93,28 @@ void GetIP(const char *strIP1, char *strIP2, char *strPort) {
 }
 
 /*
+=========
+ValidIP
+
+Works with regular IPv4 (without port) and IPv4 with subnet
+=========
+*/
+qboolean ValidIP(const char *ip)
+{
+	unsigned b1, b2, b3, b4, subnet = 8;
+	int rc;
+
+	rc = sscanf(ip, "%3u.%3u.%3u.%3u/%2u", &b1, &b2, &b3, &b4, &subnet);
+	if (rc < 4 || rc > 5)
+		return qfalse;
+	if ((b1 | b2 | b3 | b4) > 255 || (subnet > 32 || subnet < 8) || (subnet % 8 != 0))
+		return qfalse;
+	if (strspn(ip, "0123456789./") < strlen(ip))
+		return qfalse;
+	return qtrue;
+}
+
+/*
 ===========
 Global sound
 ===========
